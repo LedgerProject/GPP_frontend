@@ -1,0 +1,55 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-12 col-lg-8 mx-auto">
+      <div class="card mt-4">
+        <div class="card-body">
+          <a [routerLink]="['/countries']"><i class="fa fa-chevron-left"></i> {{ 'Back to the countries list' | translate }}</a>
+          <form  #form="ngForm" (ngSubmit)="doSave()">
+          <h1 class="mt-4">{{ 'Countries - Topic' | translate }} {{country.identifier }}</h1>
+          <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>
+
+<div class="row" *ngFor="let topic of topics; let counter = index">
+  <div class="col-md-12">
+
+      <div dropdown (onShown)="onShown()" (onHidden)="onHidden()" (isOpenChange)="isOpenChange()" style="position:relative"><small>
+        <a href dropdownToggle (click)="false">{{ 'Change language' | translate }}</a>
+        <ul *dropdownMenu class="dropdown-menu">
+          <li *ngFor="let language of languages">
+            <a class="dropdown-item btn pointer" role="button"  (click)="doSwitchTextarea(language.value,counter)">{{language.name}}</a>
+          </li>
+        </ul></small>
+      </div>
+      <div class="form-group">
+
+        <div *ngFor="let language of languages; let i = index">
+        <label [hidden]="topic.lang != language.value">{{ 'Topic' | translate }} {{counter+1}} {{ 'in '+language.name | translate }}</label>
+        <div class="input-group mb-3" [hidden]="topic.lang != language.value">
+          <input type="text" name="title[{{counter}}][{{language.value}}]" [(ngModel)]="topic.title[language.value]" class="form-control" placeholder="{{'Enter topic title' | translate }}">
+          <button type="button" class="btn btn-danger rounded-0" (click)="doDelete(counter,topic.id)">{{ 'DELETE' | translate}}</button>
+        </div>
+
+        <label [hidden]="topic.lang != language.value">{{ 'Topic' | translate }} {{counter+1}} {{ 'Description in '+language.name | translate }}</label>
+        <div class="input-group mb-3" [hidden]="topic.lang != language.value">
+          <textarea name="text[{{counter}}][{{language.value}}]" [(ngModel)]="topic.text[language.value]" class="form-control" placeholder="{{'Enter topic description' | translate }}" rows="5" required></textarea>
+        </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+         <div class="row">
+          <div class="col-6 text-left">
+            <button type="button" class="btn btn-primary rounded-0" (click)="doAdd()">{{ 'ADD TOPIC' | translate}}</button>
+          </div>
+          <div class="col-6 text-right">
+            <button type="submit" class="btn btn-primary rounded-0">{{ 'SAVE' | translate}}</button>
+          </div>
+
+        </div>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

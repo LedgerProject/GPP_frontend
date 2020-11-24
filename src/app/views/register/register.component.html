@@ -1,0 +1,57 @@
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card-group">
+            <div class="card p-4">
+              <div class="card-body text-center">
+                <form  #form="ngForm" (ngSubmit)="doSignOn()" *ngIf="!response.exit">
+                  <h1>{{'Registration' | translate }}</h1>
+                  <p class="text-muted"></p>
+                  <div class="bg-danger m-3" *ngIf='response.exit > 1000'>{{response.error}}</div>
+                  <div class="input-group mb-3">
+                    <input type="text" name="first_name" [(ngModel)]="formData.first_name" id="first_name" class="form-control" placeholder="{{'First name' | translate }}" required>
+                  </div>
+                  <div class="input-group mb-3">
+                    <input type="text" name="last_name" [(ngModel)]="formData.last_name" id="last_name" class="form-control" placeholder="{{'Last name' | translate }}" required>
+                  </div>                  
+                  <div class="input-group mb-3">
+                    <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required>
+                  </div>
+                  <div class="input-group mb-3">
+                    <input type="email" name="email_confirm" [(ngModel)]="formData.email_confirm" id="email_confirm" class="form-control" placeholder="{{'Confirm Email' | translate }}" required>
+                  </div>                  
+                  <div class="input-group mb-3">
+                    <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required>
+                  </div>
+                  <div class="input-group mb-3">
+                    <input type="password" name="password_confirm" id="password_confirm" [(ngModel)]="formData.password_confirm" class="form-control" placeholder="{{'Confirm Password' | translate }}" required>
+                  </div>     
+                  <div class="input-group mb-4">
+                    <input type="password" name="secret_key" id="secret_key" [(ngModel)]="formData.secret_key" class="form-control" placeholder="{{'Secret Key' | translate }}">
+                  </div>                                    
+                  <div class="row">
+                    <div class="col-12">
+                      <button type="submit" [disabled]="form.invalid" class="btn btn-primary rounded-0 px-4">{{ 'Sign On' | translate }}</button>
+                    </div>
+                  </div>
+                  <div class="row">  
+                    <div class="col-6 text-left">
+                      <button type="button" class="btn btn-link px-0" [routerLink]="['/forgot-password']">{{ 'Forgot Password?' | translate }}</button>
+                    </div>
+                    <div class="col-6 text-right">
+                      <button type="button" class="btn btn-link px-0" [routerLink]="['/sign-in']">{{ 'Yet a member?' | translate }}</button>
+                    </div>                    
+                  </div>
+                </form>
+                <div class="text-success" *ngIf="response.exit == 1000">{{ 'Registration completed.' | translate}}</div>
+                <app-langswitch></app-langswitch>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

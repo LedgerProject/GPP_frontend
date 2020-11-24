@@ -1,0 +1,52 @@
+<div class="animated fadeIn">
+    <div class="row">
+      <div class="col-md-12 col-lg-8 mx-auto">
+        <div class="card mt-4">
+          <div class="card-body">
+            <a [routerLink]="['/operators']"><i class="fa fa-chevron-left"></i> {{ 'Back to the operators list' | translate }}</a>
+            <form  #form="ngForm" (ngSubmit)="doInvite()">
+            <h1 class="mt-4">{{ 'Operators - Invite Operator' | translate }}</h1>
+            <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>           
+            <div class="form-group mt-3">
+                    <label>{{ 'Search the operator to invite' | translate }}</label>
+                  <div class="input-group mb-3">  
+                    <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Search the operator to invite' | translate }}" required>
+                  </div>
+            </div>
+            <div class="form-group">
+                    <label>{{ 'Enter the invitation text' | translate }}</label>
+                  <div class="input-group mb-3">  
+                    <textarea name="text" [(ngModel)]="formData.text" id="text" class="form-control" placeholder="{{'Enter the invitation text' | translate }}" rows="3" required></textarea>
+                  </div>
+            </div>
+           <div class="form-group">
+               <label>
+                <input type="checkbox" name="check_admin" value="admin">
+                {{ 'Administrator (can manage structures, operators and document wallet)' | translate }}
+               </label><br>
+               <label>
+                <input type="checkbox" name="check_wallet" value="wallet">
+                {{ 'Wallet (can manage document wallet)' | translate }}
+               </label><br>
+               <label>
+                <input type="checkbox" name="check_operators" value="operators">
+                {{ 'Operators (can manage operators)' | translate }}
+               </label><br>   
+               <label>
+                <input type="checkbox" name="check_structures" value="structures">
+                {{ 'Structures (can manage structures)' | translate }}
+               </label>                    
+            </div>  
+           <div class="row">  
+            <div class="col-6 text-left">
+              <button type="submit" class="btn btn-primary rounded-0">{{ 'INVITE' | translate}}</button>
+            </div>
+                 
+          </div> 
+          </form>           
+          </div>
+        </div>
+      </div>      
+    </div>
+</div> 
+

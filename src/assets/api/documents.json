@@ -1,0 +1,38 @@
+{ "documents": [
+    {
+        "uuid":"doc_abcd001",
+        "title":"Passport",
+        "url":"https://picsum.photos/id/237/200/300",
+        "size":"0.8 MBytes",
+        "icon":"image"
+    },
+    {
+        "uuid":"doc_abcd002",
+        "title":"Document ID",
+        "url":"https://picsum.photos/seed/picsum/200/300",
+        "size":"1.0 MBytes",
+        "icon":"image"
+    },
+    {
+        "uuid":"doc_abcd003",
+        "title":"Vaccinations Page 1",
+        "url":"https://picsum.photos/200/300?grayscale",
+        "size":"1.1 MBytes",
+        "icon":"image"
+    },
+    {
+        "uuid":"doc_abcd004",
+        "title":"Vaccinations Page 2",
+        "url":"https://picsum.photos/200/300/?blur",
+        "size":"1.5 MBytes",
+        "icon":"image"
+    },
+    {
+        "uuid":"doc_abcd005",
+        "title":"Vaccinations Page 3",
+        "url":"https://picsum.photos/id/870/200/300?grayscale&blur=2",
+        "size":"1.2 MBytes",
+        "icon":"image"
+    }            
+]
+}

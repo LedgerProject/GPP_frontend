@@ -1,0 +1,43 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-12 col-lg-8 mx-auto">
+      <div class="card mt-4">
+        <div class="card-body">
+    
+          <h1 class="mt-4">{{ 'Operators - List' | translate }}</h1>
+          <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>           
+          <form #form="ngForm">
+            <div class="input-group mb-3">
+                <input type="text" (keyup)="onKey()" class="form-control" name="search" [(ngModel)]="formData.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="submit">{{ 'SEARCH' | translate }}</button>
+                </div>
+                <button class="btn btn-primary rounded-0 ml-3" type="button" [routerLink]="['/operator-invite']">{{ 'INVITE OPERATOR' | translate }}</button>            
+            </div>       
+          </form> 
+          <div class="table-responsive">
+          <table class="table table-hover" *ngIf='show_operators.length'>
+            <thead>
+              <th>{{ 'First Name' | translate }}</th>
+              <th>{{ 'Last Name' | translate }}</th>
+              <th>{{ 'Email' | translate }}</th>
+              <th>{{ 'Access Level' | translate }}</th>
+            </thead>
+            <tbody>
+              <tr class="pointer" *ngFor="let operator of show_operators" (click)="doOpen(operator.uuid)">
+                <td>{{operator.first_name}}</td>
+                <td>{{operator.last_name}}</td>
+                <td>{{operator.email}}</td>
+                <td>
+                  <span *ngFor="let level of operator.levels; index as i"><span *ngIf="i > 0"> + </span>{{levels_array[level.role]}}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+          <div class="text-danger" *ngIf="!show_operators.length"></div>
+        </div>
+      </div>
+    </div>      
+  </div>
+</div> 

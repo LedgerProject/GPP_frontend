@@ -1,0 +1,45 @@
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card-group">
+            <div class="card p-4">
+              <div class="card-body text-center">
+                <form  #form="ngForm" (ngSubmit)="doSignIn()">
+                  <h1>{{'Sign in' | translate }}</h1>
+                  <p class="text-muted">{{'Sign in to your account' | translate }}</p>
+                  <div class="bg-danger m-3" *ngIf='response.exit > 1000'>{{response.error}}</div>
+                  <div class="input-group mb-3">
+                    <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required>
+                  </div>
+                  <div class="input-group mb-4">
+                    <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <button type="submit" [disabled]="form.invalid" class="btn btn-primary rounded-0 px-4">{{'Sign in' | translate}}</button>
+                    </div>
+                  </div>
+                  <div class="row">  
+                    <div class="col-6 text-left">
+                      <button type="button" class="btn btn-link px-0" [routerLink]="['/forgot-password']">{{ 'Forgot Password?' | translate}}</button>
+                    </div>
+                    <div class="col-6 text-right">
+                      <button type="button" class="btn btn-link px-0" [routerLink]="['/sign-on']">{{ 'Not a member yet?' | translate}}</button>
+                    </div>                    
+                  </div>
+                </form>
+                <div class="row">  
+                  <div class="col-12 text-right">                
+                    <app-langswitch></app-langswitch>
+                  </div>
+                </div>    
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

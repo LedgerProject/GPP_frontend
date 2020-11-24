@@ -1,0 +1,20 @@
+{
+    "uuid": "abcd0001",
+    "name": "Name",
+    "surname": "Surname",
+    "email": "email@email.com",
+    "organizations":[
+        {
+            "uuid":"abcd0002",
+            "name":"Organization 1"
+        },
+        {
+            "uuid":"abcd0002",
+            "name":"Organization 2"
+        },
+        {
+            "uuid":"abcd0003",
+            "name":"Organization 3"
+        }                
+    ]
+}

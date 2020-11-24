@@ -1,0 +1,30 @@
+<div class="animated fadeIn">
+    <div class="row">
+      <div class="col-md-12 col-lg-8 mx-auto">
+        <div class="card mt-4">
+          <div class="card-body">
+            <form  #form="ngForm" (ngSubmit)="doSave_organization()" *ngIf="!response.exit">
+            <h1 class="mt-4">{{ 'Create Organization' | translate }}</h1>
+            <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p> 
+  
+            <div class="form-group">
+              <label>{{ 'Insert the name of your organization / company' | translate }}</label>
+              <div class="input-group mb-3">  
+                <input type="text" name="organization" [(ngModel)]="formData.organization" id="organization" class="form-control" required>
+              </div>
+            </div>          
+            
+           <div class="row">  
+            <div class="col-12 text-right">
+              <button type="submit" class="btn btn-primary rounded-0">{{ 'SAVE' | translate}}</button>
+            </div>
+          </div>
+  
+          </form>  
+          <div class="text-success" *ngIf="response.exit == 1000">{{ 'Save completed.' | translate}}</div>         
+          </div>
+        </div>
+      </div>      
+    </div>
+  </div> 
+  

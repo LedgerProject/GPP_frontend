@@ -1,0 +1,42 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-12 col-lg-8 mx-auto">
+      <div class="card mt-4">
+        <div class="card-body">
+
+          <h1 class="mt-4">{{ 'Countries - List' | translate }}</h1>
+          <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>
+          <form #form="ngForm">
+            <div class="input-group mb-3">
+                <input type="text" (keyup)="onKey()" class="form-control" name="search" [(ngModel)]="formData.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                <div class="input-group-append">
+                  <button class="btn btn-primary rounded-0" type="submit">{{ 'SEARCH' | translate }}</button>
+                </div>
+                <button class="btn btn-primary ml-3 rounded-0" type="button" [routerLink]="['/country-details']">{{ 'ADD COUNTRY' | translate }}</button>
+            </div>
+          </form>
+          <div class="table-responsive">
+          <table class="table table-hover" *ngIf='show_countries.length'>
+            <thead>
+              <th>{{ 'NAME' | translate }}</th>
+              <th class="text-center">{{ 'COMPLETE' | translate }}</th>
+              <th class="text-right">{{ '' | translate }}</th>
+            </thead>
+            <tbody>
+              <tr class="pointer" *ngFor="let country of show_countries" (click)="doOpen(country.idCountry)">
+                <td>{{country.name || country.identifier}}</td>
+                <td class="text-center">
+                  <span *ngIf="country.completed == false" class="text-danger"><i class="fa fa-remove"></i></span>
+                  <span *ngIf="country.completed == true" class="text-success"><i class="fa fa-check"></i></span>
+                </td>
+                <td class="text-right"><a class="btn btn-primary rounded-0" [routerLink]="['/country-topics/'+country.idCountry]">{{ 'TOPICS' | translate }}</a> </td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="text-danger" *ngIf="!show_countries.length"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

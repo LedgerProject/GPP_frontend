@@ -1,0 +1,43 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-12 col-lg-8 mx-auto">
+      <div class="card mt-4">
+        <div class="card-body">
+          <form  #form="ngForm" (ngSubmit)="doSave_profile()">
+          <h1 class="mt-4">{{ 'My Profile' | translate }}</h1>
+          <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p> 
+          <div class="form-group mt-3">
+                  <label>{{ 'First name' | translate }}</label>
+                <div class="input-group mb-3">  
+                  <input type="text" name="first_name" [(ngModel)]="formData.first_name" id="first_name" class="form-control" required>
+                </div>
+          </div>
+          <div class="form-group">
+            <label>{{ 'Last name' | translate }}</label>
+            <div class="input-group mb-3">  
+              <input type="text" name="last_name" [(ngModel)]="formData.last_name" id="last_name" class="form-control" required>
+            </div>
+          </div>
+          
+         <div class="row">  
+          <div class="col-12 text-right">
+            <button type="submit" class="btn btn-primary rounded-0">{{ 'SAVE' | translate}}</button>
+          </div>
+        </div>
+
+
+          <div class="row mt-3">  
+            <div class="col-6 text-left">
+              <button type="button" class="btn btn-danger rounded-0">{{ 'REMOVE FROM CURRENT TEAM' | translate}}</button>
+            </div>
+            <div class="col-6 text-right">
+              <button type="button" class="btn btn-danger rounded-0">{{ 'DELETE ALL MY DATA' | translate}}</button>
+            </div>                    
+          </div>            
+               
+        </form>           
+        </div>
+      </div>
+    </div>      
+  </div>
+</div> 

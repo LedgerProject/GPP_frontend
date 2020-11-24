@@ -1,0 +1,81 @@
+{ "structures": [
+    {
+        "uuid":"structure_abcd001",
+        "name":"Structure 001",
+        "address":"Address",
+        "email":"structure_1@email.com",
+        "status":"10",
+        "phone-prefix":"+39",
+        "phone-number":"87654321",
+        "category":"legal-assistance",
+        "website":"www.",
+        "gallery":[
+            {"image":"file_001.jpg"},
+            {"image":"file_002.jpg"},
+            {"image":"file_003.jpg"},
+            {"image":"file_004.jpg"},
+            {"image":"file_005.jpg"}                                                
+        ],
+        "lat":40.01,
+        "lon":14.25,
+        "description":[
+            {
+            "en":"",
+            "fr":""
+            }
+        ]
+    },
+    {
+        "uuid":"structure_abcd002",
+        "name":"Structure 002",
+        "address":"Address",
+        "email":"structure_2@email.com",
+        "status":"1",
+        "phone-prefix":"+39",
+        "phone-number":"87654321",
+        "category":"health",
+        "website":"www.",
+        "gallery":[
+            {"image":"file_001.jpg"},
+            {"image":"file_002.jpg"},
+            {"image":"file_003.jpg"},
+            {"image":"file_004.jpg"},
+            {"image":"file_005.jpg"}                                                
+        ],
+        "lat":40.01,
+        "lon":14.25,
+        "description":[
+            {
+            "en":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus velitneque, molestie nec risus ac, suscipit convallis sem. Vestibulum ut sodales dolor. Sed consectetur facilisis turpis ac congue. Suspendisse placerat eleifend ornare. Donec eu pharetra metus. Pellentesque vehicula diam at quam placerat laoreet. In id quam et nisl faucibus fermentum a vel neque.",
+            "fr":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus velitneque, molestie nec risus ac, suscipit convallis sem. Vestibulum ut sodales dolor. Sed consectetur facilisis turpis ac congue. Suspendisse placerat eleifend ornare. Donec eu pharetra metus. Pellentesque vehicula diam at quam placerat laoreet. In id quam et nisl faucibus fermentum a vel neque."
+            }
+        ]
+    },
+    {
+        "uuid":"structure_abcd003",
+        "name":"Structure 003",
+        "address":"Address",
+        "email":"structure_3@email.com",
+        "status":"-1",
+        "phone-prefix":"+39",
+        "phone-number":"87654321",
+        "category":"health",
+        "website":"www.",
+        "gallery":[
+            {"image":"file_001.jpg"},
+            {"image":"file_002.jpg"},
+            {"image":"file_003.jpg"},
+            {"image":"file_004.jpg"},
+            {"image":"file_005.jpg"}                                                
+        ],
+        "lat":40.01,
+        "lon":14.25,
+        "description":[
+            {
+            "en":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus velitneque, molestie nec risus ac, suscipit convallis sem. Vestibulum ut sodales dolor. Sed consectetur facilisis turpis ac congue. Suspendisse placerat eleifend ornare. Donec eu pharetra metus. Pellentesque vehicula diam at quam placerat laoreet. In id quam et nisl faucibus fermentum a vel neque.",
+            "fr":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus velitneque, molestie nec risus ac, suscipit convallis sem. Vestibulum ut sodales dolor. Sed consectetur facilisis turpis ac congue. Suspendisse placerat eleifend ornare. Donec eu pharetra metus. Pellentesque vehicula diam at quam placerat laoreet. In id quam et nisl faucibus fermentum a vel neque."
+            }
+        ]
+    }        
+]
+}

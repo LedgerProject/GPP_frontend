@@ -1,0 +1,35 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-12 col-lg-8 mx-auto">
+      <div class="card mt-4">
+        <div class="card-body">
+
+          <h1 class="mt-4">{{ 'Categories - List' | translate }}</h1>
+          <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>
+          <form #form="ngForm">
+            <div class="input-group mb-3">
+                <input type="text" (keyup)="onKey()" class="form-control" name="search" [(ngModel)]="formData.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                <div class="input-group-append">
+                  <button class="btn btn-primary rounded-0" type="submit">{{ 'SEARCH' | translate }}</button>
+                </div>
+                <button class="btn btn-primary ml-3 rounded-0" type="button" [routerLink]="['/category-details']">{{ 'ADD CATEGORY' | translate }}</button>
+            </div>
+          </form>
+          <div class="table-responsive">
+          <table class="table table-hover" *ngIf='show_categories.length'>
+            <thead>
+              <th>{{ 'NAME' | translate }}</th>
+            </thead>
+            <tbody>
+              <tr class="pointer" *ngFor="let category of show_categories" (click)="doOpen(category.idCategory)">
+                <td>{{category.name || category.identifier}}</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="text-danger" *ngIf="!show_categories.length"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

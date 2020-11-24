@@ -1,0 +1,56 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-12 col-lg-8 mx-auto">
+      <div class="card mt-4">
+        <div class="card-body">
+          <a [routerLink]="['/icons']"><i class="fa fa-chevron-left"></i> {{ 'Back to the icons list' | translate }}</a>
+          <form [formGroup] = "uploadForm" (ngSubmit)="onSubmit()">
+          <h1 class="mt-4"><span *ngIf="uuid">{{ 'Icons - Edit' | translate }}</span><span *ngIf="!uuid">{{ 'Icons - Add' | translate }}</span></h1>
+          <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>
+
+          <div class="form-group mt-3">
+          <label>{{ 'Name' | translate }}</label>
+           <div class="input-group mb-3">
+            <input type="text" formControlName="name" id="name" class="form-control" placeholder="{{'Enter the name' | translate }}" required>
+           </div>
+          </div>
+
+          <div class="form-group mt-3">
+            <label>{{ 'Image' | translate }} <small *ngIf="!uuid">(PNG 48 x 48 pixels)</small></label>
+            <div class="my-2" *ngIf="image">
+              <img [src]="image">
+            </div>
+            <div class="input-group mb-3" *ngIf="!uuid">
+              <input formControlName="image" id="image" type="file" (change)="onImageSelect($event)"/>
+            </div>
+          </div>
+
+          <div class="form-group mt-3">
+            <label>{{ 'Marker' | translate }} <small *ngIf="!uuid">(PNG 32 x 37 pixels)</small></label>
+            <div class="my-2" *ngIf="marker">
+              <img [src]="marker">
+            </div>
+            <div class="input-group mb-3" *ngIf="!uuid">
+              <input formControlName="marker" id="marker" type="file" (change)="onMarkerSelect($event)"/>
+            </div>
+          </div>
+
+         <div class="row">
+          <div class="col-12 text-right">
+            <button type="submit" id="upload-submit" class="btn btn-primary rounded-0">{{ 'SAVE' | translate}}</button>
+          </div>
+        </div>
+
+        <div class="row mt-3" *ngIf="uuid">
+          <div class="col-12 text-right">
+            <button type="button" class="btn btn-danger rounded-0" (click)="doDelete(uuid)">{{ 'DELETE' | translate}}</button>
+          </div>
+        </div>
+
+
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

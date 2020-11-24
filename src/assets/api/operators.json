@@ -1,0 +1,41 @@
+{ "operators": [
+    {
+        "uuid":"operator_abcd001",
+        "first_name":"John",
+        "last_name":"Brown",
+        "email":"j.red@email.com",
+        "levels":[
+             {"role" : "admin" }
+        ]
+    },
+    {
+        "uuid":"operator_abcd002",
+        "first_name":"Johnny",
+        "last_name":"Walker",
+        "email":"j.walker@email.com",
+        "levels":[
+            {"role" : "wallet" }
+       ]
+    },
+    {
+        "uuid":"operator_abcd003",
+        "first_name":"Johnny",
+        "last_name":"Cash",
+        "email":"j.cash@email.com",
+        "levels":[
+            {"role" : "structures" },
+            {"role" : "wallet" }
+       ]
+    },
+    {
+        "uuid":"operator_abcd004",
+        "first_name":"Egon",
+        "last_name":"Spengler",
+        "email":"e.spengler@email.com",
+        "levels":[
+            {"role" : "wallet" }
+       ]
+    }
+         
+]
+}
