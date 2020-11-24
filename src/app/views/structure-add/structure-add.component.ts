@@ -137,7 +137,7 @@ export class StructureAddComponent implements OnInit {
       this.formData.longitude = 0;
     }
 
-    let postParams = {
+    let postParams:any = {
 
       idOrganization: this.idOrganization,
       alias: this.slugifyPipe.transform(this.formData.name),
@@ -153,6 +153,10 @@ export class StructureAddComponent implements OnInit {
       website: this.formData.website,
 
     };
+
+    if (!this.idOrganization) {
+      delete postParams.idOrganization;
+    }
 
       let headers = new HttpHeaders()
         .set("Authorization", "Bearer "+this.token)

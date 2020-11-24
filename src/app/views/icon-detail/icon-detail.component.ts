@@ -74,13 +74,32 @@ export class IconDetailComponent implements OnInit {
     }
   }
 
-  onImageSelectPatch(event) {
+  onImagePatchSelect(event) {
 
+    const file = event.srcElement.files[0];
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.uploadForm.patchValue({
-        image: file
+        fileImage: file
       });
+      let headers = new HttpHeaders()
+      .set("Authorization", "Bearer "+this.token)
+      ;
+      const formData = new FormData();
+      formData.append('file', this.uploadForm.get('fileImage').value);
+      this.http.patch(this.userdata.mainUrl+this.userdata.mainPort+"/icons/"+this.uuid+"/image/image", formData,{headers} )
+      .subscribe(data => {
+       this.image = this._d.bypassSecurityTrustUrl(window.URL.createObjectURL(file));
+       //this.router.navigateByUrl('/icons');
+       alert( this.translate.instant('Save completed') );
+      },error => {
+       let code = error.status;
+       console.log(error);
+       if (code == 400) {
+         alert( this.translate.instant('Please, check Image File 48x48 pixels') );
+       }
+      });
+
     }
   }
 
@@ -94,14 +113,35 @@ export class IconDetailComponent implements OnInit {
     }
   }
 
-  onMarkerSelectPatch(event) {
+  onMarkerPatchSelect(event) {
 
+    const file = event.srcElement.files[0];
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.uploadForm.patchValue({
-        marker: file
+        fileMarker: file
       });
+      let headers = new HttpHeaders()
+      .set("Authorization", "Bearer "+this.token)
+      ;
+      const formData = new FormData();
+      formData.append('file', this.uploadForm.get('fileMarker').value);
+      this.http.patch(this.userdata.mainUrl+this.userdata.mainPort+"/icons/"+this.uuid+"/image/marker", formData,{headers} )
+      .subscribe(data => {
+       //console.log(data);
+       this.marker = this._d.bypassSecurityTrustUrl(window.URL.createObjectURL(file));
+       //this.router.navigateByUrl('/icons');
+       alert( this.translate.instant('Save completed') );
+      },error => {
+       let code = error.status;
+       console.log(error);
+       if (code == 400) {
+         alert( this.translate.instant('Please, check Marker File 32x37 pixels') );
+       }
+      });
+
     }
+
   }
 
   onSubmit() {
@@ -129,7 +169,7 @@ export class IconDetailComponent implements OnInit {
 
      this.http.post(this.userdata.mainUrl+this.userdata.mainPort+"/icons/"+name, formData,{headers} )
      .subscribe(data => {
-      console.log(data);
+      //console.log(data);
       this.router.navigateByUrl('/icons');
      },error => {
       let code = error.status;
@@ -151,29 +191,8 @@ export class IconDetailComponent implements OnInit {
         idIcon: this.uuid,
         name: name
       };
-      /*if (image) {
-        let image_obj = { image: image}
-        postParams.image = image_obj;
-      }
-      if (marker) {
-        let marker_obj = { marker: marker}
-        postParams.marker= marker_obj;
-      }*/
-      /*this.uploadForm.patchValue({
-        name: name
-      });
-      const formData = new FormData();
-      formData.append('name', this.uploadForm.get('name').value);*/
-      /*if (image) {
-        formData.append('file', this.uploadForm.get('image').value);
-      }
-      if (marker) {
-        formData.append('file', this.uploadForm.get('marker').value);
-      }*/
-      //console.log(postParams);
       this.http.patch(this.userdata.mainUrl+this.userdata.mainPort+"/icons/"+this.uuid,postParams, {headers} )
       .subscribe(data=> {
-        console.log(data);
         this.http_response = data;
         this.router.navigateByUrl('/icons');
       }, error => {

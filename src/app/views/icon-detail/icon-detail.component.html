@@ -21,7 +21,8 @@
               <img [src]="image">
             </div>
             <div class="input-group mb-3">
-              <input formControlName="image" id="image" type="file" (change)="onImageSelect($event)"/>
+              <input formControlName="image" *ngIf="!uuid" id="image" type="file" (change)="onImageSelect($event)"/>
+              <input name="image" *ngIf="uuid" id="image" type="file" (change)="onImagePatchSelect($event)"/>
             </div>
           </div>
 
@@ -31,7 +32,8 @@
               <img [src]="marker">
             </div>
             <div class="input-group mb-3">
-              <input formControlName="marker" id="marker" type="file" (change)="onMarkerSelect($event)"/>
+              <input formControlName="marker" *ngIf="!uuid" id="marker" type="file" (change)="onMarkerSelect($event)"/>
+              <input name="marker" *ngIf="uuid" id="marker" type="file" (change)="onMarkerPatchSelect($event)"/>
             </div>
           </div>
 

@@ -174,7 +174,9 @@
         "Icons - Add": "Icons - Add",
         "ADD ICON": "ADD ICON",
         "Back to the icons list": "Back to the icons list",
-        "Invalid Token": "Invalid Token"
+        "Invalid Token": "Invalid Token",
+        "Please, check Image File 48x48 pixels": "Please, check Image File 48x48 pixels",
+        "Please, check Marker File 32x27 pixels": "Please, check Marker File 32x27 pixels"
 
 
 }
