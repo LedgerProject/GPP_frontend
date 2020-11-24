@@ -16,21 +16,21 @@
           </div>
 
           <div class="form-group mt-3">
-            <label>{{ 'Image' | translate }} <small *ngIf="!uuid">(PNG 48 x 48 pixels)</small></label>
+            <label>{{ 'Image' | translate }} <small>(PNG 48 x 48 pixels)</small></label>
             <div class="my-2" *ngIf="image">
               <img [src]="image">
             </div>
-            <div class="input-group mb-3" *ngIf="!uuid">
+            <div class="input-group mb-3">
               <input formControlName="image" id="image" type="file" (change)="onImageSelect($event)"/>
             </div>
           </div>
 
           <div class="form-group mt-3">
-            <label>{{ 'Marker' | translate }} <small *ngIf="!uuid">(PNG 32 x 37 pixels)</small></label>
-            <div class="my-2" *ngIf="marker">
+            <label>{{ 'Marker' | translate }} <small>(PNG 32 x 37 pixels)</small></label>
+            <div class="my-2">
               <img [src]="marker">
             </div>
-            <div class="input-group mb-3" *ngIf="!uuid">
+            <div class="input-group mb-3">
               <input formControlName="marker" id="marker" type="file" (change)="onMarkerSelect($event)"/>
             </div>
           </div>
