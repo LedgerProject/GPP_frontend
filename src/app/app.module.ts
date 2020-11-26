@@ -7,6 +7,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+import { AgmCoreModule } from '@agm/core';
+import { GeocodeService } from './services/geocode.service';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -60,7 +62,6 @@ import { DocumentsComponent } from './views/documents/documents.component';
 import { DocumentDetailComponent } from './views/document-detail/document-detail.component';
 import { OperatorDetailComponent } from './views/operator-detail/operator-detail.component';
 import { OperatorInviteComponent } from './views/operator-invite/operator-invite.component';
-import { StructureAddComponent } from './views/structure-add/structure-add.component';
 import { StructureDetailComponent } from './views/structure-detail/structure-detail.component';
 import { LogoutComponent } from './views/logout/logout.component';
 import { OrganizationAddComponent } from './views/organization-add/organization-add.component';
@@ -101,6 +102,11 @@ import { IconComponent } from './views/icon/icon.component';
         useFactory: httpTranslateLoader,
         deps: [HttpClient]
       }
+    }),
+    AgmCoreModule.forRoot({
+      // please get your own API key here:
+      // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en
+      apiKey: 'AIzaSyAdydoW9uSTVMivrrd2fpYCCP-WjxwJyok'
     })
   ],
   declarations: [
@@ -123,7 +129,6 @@ import { IconComponent } from './views/icon/icon.component';
     DocumentDetailComponent,
     OperatorDetailComponent,
     OperatorInviteComponent,
-    StructureAddComponent,
     StructureDetailComponent,
     LogoutComponent,
     OrganizationAddComponent,
@@ -142,6 +147,7 @@ import { IconComponent } from './views/icon/icon.component';
     provide: LocationStrategy,
     useClass: HashLocationStrategy,
   },
+  GeocodeService,
   SlugifyPipe
   //AuthGuardService
   ],
