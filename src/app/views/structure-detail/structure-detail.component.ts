@@ -1,13 +1,13 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SlugifyPipe } from '../../pipes/slugify.pipe';
 import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps'
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
-
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-structure-detail',
@@ -30,6 +30,15 @@ export class StructureDetailComponent implements OnInit {
   structure_categories: any;
   structure_images:any;
   images:any;
+
+  @ViewChild('modalDelete') public modalDelete: ModalDirective;
+
+  @ViewChild('modalError') public modalError: ModalDirective;
+  messageError: any;
+  errorsDescriptions: any;
+
+  @ViewChild('modalException') public modalException: ModalDirective;
+  messageException: any;
 
   status: { isOpen: boolean } = { isOpen: false };
   disabled: boolean = false;
@@ -66,11 +75,11 @@ export class StructureDetailComponent implements OnInit {
     public _d: DomSanitizer,
     private formBuilder: FormBuilder
     ) {
-    this.formData = { name: '',address:'', city:'',latitude:'',longitude:'',category:[],icon:'', email: '', phone: '', phonePrefix: '', website: '', text: []};
+    this.formData = { name: '',address:'', city:'',latitude:'',longitude:'', category:[], icon:'', email: '', phone: '', phonePrefix: '', website: '', text: []};
     this.response = { exit: '', error: '', success: '' };
     this.http_response = null;
     this.current_language = this.translate.getDefaultLang();
-    this.languages = [{ 'name': 'English', 'value':'en'},{ 'name':'Francais','value':'fr' }];
+    this.languages = [{ 'name': 'English', 'value': 'en' }, { 'name':'Français', 'value': 'fr' }];
     this.prefixes = ['+39','+40','+41'];
     this.token = localStorage.getItem('token');
     this.categories = [];
@@ -83,18 +92,23 @@ export class StructureDetailComponent implements OnInit {
     this.structure_images = [];
     this.imgsrc= '';
     this.images = [];
+
+    this.messageError = { title : '', description : '' };
+    this.errorsDescriptions = [];
+
+    this.messageException = { name : '', status : '', statusText : '', message : '' };
   }
 
   ngOnInit(): void {
-    //console.log(this.translate.currentLang);
-    this.getCategories(this.token);
-    //console.log(this.token);
-    //this.getIcons(this.token);
-    this.uploadForm = this.formBuilder.group({
-      profile: ['']
-    });
+    this.getStructure(this.token);
+    this.getImages(this.token);
+    if (this.uuid) {
+      this.getCategories(this.token);
+      this.uploadForm = this.formBuilder.group({
+        profile: ['']
+      });
+    }
   }
-
 
   onFileSelect(event) {
     const file = event.srcElement.files[0];
@@ -156,116 +170,140 @@ export class StructureDetailComponent implements OnInit {
   }
 
   async getCategories(token) {
-    let headers = new HttpHeaders()
-      .set("Authorization", "Bearer "+token)
-    ;
-    let filter = '{"where":{"type":"structures"},"fields":{"idCategory":true,"identifier":true,"type":true},"offset":0,"limit":100,"skip":0,"order":["identifier"]}';
-    this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/categories?filter="+filter, {headers} )
+    // Headers
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + token);
+
+    // Categories filter
+    let filter = ' \
+      { \
+        "where": { \
+          "type": "structures" \
+        }, \
+        "fields": { \
+          "idCategory": true, \
+          "identifier": true, \
+          "type": false \
+        }, \
+        "offset": 0, \
+        "limit": 100, \
+        "skip": 0, \
+        "order": ["identifier"] \
+      }';
+
+    // Get categories list
+    this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/categories?filter=" + filter, {headers} )
     .subscribe(data_cat=> {
       this.categories = data_cat;
 
-      //icons
-      let filter = '{"fields":{"idIcon":true,"name":true,"image":false,"marker":false},"offset":0,"limit":100,"skip":0}';
-      this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/icons/", {headers} )
-      .subscribe(data_icons=> {
-        this.icons = data_icons;
-        //structure
-        this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/structures/"+this.uuid, {headers} )
-        .subscribe(data=> {
-          this.http_response = data;
-          //console.log(data);
+      // Get categories associated to the structure
+      this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid + '/structures-categories', {headers} )
+      .subscribe(structure_data=> {
+        let structure_categories:any = [];
+        structure_categories = structure_data;
 
-          this.formData.name = this.http_response.name;
-          this.formData.address = this.http_response.address;
-          this.formData.city = this.http_response.city;
-
-          this.formData.email = this.http_response.email;
-
-          this.formData.latitude = this.http_response.latitude;
-          this.formData.longitude = this.http_response.longitude;
-
-          this.center = {lat: this.formData.latitude , lng: this.formData.longitude };
-
-          this.markers.push({
-            position: {
-              lat: this.formData.latitude,
-              lng: this.formData.longitude,
-            },
-          })
-
-          this.formData.phone = this.http_response.phoneNumber;
-          this.formData.phonePrefix = this.http_response.phoneNumberPrefix;
-
-          this.formData.website = this.http_response.website;
-          this.formData.icon = this.http_response.idIcon;
-
-          //categories
-          this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/structures/"+this.uuid+'/structures-categories', {headers} )
-          .subscribe(structure_data=> {
-            //console.log(structure_data);
-            let structure_categories:any = [];
-            structure_categories = structure_data;
-
-            this.categories.forEach(element => {
-              let cat_array = [];
-              cat_array['idCategory'] = element.idCategory;
-              cat_array['idStructureCategory'] = '';
-              cat_array['identifier'] = element.identifier;
-              cat_array['value'] = false;
-              structure_categories.forEach(subelement => {
-                if (subelement.idCategory == element.idCategory) {
-                  cat_array['value'] = true;
-                  cat_array['idStructureCategory'] = subelement.idStructureCategory;
-                }
-              });
-              this.structure_categories.push(cat_array);
-            });
-            //console.log(this.structure_categories);
-          }, error => {
-            console.log(error);
+        this.categories.forEach(element => {
+          let cat_array = [];
+          cat_array['idCategory'] = element.idCategory;
+          cat_array['idStructureCategory'] = '';
+          cat_array['identifier'] = element.identifier;
+          cat_array['value'] = false;
+          structure_categories.forEach(subelement => {
+            if (subelement.idCategory == element.idCategory) {
+              cat_array['value'] = true;
+              cat_array['idStructureCategory'] = subelement.idStructureCategory;
+            }
           });
-
-          //text descriptions
-          this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/structures/"+this.uuid+"/structures-languages", {headers} )
-          .subscribe(data_text=> {
-
-            this.text_langs = data_text;
-            this.text_langs.forEach(text_element => {
-                  this.formData.text[text_element.language] = text_element.description;
-                  //console.log(text_element);
-            });
-          }, error => {
-            console.log(error);
-          });
-
-          //images
-          this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/structures/"+this.uuid+"/structures-images", {headers} )
-          .subscribe(data_image=> {
-            this.structure_images = data_image;
-            let x = 0;
-            this.structure_images.forEach(element => {
-              this.structure_images[x].filename = encodeURIComponent(this.structure_images[x].filename);
-              x++;
-            });
-          }, error => {
-            console.log(error);
-          });
-          //
-
-        }, error => {
-          let code = error.status;
-          console.log(error);
-          alert( this.translate.instant('There was a problem, please try again in a few seconds') );
-          this.router.navigateByUrl('structures');
+          this.structure_categories.push(cat_array);
         });
       }, error => {
-        let code = error.status;
-        console.log(error);
+        this.showExceptionMessage(error);
       });
-
     }, error => {
-      let code = error.status;
-      console.log(error);
+      this.showExceptionMessage(error);
+    });
+  }
+
+  async getImages(token) {
+    // Headers
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + token);
+
+    this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid + "/structures-images", {headers} )
+    .subscribe(data_image=> {
+      this.structure_images = data_image;
+      let x = 0;
+      
+      this.structure_images.forEach(element => {
+        this.structure_images[x].filename = encodeURIComponent(this.structure_images[x].filename);
+        x++;
+      });
+    }, error => {
+      this.showExceptionMessage(error);
+    });
+  }
+
+  async getStructure(token) {
+    // Headers
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + token);
+
+    //Icons filter
+    let filter = ' \
+      { \
+        "fields": { \
+          "idIcon": true, \
+          "name": true, \
+          "image": false, \
+          "marker": false \
+        }, \
+        "offset": 0, \
+        "limit": 100, \
+        "skip": 0 \
+        "order": ["name"] \
+      }';
+
+    // Get icons list
+    this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/icons/", {headers} )
+    .subscribe(data_icons=> {
+      this.icons = data_icons;
+
+      // Get structure data
+      this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid, {headers} )
+      .subscribe(data=> {
+        this.http_response = data;
+
+        this.formData.name = this.http_response.name;
+        this.formData.address = this.http_response.address;
+        this.formData.city = this.http_response.city;
+        this.formData.email = this.http_response.email;
+        this.formData.latitude = this.http_response.latitude;
+        this.formData.longitude = this.http_response.longitude;
+        this.formData.phone = this.http_response.phoneNumber;
+        this.formData.phonePrefix = this.http_response.phoneNumberPrefix;
+        this.formData.website = this.http_response.website;
+        this.formData.icon = this.http_response.idIcon;
+
+        this.center = {lat: this.formData.latitude , lng: this.formData.longitude };
+        this.markers.push({
+          position: {
+            lat: this.formData.latitude,
+            lng: this.formData.longitude,
+          },
+        })
+
+        //Description (languages)
+        this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid + "/structures-languages", {headers} )
+        .subscribe(data_text=> {
+          this.text_langs = data_text;
+          this.text_langs.forEach(text_element => {
+            this.formData.text[text_element.language] = text_element.description;
+          });
+        }, error => {
+          this.showExceptionMessage(error);
+        });
+      }, error => {
+        this.showExceptionMessage(error);
+      });
+    }, error => {
+      this.showExceptionMessage(error);
     });
   }
 
@@ -452,4 +490,16 @@ export class StructureDetailComponent implements OnInit {
       });
   }
 
+  //Error message
+  showErrorMessage(title: string, description: string): void {
+    this.messageError.title = title;
+    this.messageError.description = description;
+    this.modalError.show();
+  }
+
+  //Exception message
+  showExceptionMessage(error: HttpErrorResponse) {
+    this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
+    this.modalException.show();
+  }
 }

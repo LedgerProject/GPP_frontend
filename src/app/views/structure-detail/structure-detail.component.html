@@ -3,156 +3,229 @@
     <div class="col-md-12 col-lg-8 mx-auto">
       <div class="card mt-4">
         <div class="card-body">
+          <!-- Back link -->
           <a [routerLink]="['/structures']"><i class="fa fa-chevron-left"></i> {{ 'Back to the structures list' | translate }}</a>
-          <form  #form="ngForm" (ngSubmit)="doUpdate()">
-          <h1 class="mt-4">{{ 'Structures - Edit Structure' | translate }}</h1>
-          <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>
-          <div class="form-group mt-3">
-                  <label>{{ 'Name' | translate }}</label>
-                <div class="input-group mb-3">
-                  <input type="text" name="name" [(ngModel)]="formData.name" id="name" class="form-control" placeholder="{{'Enter the name' | translate }}" required>
-                </div>
-          </div>
-          <div class="form-group">
-              <label>{{ 'Address' | translate }}</label>
-            <div class="input-group mb-3">
-              <input type="text" name="address" [(ngModel)]="formData.address" id="address" class="form-control" placeholder="{{'Enter the address' | translate }}" required>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>{{ 'City' | translate }}</label>
-          <div class="input-group mb-3">
-            <input type="text" name="city" [(ngModel)]="formData.city" id="city" class="form-control" placeholder="{{'Enter the city' | translate }}" required>
-          </div>
-          </div>
-          <div class="form-group">
-            <label>{{ 'Category' | translate }}</label>
-            <div class="input-group mb-3">
-            <div *ngFor="let category of structure_categories; let i = index">
-              <label class="pointer mr-2 chips" [ngClass]="{'selected': category.value }">
-                <input (change)="doCheckCategory(category.idCategory,category.value, category.idStructureCategory)" [checked]="category.value" type="checkbox" [value]="category.idCategory"> {{category.identifier}}
-                <i class="fa fa-close"></i>
-              </label>
-            </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>{{ 'Icon' | translate }}</label>
-          <div class="input-group mb-3">
-            <select name="icon" [(ngModel)]="formData.icon" id="icon" class="form-control form-control-sm" required>
-              <option value="">{{ 'Select' | translate }}</option>
-              <option *ngFor="let icon of icons" value="{{icon.idIcon}}">{{icon.name}}</option>
-            </select>
-          </div>
-          </div>
-          <div class="form-group">
-              <label>{{ 'E-Mail' | translate }}</label>
-            <div class="input-group mb-3">
-              <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Enter the e-mail address' | translate }}" required>
-            </div>
-          </div>
 
-          <div class="form-group">
+          <!-- Form -->
+          <form #form="ngForm" (ngSubmit)="doUpdate()">
+            <!-- Information -->
+            <h1 class="mt-4">
+              <span *ngIf="uuid">{{ 'Structures - Edit Structure' | translate }}</span>
+              <span *ngIf="!uuid">{{ 'Structures - Add Structure' | translate }}</span>
+            </h1>
+            <p>{{ 'In questa sezione è possibile specificare le informazioni della struttura.' | translate }}</p>
+
+            <!-- Identifier -->
+            <div class="form-group md-3">
+              <label>{{ 'Name' | translate }}</label>
+              <input type="text" name="name" [(ngModel)]="formData.name" id="name" class="form-control" placeholder="{{'Enter the structure name' | translate }}" required>
+              <small class="form-text text-muted">{{ 'Specificare il nome della struttura.' | translate }}</small>
+            </div>
+
+            <!-- Address -->
+            <div class="form-group md-3">
+              <label>{{ 'Address' | translate }}</label>
+              <input type="text" name="address" [(ngModel)]="formData.address" id="address" class="form-control" placeholder="{{'Enter the structure address' | translate }}" required>
+              <small class="form-text text-muted">{{ 'Specificare l\'indirizzo della struttura.' | translate }}</small>
+            </div>
+
+            <!-- City -->
+            <div class="form-group md-3">
+              <label>{{ 'City' | translate }}</label>
+              <input type="text" name="city" [(ngModel)]="formData.city" id="city" class="form-control" placeholder="{{'Enter the structure city' | translate }}" required>
+              <small class="form-text text-muted">{{ 'Specificare il comune della struttura.' | translate }}</small>
+            </div>
+
+            <!-- Categories -->
+            <div *ngIf="uuid" class="form-group md-3">
+              <label>{{ 'Categories' | translate }}</label>
+              <div *ngFor="let category of structure_categories; let i = index">
+                <label class="pointer mr-2 chips" [ngClass]="{'selected': category.value }">
+                  <input (change)="doCheckCategory(category.idCategory,category.value, category.idStructureCategory)" [checked]="category.value" type="checkbox" [value]="category.idCategory"> {{category.identifier}}
+                  <i class="fa fa-close"></i>
+                </label>
+              </div>
+              <small class="form-text text-muted">{{ 'Selezionare le categorie da associare alla struttura.' | translate }}</small>
+            </div>
+
+            <!-- Icon -->
+            <div class="form-group md-3">
+              <label>{{ 'Icon' | translate }}</label>
+              <select name="icon" [(ngModel)]="formData.icon" id="icon" class="form-control form-control-sm" required>
+                <option value="">{{ 'Select' | translate }}</option>
+                <option *ngFor="let icon of icons" value="{{icon.idIcon}}">{{icon.name}}</option>
+              </select>
+              <small class="form-text text-muted">{{ 'Selezionare l\'icona da associare alla struttura.' | translate }}</small>
+            </div>
+
+            <!-- E-Mail -->
+            <div class="form-group md-3">
+              <label>{{ 'E-Mail' | translate }}</label>
+              <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Enter the structure e-mail address' | translate }}" required>
+              <small class="form-text text-muted">{{ 'Specificare l\'indirizzo e-mail della struttura.' | translate }}</small>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-group md-3">
               <label>{{ 'Phone Number' | translate }}</label>
               <div class="row">
                 <div class="col-3">
-                <div class="input-group mb-3">
-                <select name="phonePrefix" [(ngModel)]="formData.phonePrefix" id="phonePrefix" class="form-control" required>
-                  <option value="">{{ 'Select' | translate }}</option>
-                  <option *ngFor="let prefix of prefixes" value="{{prefix}}">{{prefix}}</option>
-                </select>
-                </div>
+                  <select name="phonePrefix" [(ngModel)]="formData.phonePrefix" id="phonePrefix" class="form-control" required>
+                    <option value="">{{ 'Select prefix' | translate }}</option>
+                    <option *ngFor="let prefix of prefixes" value="{{prefix}}">{{prefix}}</option>
+                  </select>
                 </div>
                 <div class="col-9">
-                <div class="input-group mb-3">
-                  <input type="tel" name="phone" [(ngModel)]="formData.phone" id="phone" class="form-control" placeholder="{{'Enter the phone number' | translate }}" required>
-                </div>
+                  <input type="tel" name="phone" [(ngModel)]="formData.phone" id="phone" class="form-control" placeholder="{{'Enter the structure phone number' | translate }}" required>
                 </div>
               </div>
-          </div>
+              <small class="form-text text-muted">{{ 'Specificare il numero di telefono della struttura.' | translate }}</small>
+            </div>
 
-          <div class="form-group">
+            <!-- Website -->
+            <div class="form-group md-3">
               <label>{{ 'Website' | translate }}</label>
-            <div class="input-group mb-3">
-              <input type="text" name="website" [(ngModel)]="formData.website" id="website" class="form-control" placeholder="{{'Enter the website' | translate }}" required>
+              <input type="text" name="website" [(ngModel)]="formData.website" id="website" class="form-control" placeholder="{{'Enter the structure website' | translate }}" required>
+              <small class="form-text text-muted">{{ 'Specificare il sito web della struttura (ricorda di aggiungere anche http o https).' | translate }}</small>
+            </div>
+
+            
+            <div class="row">
+              <div class="col-md-6">
+                <!-- Change language -->
+                <div dropdown (onShown)="onShown()" (onHidden)="onHidden()" (isOpenChange)="isOpenChange()" style="position:relative">
+                  <small>
+                    <a href dropdownToggle (click)="false">{{ 'Change language' | translate }}</a>
+                    <ul *dropdownMenu class="dropdown-menu">
+                      <li *ngFor="let language of languages">
+                        <a class="dropdown-item btn pointer" role="button"  (click)="doSwitchTextarea(language.value)">{{language.name}}</a>
+                      </li>
+                    </ul>
+                  </small>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                  <div *ngFor="let language of languages; let i = index">
+                    <label [hidden]="current_language != language.value">{{ 'Description' | translate }} ({{ language.name }})</label>
+                    <textarea [hidden]="current_language != language.value" name="text[{{language.value}}]" [(ngModel)]="formData.text[language.value]" class="form-control" placeholder="{{'Enter a brief description about the structure' | translate }}" rows="5" required></textarea>
+                    <small [hidden]="current_language != language.value" class="form-text text-muted">{{ 'Inserire una breve descrizione sulla struttura.' | translate }}</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <!-- Map -->
+                <google-map height="200px" width="100%" (mapClick)="doMarker($event)" [zoom]="zoom" [center]="center" [options]="options">
+                  <map-marker *ngFor="let marker of markers" [position]="marker.position" [label]="marker.label" [title]="marker.title" [options]="marker.options"></map-marker>
+                </google-map>
+                <div class="row">
+                  <div class="col-sm-6"><small> {{ 'Latitude:' | translate }} {{formData.latitude}}</small></div>
+                  <div class="col-sm-6"><small> {{ 'Longitude:' | translate }} {{formData.longitude}}</small></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Delete and save buttons-->
+            <div class="row">
+              <div class="col-6 text-left">
+                <button [hidden]="!uuid" type="button" class="btn btn-danger rounded-0" (click)="modalDelete.show()">{{ 'Delete' | translate}}</button>
+              </div>
+              <div class="col-6 text-right">
+                <button type="submit" class="btn btn-primary rounded-0">{{ 'Save' | translate}}</button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Gallery -->
+          <div *ngIf="uuid" class="row">
+            <div class="col-sm-12">
+              <div>{{ 'Gallery' | translate}}</div>
+              <div class="gallery-container">
+                <div *ngIf="imgsrc" class="gallery-image p-1" [ngStyle]="{'background': 'url(' + _d.bypassSecurityTrustUrl(imgsrc) + ') no-repeat 0 0 / cover'}"></div>
+                <div *ngFor="let image of structure_images" class="gallery-image p-1" [ngStyle]="{'background': 'url(\'' + userdata.mainUrlImages + '/galleries/structures/' + image.folder + '/'+image.filename+ '\') no-repeat 0 0 / cover'}">
+                  <i class="fa fa-close pointer text-white" (click)="doDeleteImage(image.idStructureImage)"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 mt-3">
+              <div class="text-right">
+                <form [formGroup] = "uploadForm" (ngSubmit)="onSubmit()">
+                  <label for="file-upload" class="custom-file-upload btn btn-primary rounded-0 pointer">
+                    {{ 'Add Image to Gallery' | translate }}
+                  </label>
+                  <input name="profile" id="file-upload" type="file"  (change)="onFileSelect($event)"/>
+                  <button type="submit" id="upload-submit" class="btn btn-primary rounded-0">{{ 'Save' | translate}}</button>
+                </form>
+              </div>
             </div>
           </div>
-
-<div class="row">
-  <div class="col-md-6">
-
-      <div dropdown (onShown)="onShown()" (onHidden)="onHidden()" (isOpenChange)="isOpenChange()" style="position:relative"><small>
-        <a href dropdownToggle (click)="false">{{ 'Change language' | translate }}</a>
-        <ul *dropdownMenu class="dropdown-menu">
-          <li *ngFor="let language of languages">
-            <a class="dropdown-item btn pointer" role="button"  (click)="doSwitchTextarea(language.value)">{{language.name}}</a>
-          </li>
-        </ul></small>
-      </div>
-      <div class="form-group">
-        <div *ngFor="let language of languages; let i = index">
-        <label [hidden]="current_language != language.value">{{ 'Description in '+language.name | translate }}</label>
-        <div class="input-group mb-3" [hidden]="current_language != language.value">
-          <textarea name="text[{{language.value}}]" [(ngModel)]="formData.text[language.value]" class="form-control" placeholder="{{'Enter a brief description about your structure' | translate }}" rows="5" required></textarea>
-        </div>
         </div>
       </div>
-  </div>
-  <div class="col-md-6">
-    <google-map height="200px" width="100%" (mapClick)="doMarker($event)" [zoom]="zoom" [center]="center" [options]="options">
-      <map-marker
-      *ngFor="let marker of markers"
-      [position]="marker.position"
-      [label]="marker.label"
-      [title]="marker.title"
-      [options]="marker.options"
-    >
-    </map-marker>
-    </google-map>
-    <div class="row">
-      <div class="col-sm-6"><small>Latitude: {{formData.latitude}}</small></div>
-      <div class="col-sm-6"><small>Latitude: {{formData.longitude}}</small></div>
     </div>
   </div>
 </div>
-<div class="row mb-3">
-  <div class="col-12 text-right">
-    <button type="submit" class="btn btn-primary rounded-0">{{ 'SAVE' | translate}}</button>
-  </div>
 
-</div>
-</form>
-<div class="row mt-3" *ngIf="uuid">
-  <div class="col-12 text-right">
-    <button type="button" class="btn btn-danger rounded-0" (click)="doDelete(uuid)">{{ 'DELETE' | translate}}</button>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-sm-12">
-    <div>Gallery</div>
-    <div class="gallery-container">
-      <div *ngIf="imgsrc" class="gallery-image p-1" [ngStyle]="{'background': 'url(' + _d.bypassSecurityTrustUrl(imgsrc) + ') no-repeat 0 0 / cover'}"></div>
-      <div *ngFor="let image of structure_images" class="gallery-image p-1" [ngStyle]="{'background': 'url(\'' +userdata.mainUrlImages+'/galleries/structures/'+image.folder+'/'+image.filename+ '\') no-repeat 0 0 / cover'}">
-        <i class="fa fa-close pointer text-white" (click)="doDeleteImage(image.idStructureImage)"></i>
+<!-- Modal delete message -->
+<div bsModal #modalDelete="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Eliminazione struttura' | translate }}</h4>
+        <button type="button" class="close" (click)="modalDelete.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ 'Sei sicuro di voler eliminare la struttura corrente?' | translate }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="doDelete(uuid)">{{ 'Delete' | translate }}</button>
+        <button type="button" class="btn btn-secondary" (click)="modalDelete.hide()">{{ 'Cancel' | translate }}</button>
       </div>
     </div>
   </div>
-  <div class="col-sm-12 mt-3">
-  <div class="text-right">
-    <form [formGroup] = "uploadForm" (ngSubmit)="onSubmit()">
-    <label for="file-upload" class="custom-file-upload btn btn-primary rounded-0 pointer">
-      {{ 'ADD IMAGE TO GALLERY' | translate }}
-    </label>
-    <input name="profile" id="file-upload" type="file"  (change)="onFileSelect($event)"/>
-    <button type="submit" id="upload-submit" class="btn btn-primary rounded-0">{{ 'SAVE' | translate}}</button>
-    </form>
-  </div>
+</div>
+
+<!-- Modal entering data error -->
+<div bsModal #modalError="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalErrorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">{{ messageError.title }}</h4>
+              <button type="button" class="close" (click)="modalError.hide()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <p>{{ messageError.description }}</p>
+              <ul>
+                  <li *ngFor="let errorDescription of errorsDescriptions">{{ errorDescription }}</li>
+              </ul>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modalError.hide()">{{ 'Close' | translate }}</button>
+          </div>
+      </div>
   </div>
 </div>
 
-
-        </div>
+<!-- Modal exception error -->
+<div bsModal #modalException="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExceptionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageException.name }}</h4>
+        <button type="button" class="close" (click)="modalException.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><b>Status: </b>{{ messageException.statusText }} ({{ messageException.status }})</p>
+        <p><b>Description: </b>{{ messageException.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
       </div>
     </div>
   </div>

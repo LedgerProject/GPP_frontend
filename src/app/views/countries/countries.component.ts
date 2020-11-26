@@ -1,39 +1,43 @@
-import { LowerCasePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-countries',
   templateUrl: './countries.component.html',
   styleUrls: ['./countries.component.css']
 })
+
 export class CountriesComponent implements OnInit {
-  confirmed_array: any;
   formData: any;
   response:any;
   http_response:any;
   show_countries:any;
   all_countries:any;
   token: any;
-  idOrganization:any;
 
-  constructor (private router: Router,private http:HttpClient,public userdata: UserdataService,public translate: TranslateService) {
+  @ViewChild('modalException') public modalException: ModalDirective;
+  messageException: any;
+
+  constructor (private router: Router, private http:HttpClient, public userdata: UserdataService, public translate: TranslateService) {
     this.formData = { search: ''};
     this.response = { exit: '', error: '', success: '' };
     this.http_response = null;
     this.show_countries = [];
     this.all_countries = [];
-    this.confirmed_array = { '':'','10': 'Confirmed', '-1': 'Non Confirmed','1':'Waiting'}
     this.token = localStorage.getItem('token');
+
+    this.messageException = { name : '', status : '', statusText : '', message : ''};
   }
 
   ngOnInit(): void {
     this.doCountries();
   }
 
+  // Countries search (onKeyUp)
   async onKey() {
     let search = this.formData.search;
 
@@ -51,61 +55,60 @@ export class CountriesComponent implements OnInit {
     }
   }
 
+  // Open country details
   async doOpen(id) {
-   this.router.navigateByUrl('country-details/'+id);
+    this.router.navigateByUrl('country-details/' + id);
   }
 
+  // Countries list
   async doCountries() {
-      let postParams = {
-        //id: id
-      }
-      let headers = new HttpHeaders()
-      .set("Authorization", "Bearer "+this.token)
-      ;
-      this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/countries", {headers})
-      .subscribe(data=> {
-        //console.log(data);
-        this.http_response = data;
-        this.response.exit = 1000;
-        let countries: any = [];
-        countries = this.http_response;
-        countries.forEach(element => {
-          let country: any = {};
-          country.idCountry = element.idCountry;
-          country.identifier = element.identifier;
-          country.name = '';
-          country.completed = false;
+    // Headers
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+    
+    // Filters
+    let filter = ' \
+      { \
+        "fields": { \
+          "idCountry": true, \
+          "identifier": true, \
+          "completed": true \
+        }, \
+        "offset": 0, \
+        "limit": 100, \
+        "skip": 0, \
+        "order": [ \
+          "identifier" \
+        ] \
+      }';
 
-          this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/countries/"+country.idCountry, {headers})
-          .subscribe(completed_data=> {
-              let completed: any = completed_data;
-              if (completed_data) {
-                country.completed = completed.completed;
-              }
-          });
+    // HTTP Request
+    this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/countries?filter=" + filter, {headers})
+    .subscribe(data => {
+      this.http_response = data;
+      this.response.exit = 1000;
+      
+      let countries: any = [];
+      countries = this.http_response;
+      countries.forEach(element => {
+        let country: any = {};
+        country.idCountry = element.idCountry;
+        country.identifier = element.identifier;
+        country.completed = element.completed;
 
-          this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/countries/"+country.idCountry+"/countries-languages", {headers})
-          .subscribe(country_data=> {
-              let country: any = country_data;
-              if (country) {
-                //console.log(country);
-              }
-          });
-
-
-          this.all_countries.push(country);
-          this.show_countries.push(country);
-        });
-        //this.all_countries = this.http_response;
-        //this.show_countries = this.all_countries;
-        this.response.error = '';
-        this.response.success = 'Operation Completed!';
-      }, error => {
-        console.log(error);
-        alert(error);
+        this.all_countries.push(country);
+        this.show_countries.push(country);
       });
-
+      
+      this.response.error = '';
+      this.response.success = 'Operation Completed!';
+    }, error => {
+      this.showExceptionMessage(error);
+    });
   }
 
-
+  //Exception message
+  showExceptionMessage(error: HttpErrorResponse) {
+    this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
+    this.modalException.show();
+  }
 }

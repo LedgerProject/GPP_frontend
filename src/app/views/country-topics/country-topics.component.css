@@ -1,0 +1,16 @@
+label {
+    display: inline-block;
+    margin-bottom: 0.2rem !important;
+}
+
+.info-field {
+    margin-top: 0px;
+    padding-top: 0px;
+    position: absolute;
+    margin-top: -16px;
+}
+
+hr {
+    margin-top:35px;
+    margin-bottom: 10px;
+}

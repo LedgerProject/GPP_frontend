@@ -3,39 +3,66 @@
     <div class="col-md-12 col-lg-8 mx-auto">
       <div class="card mt-4">
         <div class="card-body">
-
+          <!-- Information -->
           <h1 class="mt-4">{{ 'Countries - List' | translate }}</h1>
-          <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>
+          <p>{{ 'In questa sezione è possibile gestire le nazioni e specificare per ognuna di esse dei topic da visualizzare nell\'applicazione.' | translate }}</p>
+          <p>{{ 'Seleziona \'Add Country\' per aggiungere una nuova nazione, oppure selezionane una dall\'elenco per modificarla.' | translate }}</p>
+          <p>{{ 'Per inserire nuovi topic relativi ad una nazione, seleziona il pulsante \'Topics\' a fianco alla nazione da gestire.' | translate }}</p>
+          
+          <!-- Search form -->
           <form #form="ngForm">
             <div class="input-group mb-3">
                 <input type="text" (keyup)="onKey()" class="form-control" name="search" [(ngModel)]="formData.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
                 <div class="input-group-append">
-                  <button class="btn btn-primary rounded-0" type="submit">{{ 'SEARCH' | translate }}</button>
+                  <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
                 </div>
-                <button class="btn btn-primary ml-3 rounded-0" type="button" [routerLink]="['/country-details']">{{ 'ADD COUNTRY' | translate }}</button>
+                <button class="btn btn-primary ml-3 rounded-0" type="button" [routerLink]="['/country-details']">{{ 'Add Country' | translate }}</button>
             </div>
           </form>
+
+          <!-- Countries list -->
           <div class="table-responsive">
-          <table class="table table-hover" *ngIf='show_countries.length'>
-            <thead>
-              <th>{{ 'NAME' | translate }}</th>
-              <th class="text-center">{{ 'COMPLETE' | translate }}</th>
-              <th class="text-right">{{ '' | translate }}</th>
-            </thead>
-            <tbody>
-              <tr class="pointer" *ngFor="let country of show_countries" (click)="doOpen(country.idCountry)">
-                <td>{{country.name || country.identifier}}</td>
-                <td class="text-center">
-                  <span *ngIf="country.completed == false" class="text-danger"><i class="fa fa-remove"></i></span>
-                  <span *ngIf="country.completed == true" class="text-success"><i class="fa fa-check"></i></span>
-                </td>
-                <td class="text-right"><a class="btn btn-primary rounded-0" [routerLink]="['/country-topics/'+country.idCountry]">{{ 'TOPICS' | translate }}</a> </td>
-              </tr>
-            </tbody>
-          </table>
+            <table class="table table-hover" *ngIf='show_countries.length'>
+              <thead>
+                <th>{{ 'Country' | translate }}</th>
+                <th class="text-center">{{ 'Completed' | translate }}</th>
+                <th class="text-right">{{ 'Topics' | translate }}</th>
+              </thead>
+              <tbody>
+                <tr class="pointer" *ngFor="let country of show_countries" (click)="doOpen(country.idCountry)">
+                  <td>{{ country.identifier }}</td>
+                  <td class="text-center">
+                    <span *ngIf="country.completed == false" class="text-danger"><i class="fa fa-remove"></i></span>
+                    <span *ngIf="country.completed == true" class="text-success"><i class="fa fa-check"></i></span>
+                  </td>
+                  <td class="text-right"><a class="btn btn-primary btn-sm btn-extra-sm" [routerLink]="['/country-topics/'+country.idCountry]">{{ 'Topics' | translate }}</a></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <div class="text-danger" *ngIf="!show_countries.length"></div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal exception error -->
+<div bsModal #modalException="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExceptionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageException.name }}</h4>
+        <button type="button" class="close" (click)="modalException.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><b>Status: </b>{{ messageException.statusText }} ({{ messageException.status }})</p>
+        <p><b>Description: </b>{{ messageException.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
       </div>
     </div>
   </div>
