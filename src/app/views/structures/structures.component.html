@@ -15,7 +15,7 @@
                 <div class="input-group-append">
                   <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
                 </div>
-                <button class="btn btn-primary ml-3 rounded-0" type="button" [routerLink]="['/structure-add']">{{ 'Add Structure' | translate }}</button>
+                <button class="btn btn-primary ml-3 rounded-0" type="button" [routerLink]="['/structure-details']">{{ 'Add Structure' | translate }}</button>
             </div>
           </form>
 
@@ -34,7 +34,7 @@
                   <td>{{structure.address}} - {{structure.city}}</td>
                   <td>{{structure.email}}</td>
                   <td class="text-center">
-                    <img [src]="structure.iconimage">
+                    <img class="icon-list" [src]="structure.iconimage">
                   </td>
                 </tr>
               </tbody>

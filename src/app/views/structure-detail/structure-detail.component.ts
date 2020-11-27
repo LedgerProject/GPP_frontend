@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
@@ -8,6 +8,8 @@ import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps'
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { GeocodeService } from '../../services/geocode.service';
+import { Location } from '../../services/location-model';
 
 @Component({
   selector: 'app-structure-detail',
@@ -30,8 +32,15 @@ export class StructureDetailComponent implements OnInit {
   structure_categories: any;
   structure_images:any;
   images:any;
+  address = 'Napoli';
+  location: Location;
+  loading: boolean;
+  idStructureImageDelete: any;
+
+  @ViewChild('modalInfo') public modalInfo: ModalDirective;
 
   @ViewChild('modalDelete') public modalDelete: ModalDirective;
+  @ViewChild('modalDeleteImage') public modalDeleteImage: ModalDirective;
 
   @ViewChild('modalError') public modalError: ModalDirective;
   messageError: any;
@@ -48,23 +57,6 @@ export class StructureDetailComponent implements OnInit {
   imgsrc: any;
   uploadForm: FormGroup;
 
-  //Google Map
-  @ViewChild(GoogleMap, { static: false }) map: GoogleMap
-  @ViewChild(MapInfoWindow, { static: false }) info: MapInfoWindow
-  zoom = 14;
-  center: {lat: 0, lng: 0};
-  options: google.maps.MapOptions = {
-    //mapTypeId: 'hybrid',
-    //zoomControl: false,
-    //scrollwheel: false,
-    //disableDoubleClickZoom: true,
-    //maxZoom: 15,
-    //minZoom: 8
-  }
-  markers = [];
-  infoContent = '';
-  //end
-
   constructor (
     private router: Router,
     private _Activatedroute:ActivatedRoute,
@@ -73,14 +65,16 @@ export class StructureDetailComponent implements OnInit {
     public userdata: UserdataService,
     private slugifyPipe: SlugifyPipe,
     public _d: DomSanitizer,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private geocodeService: GeocodeService,
+    private ref: ChangeDetectorRef
     ) {
     this.formData = { name: '',address:'', city:'',latitude:'',longitude:'', category:[], icon:'', email: '', phone: '', phonePrefix: '', website: '', text: []};
     this.response = { exit: '', error: '', success: '' };
     this.http_response = null;
     this.current_language = this.translate.getDefaultLang();
-    this.languages = [{ 'name': 'English', 'value': 'en' }, { 'name':'Français', 'value': 'fr' }];
-    this.prefixes = ['+39','+40','+41'];
+    this.languages = [{ 'name': 'English', 'value': 'en' }, { 'name': 'Français', 'value': 'fr' }];
+    this.prefixes = ['+1', '+1 242', '+1 246', '+1 264', '+1 268', '+1 284', '+1 345', '+1 441', '+1 473', '+1 649', '+1 664', '+1 721', '+1 758', '+1 767', '+1 784', '+1 787', '+1 809', '+1 829', '+1 849', '+1 868', '+1 869', '+1 876', '+20', '+210', '+211', '+212', '+213', '+214', '+215', '+216', '+217', '+218', '+219', '+220', '+221', '+222', '+223', '+224', '+225', '+226', '+227', '+228', '+229', '+230', '+231', '+232', '+233', '+234', '+235', '+236', '+237', '+238', '+239', '+240', '+241', '+242', '+243', '+244', '+245', '+246', '+247', '+248', '+249', '+250', '+251', '+252', '+253', '+254', '+255', '+256', '+257', '+258', '+259', '+260', '+261', '+262', '+263', '+264', '+265', '+266', '+267', '+268', '+269', '+27', '+290', '+291', '+297', '+298', '+299', '+30', '+31', '+32', '+33', '+34', '+350', '+351', '+352', '+353', '+354', '+355', '+356', '+357', '+358', '+359', '+36', '+370', '+371', '+372', '+373', '+374', '+375', '+376', '+377', '+378', '+379', '+380', '+381', '+382', '+383', '+385', '+386', '+387', '+388', '+389', '+39', '+40', '+41', '+420', '+421', '+423', '+43', '+44', '+45', '+46', '+47', '+48', '+49', '+500', '+501', '+502', '+503', '+504', '+505', '+506', '+507', '+508', '+509', '+51', '+52', '+53', '+54', '+55', '+56', '+57', '+58', '+590', '+591', '+592', '+593', '+594', '+595', '+596', '+597', '+598', '+599 3', '+599 4', '+599 7', '+599 9', '+60', '+61', '+62', '+63', '+64', '+65', '+66', '+670', '+672', '+673', '+674', '+675', '+676', '+677', '+678', '+679', '+680', '+681', '+682', '+683', '+685', '+686', '+687', '+688', '+689', '+690', '+691', '+692', '+7', '+800', '+808', '+81', '+82', '+84', '+850', '+852', '+853', '+855', '+856', '+86', '+880', '+886', '+90', '+91', '+92', '+93', '+94', '+95', '+960', '+961', '+962', '+963', '+964', '+965', '+966', '+967', '+968', '+970', '+971', '+972', '+973', '+974', '+975', '+976', '+977', '+98', '+992', '+993', '+994', '+995', '+996', '+998'];
     this.token = localStorage.getItem('token');
     this.categories = [];
     this.icons = [];
@@ -93,6 +87,8 @@ export class StructureDetailComponent implements OnInit {
     this.imgsrc= '';
     this.images = [];
 
+    this.idStructureImageDelete = '';
+
     this.messageError = { title : '', description : '' };
     this.errorsDescriptions = [];
 
@@ -100,73 +96,89 @@ export class StructureDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getStructure(this.token);
-    this.getImages(this.token);
+    this.getIconsList(this.token);
     if (this.uuid) {
       this.getCategories(this.token);
+      this.getImages(this.token);
       this.uploadForm = this.formBuilder.group({
         profile: ['']
       });
     }
   }
 
-  onFileSelect(event) {
-    const file = event.srcElement.files[0];
-    this.imgsrc = window.URL.createObjectURL(file);
-    if (event.target.files.length > 0) {
-      const file = event.target.files[0];
-      this.uploadForm.get('profile').setValue(file);
-      let element:HTMLElement = document.getElementById('upload-submit') as HTMLElement;
-      element.click();
-    }
-  }
+  async getIconsList(token) {
+    // Headers
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + token);
 
-  onSubmit() {
-    const formData = new FormData();
-    formData.append('file', this.uploadForm.get('profile').value);
-    let headers = new HttpHeaders()
-      .set("Authorization", "Bearer "+this.token)
-    ;
-    this.http.post(this.userdata.mainUrl+this.userdata.mainPort+"/structures-images/"+this.uuid, formData, {headers})
-    .subscribe(res => {
-      this.imgsrc = '';
-      this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/structures/"+this.uuid+"/structures-images", {headers} )
-      .subscribe(data_image=> {
-        this.structure_images = data_image;
-        let x = 0;
-        this.structure_images.forEach(element => {
-          this.structure_images[x].filename = encodeURIComponent(this.structure_images[x].filename);
-          x++;
-        });
+    //Icons filter
+    let filter = ' \
+      { \
+        "fields": { \
+          "idIcon": true, \
+          "name": true, \
+          "image": false, \
+          "marker": false \
+        }, \
+        "offset": 0, \
+        "limit": 100, \
+        "skip": 0, \
+        "order": ["name"] \
+      }';
 
-      }, error => {
+    // Get icons list
+    this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/icons?filter=" + filter, {headers} )
+    .subscribe(data_icons=> {
+      this.icons = data_icons;
 
-      });
-
-    },error => {
-      let code = error.status;
-      if (code == 409) {
-        alert( this.translate.instant('Sorry, File already exists') );
-        this.imgsrc = '';
-      } else if (code == 400) {
-        alert( this.translate.instant('Please select an image/jpeg file'));
-        this.imgsrc = '';
+      if (this.uuid) {
+        this.getStructure(token);
       }
-      console.log(error);
+    }, error => {
+      this.showExceptionMessage(error);
     });
   }
 
-  doMarker(event: google.maps.MouseEvent) {
-    this.markers = [];
-    this.formData.latitude = event.latLng.lat();
-    this.formData.longitude = event.latLng.lng();
+  async getStructure(token) {
+    // Headers
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + token);
 
-    this.markers.push({
-      position: {
-        lat: this.formData.latitude,
-        lng: this.formData.longitude,
-      },
-    })
+    // Get structure data
+    if (this.uuid) {
+      this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid, {headers} )
+      .subscribe(data=> {
+        this.http_response = data;
+
+        this.formData.name = this.http_response.name;
+        this.formData.address = this.http_response.address;
+        this.formData.city = this.http_response.city;
+        this.formData.email = this.http_response.email;
+        this.formData.latitude = this.http_response.latitude;
+        this.formData.longitude = this.http_response.longitude;
+        this.formData.phone = this.http_response.phoneNumber;
+        this.formData.phonePrefix = this.http_response.phoneNumberPrefix;
+        this.formData.website = this.http_response.website;
+        this.formData.icon = this.http_response.idIcon;
+
+        this.location = { lat: this.http_response.latitude, lng: this.http_response.longitude };
+
+        //Description (languages)
+        this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid + "/structures-languages", {headers} )
+        .subscribe(data_text=> {
+          this.text_langs = data_text;
+          this.text_langs.forEach(text_element => {
+            let desc = "";
+            if (text_element.description) {
+              desc = text_element.description;
+            }
+            this.formData.text[text_element.language] = desc;
+          });
+        }, error => {
+          this.showExceptionMessage(error);
+        });
+      }, error => {
+        this.showExceptionMessage(error);
+      });
+    }
   }
 
   async getCategories(token) {
@@ -241,139 +253,132 @@ export class StructureDetailComponent implements OnInit {
     });
   }
 
-  async getStructure(token) {
-    // Headers
-    let headers = new HttpHeaders().set("Authorization", "Bearer " + token);
+  async doSave() {
+    this.errorsDescriptions = [];
+  
+    //Check if entered the name
+    if (!this.formData.name) {
+      this.errorsDescriptions.push(this.translate.instant('Please enter the structure name'));
+    }
+  
+    //Check if entered the address
+    if (!this.formData.address) {
+      this.errorsDescriptions.push(this.translate.instant('Please enter the structure address'));
+    }
+  
+    //Check if entered the city
+    if (!this.formData.address) {
+      this.errorsDescriptions.push(this.translate.instant('Please enter the structure city'));
+    }
+  
+    //Check if selected the map position
+    if (!this.formData.latitude || !this.formData.longitude) {
+      this.errorsDescriptions.push(this.translate.instant('Please set the structure location on the map'));
+    }
+  
+    //Check if entered the icon
+    if (!this.formData.icon) {
+      this.errorsDescriptions.push(this.translate.instant('Please select the structure icon'));
+    }
+  
+    if (this.errorsDescriptions.length === 0) {
+      if (!this.formData.latitude) {
+        this.formData.latitude = 0;
+      }
+      if (!this.formData.longitude) {
+        this.formData.longitude = 0;
+      }
+  
+      let postParams:any = {
+        idOrganization: this.idOrganization,
+        alias: this.slugifyPipe.transform(this.formData.name),
+        name: this.formData.name,
+        address: this.formData.address,
+        city: this.formData.city,
+        latitude: this.formData.latitude,
+        longitude: this.formData.longitude,
+        email: this.formData.email,
+        phoneNumberPrefix: this.formData.phonePrefix,
+        phoneNumber: this.formData.phone,
+        idIcon: this.formData.icon,
+        website: this.formData.website,
+      };
+  
+      // If authenticated as gppOperator (that have no organizations)
+      if (!this.idOrganization) {
+        delete postParams.idOrganization;
+      }
+  
+      let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+  
+      //Check if update or insert
+      if (this.uuid) {
+        //Update the structure
+        this.http.patch(this.userdata.mainUrl+this.userdata.mainPort+"/structures/"+this.uuid,postParams, {headers} )
+        .subscribe(data=> {
+          this.doSaveLanguages();
 
-    //Icons filter
-    let filter = ' \
-      { \
-        "fields": { \
-          "idIcon": true, \
-          "name": true, \
-          "image": false, \
-          "marker": false \
-        }, \
-        "offset": 0, \
-        "limit": 100, \
-        "skip": 0 \
-        "order": ["name"] \
-      }';
-
-    // Get icons list
-    this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/icons/", {headers} )
-    .subscribe(data_icons=> {
-      this.icons = data_icons;
-
-      // Get structure data
-      this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid, {headers} )
-      .subscribe(data=> {
-        this.http_response = data;
-
-        this.formData.name = this.http_response.name;
-        this.formData.address = this.http_response.address;
-        this.formData.city = this.http_response.city;
-        this.formData.email = this.http_response.email;
-        this.formData.latitude = this.http_response.latitude;
-        this.formData.longitude = this.http_response.longitude;
-        this.formData.phone = this.http_response.phoneNumber;
-        this.formData.phonePrefix = this.http_response.phoneNumberPrefix;
-        this.formData.website = this.http_response.website;
-        this.formData.icon = this.http_response.idIcon;
-
-        this.center = {lat: this.formData.latitude , lng: this.formData.longitude };
-        this.markers.push({
-          position: {
-            lat: this.formData.latitude,
-            lng: this.formData.longitude,
-          },
-        })
-
-        //Description (languages)
-        this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid + "/structures-languages", {headers} )
-        .subscribe(data_text=> {
-          this.text_langs = data_text;
-          this.text_langs.forEach(text_element => {
-            this.formData.text[text_element.language] = text_element.description;
-          });
+          this.modalInfo.show();
         }, error => {
           this.showExceptionMessage(error);
         });
+      } else {
+        //Insert the structure
+        this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/structures", postParams, {headers} )
+        .subscribe(data=> {
+          this.http_response = data;
+          this.uuid = this.http_response.idStructure;
+  
+          this.doSaveLanguages();
+  
+          this.router.navigateByUrl('structure-details/' + this.uuid);
+        }, error => {
+          this.showExceptionMessage(error);
+        });
+      }
+    } else {
+      this.showErrorMessage(
+        this.translate.instant('Missing data'),
+        this.translate.instant('The data entered is incorrect or missing.')
+      );
+    }
+  }
+  
+  doSaveLanguages() {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+  
+    //Update the structure languages
+    this.languages.forEach(element => {
+      let subpostParams = {
+        idStructure: this.uuid,
+        language: element.value,
+        description: this.formData.text[element.value]
+      };
+  
+      this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/structures-languages", subpostParams, {headers} )
+      .subscribe(subdata=> {
       }, error => {
         this.showExceptionMessage(error);
       });
+    });
+  }
+
+  async doSwitchTextarea(lang) {
+    this.current_language = lang;
+  }
+
+  doDelete(idStructure) {
+    let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
+
+    this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + idStructure, {headers} )
+    .subscribe(data=> {
+      this.router.navigateByUrl('/structures');
     }, error => {
       this.showExceptionMessage(error);
     });
   }
-
-  async doUpdate() {
-    if (!this.formData.name) {
-      alert( this.translate.instant('Please, enter the Name') );
-    } else if (!this.formData.address) {
-      alert( this.translate.instant('Please, enter the Address') );
-    } else if (!this.formData.city) {
-      alert( this.translate.instant('Please, enter the City') );
-    } else if (!this.formData.latitude || !this.formData.longitude) {
-      alert( this.translate.instant('Please, set the location on the map') );
-    } else if (!this.formData.email) {
-      alert( this.translate.instant('Please, enter the Email address') );
-    } else if (!this.formData.icon) {
-      alert( this.translate.instant('Please, select the Icon') );
-    } else {
-    let postParams = {
-      idStructure: this.uuid,
-      idOrganization: this.idOrganization,
-      alias: this.slugifyPipe.transform(this.formData.name),
-      name: this.formData.name,
-      address: this.formData.address,
-      city: this.formData.city,
-      latitude: this.formData.latitude,
-      longitude: this.formData.longitude,
-      email: this.formData.email,
-      phoneNumberPrefix: this.formData.phonePrefix,
-      phoneNumber: this.formData.phone,
-      idIcon: this.formData.icon,
-      website: this.formData.website,
-
-    };
-
-      let headers = new HttpHeaders()
-        .set("Authorization", "Bearer "+this.token)
-      ;
-      this.http.patch(this.userdata.mainUrl+this.userdata.mainPort+"/structures/"+this.uuid,postParams, {headers} )
-      .subscribe(data=> {
-        this.http_response = data;
-
-        this.languages.forEach(element => {
-          let subpostParams = {
-            idStructure: this.uuid,
-            language: element.value,
-            description: this.formData.text[element.value]
-          };
-          this.http.post(this.userdata.mainUrl+this.userdata.mainPort+"/structures-languages",subpostParams, {headers} )
-          .subscribe(subdata=> {
-            //this.http_response = data;
-            //console.log(subdata);
-          }, error => {
-            let code = error.status;
-            console.log(error);
-          });
-        });
-        alert( this.translate.instant('Save completed') )
-
-      }, error => {
-        let code = error.status;
-        if (code == 422) {
-          alert( this.translate.instant('Organization name is not valid') );
-        }
-        console.log(error);
-      });
-    }
-  }
-
-  doCheckCategory(idCategory,value,idStructureCategory) {
-
+  
+  doCheckCategory(idCategory, value, idStructureCategory) {
     let x = 0;
     this.structure_categories.forEach(element => {
       if (element.idCategory == idCategory) {
@@ -389,46 +394,131 @@ export class StructureDetailComponent implements OnInit {
       x++;
     });
   }
-
+  
   doSaveCategory(idCategory) {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+  
     let postParams = {
       idCategory: idCategory,
       idStructure: this.uuid
     };
-    let headers = new HttpHeaders()
-      .set("Authorization", "Bearer "+this.token)
-    ;
-    this.http.post(this.userdata.mainUrl+this.userdata.mainPort+"/structures-categories",postParams, {headers} )
-      .subscribe(data=> {
-        this.http_response = data;
-        if (this.http_response.idStructureCategory) {
-          let x = 0;
-          this.structure_categories.forEach(element => {
-            if (element.idCategory == this.http_response.idCategory) {
-                this.structure_categories[x].idStructureCategory = this.http_response.idStructureCategory;
-            }
-            x++;
-          });
-        }
-      }, error => {
-        console.log(error);
-      });
+    
+    this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/structures-categories", postParams, {headers} )
+    .subscribe(data=> {
+      this.http_response = data;
+      if (this.http_response.idStructureCategory) {
+        let x = 0;
+        this.structure_categories.forEach(element => {
+          if (element.idCategory == this.http_response.idCategory) {
+            this.structure_categories[x].idStructureCategory = this.http_response.idStructureCategory;
+          }
+          x++;
+        });
+      }
+    }, error => {
+      this.showExceptionMessage(error);
+    });
   }
-
+  
   doDeleteCategory(idStructureCategory) {
-    let headers = new HttpHeaders()
-      .set("Authorization", "Bearer "+this.token)
-    ;
-    this.http.delete(this.userdata.mainUrl+this.userdata.mainPort+"/structures-categories/"+idStructureCategory, {headers} )
-      .subscribe(data=> {
-        this.http_response = data;
-      }, error => {
-        console.log(error);
-      });
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+  
+    this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/structures-categories/" + idStructureCategory, {headers} )
+    .subscribe(data=> {
+    }, error => {
+      this.showExceptionMessage(error);
+    });
+  }
+  
+  onFileSelect(event) {
+    const file = event.srcElement.files[0];
+    this.imgsrc = window.URL.createObjectURL(file);
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.uploadForm.get('profile').setValue(file);
+      let element:HTMLElement = document.getElementById('upload-submit') as HTMLElement;
+      element.click();
+    }
   }
 
-  async doSwitchTextarea(lang) {
-    this.current_language = lang;
+  onSubmit() {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
+    const formData = new FormData();
+    formData.append('file', this.uploadForm.get('profile').value);
+    
+    this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/structures-images/" + this.uuid, formData, {headers})
+    .subscribe(res => {
+      this.imgsrc = '';
+      this.getImages(this.token);
+    }, error => {
+      let code = error.status;
+
+      switch (code) {
+        case 400:
+          this.showErrorMessage(this.translate.instant('Error uploading image'), this.translate.instant('Please select a JPEG file.'));
+        break;
+
+        case 409:
+          this.showErrorMessage(this.translate.instant('Error uploading image'), this.translate.instant('Un immagine con questo nome già esiste. Verifica che tu non l\'abbia già memorizzata, altrimenti rinomina il file.'));
+        break;
+
+        default:
+          this.showExceptionMessage(error);
+        break;
+      }
+      
+    });
+  }
+
+  askDelete(idStructureImage) {
+    this.idStructureImageDelete = idStructureImage;
+    this.modalDeleteImage.show();
+  }
+
+  doDeleteImage(idStructureImage) {
+    this.modalDeleteImage.hide();
+    this.idStructureImageDelete = '';
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
+    this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/structures-images/" + idStructureImage, {headers} )
+    .subscribe(data=> {
+      this.getImages(this.token);
+    }, error => {
+      this.showExceptionMessage(error);
+    });
+  }
+
+  doMarker(event) {
+    this.formData.latitude = event.coords.lat;
+    this.formData.longitude = event.coords.lng;
+
+    this.location = { lat: event.coords.lat, lng: event.coords.lng };
+  }
+
+  findAddress() {
+    if (this.formData.address && this.formData.city) {
+      this.address = this.formData.address + ', ' + this.formData.city;
+      this.addressToCoordinates();
+    } else {
+      this.showErrorMessage(
+        this.translate.instant('Unable geocoding'),
+        this.translate.instant('Specifica l\'indirizzo ed il comune per effettuare la ricerca.')
+      );
+    }
+  }
+
+  addressToCoordinates() {
+    this.loading = true;
+    this.geocodeService.geocodeAddress(this.address)
+    .subscribe((location: Location) => {
+        this.location = location;
+        this.formData.latitude = location.lat;
+        this.formData.longitude = location.lng;
+        this.loading = false;
+        this.ref.detectChanges();  
+      }      
+    );     
   }
 
   onHidden(): void {
@@ -449,45 +539,6 @@ export class StructureDetailComponent implements OnInit {
 
   change(value: boolean): void {
     this.status.isOpen = value;
-  }
-
-  doDeleteImage(idStructureImage) {
-    let headers = new HttpHeaders()
-      .set("Authorization", "Bearer "+this.token)
-    ;
-    this.http.delete(this.userdata.mainUrl+this.userdata.mainPort+"/structures-images/"+idStructureImage, {headers} )
-      .subscribe(data=> {
-        this.http_response = data;
-
-        this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/structures/"+this.uuid+"/structures-images", {headers} )
-        .subscribe(data_image=> {
-          this.structure_images = data_image;
-          let x = 0;
-          this.structure_images.forEach(element => {
-            this.structure_images[x].filename = encodeURIComponent(this.structure_images[x].filename);
-            x++;
-          });
-
-        }, error => {
-
-        });
-
-      }, error => {
-        console.log(error);
-      });
-  }
-
-  doDelete(idStructure) {
-    let headers = new HttpHeaders()
-      .set("Authorization", "Bearer "+this.token)
-    ;
-    this.http.delete(this.userdata.mainUrl+this.userdata.mainPort+"/structures/"+idStructure, {headers} )
-      .subscribe(data=> {
-        this.http_response = data;
-        this.router.navigateByUrl('/structures');
-      }, error => {
-        console.log(error);
-      });
   }
 
   //Error message

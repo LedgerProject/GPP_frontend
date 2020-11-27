@@ -19,7 +19,6 @@ import { DocumentDetailComponent } from './views/document-detail/document-detail
 import { OperatorDetailComponent } from './views/operator-detail/operator-detail.component';
 import { OperatorInviteComponent } from './views/operator-invite/operator-invite.component';
 import { StructureDetailComponent } from './views/structure-detail/structure-detail.component';
-import { StructureAddComponent } from './views/structure-add/structure-add.component';
 import { CountriesComponent } from './views/countries/countries.component';
 import { CountryDetailComponent } from './views/country-detail/country-detail.component';
 import { CountryTopicsComponent } from './views/country-topics/country-topics.component';
@@ -183,8 +182,8 @@ export const routes: Routes = [
         component: StructureDetailComponent,
       },
       {
-        path: 'structure-add',
-        component: StructureAddComponent,
+        path: 'structure-details',
+        component: StructureDetailComponent,
       },
       {
         path: 'about-us',
