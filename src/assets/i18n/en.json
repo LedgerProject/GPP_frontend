@@ -20,6 +20,7 @@
     "Phone Number": "Phone Number",
     "Website": "Website",
     "Icon":"Icon",
+    "Marker": "Marker",
     "Description": "Description",
     "Gallery": "Gallery",
     "Missing data": "Missing data",
@@ -128,7 +129,25 @@
     "Eliminazione immagine": "Eliminazione immagine",
     "Sei sicuro di voler eliminare l'immagine?": "Sei sicuro di voler eliminare l'immagine?",
 
+    "***ICONS***": "***ICONS***",
+    "Icons - List": "Icons - List",
+    "In questa sezione è possibile gestire le icone da visualizzare nell'applicazione.": "In questa sezione è possibile gestire le icone da visualizzare nell'applicazione.",
+    "Seleziona 'Add Icon' per aggiungere una nuova icona, oppure selezionane una dall'elenco per modificarla.": "Seleziona 'Add Icon' per aggiungere una nuova icona, oppure selezionane una dall'elenco per modificarla.",
+    "Add Icon": "Add Icon",
+    "Back to the icons list": "Back to the icons list",
+    "Icons - Edit": "Icons - Edit",
+    "Icons - Add": "Icons - Add",
+    "In questa sezione è possibile specificare le informazioni e le immagini dell'icona.": "In questa sezione è possibile specificare le informazioni e le immagini dell'icona.",
+    "Enter the icon name": "Enter the icon name",
+    "Specificare il nome dell'icona.": "Specificare il nome dell'icona.",
+    "(PNG 48 x 48 pixels)": "(PNG 48 x 48 pixels)",
+    "PNG 32 x 37 pixels": "PNG 32 x 37 pixels",
+    "Icona memorizzata": "Icona memorizzata",
+    "Le informazioni sull'icona sono state memorizzate.": "Le informazioni sull'icona sono state memorizzate.",
+    "Eliminazione icona": "Eliminazione icona",
+    "Sei sicuro di voler eliminare l'icona corrente?": "Sei sicuro di voler eliminare l'icona corrente?",
 
+    
     "Please, select the image File": "Please, select the image File",
     "Please, select the marker File": "Please, select the marker File",
 
@@ -247,21 +266,13 @@
     "Topic":"Topic",
     "in English": "in English",
     "in French": "in French",
-    "ADD TOPIC": "ADD TOPIC",
-    "ADD COUNTRY": "ADD COUNTRY",
-    
-    "ADD CATEGORY": "ADD CATEGORY",
-    
+
     "Nationalities - List": "Nationalities - List",
     "Nationalities - Edit": "Nationalities - Edit",
     "Nationalities - Add": "Nationalities - Add",
     "ADD NATIONALITY": "ADD NATIONALITY",
     "Back to the nationalities list": "Back to the nationalities list",
-    "Icons - List": "Icons - List",
-    "Icons - Edit": "Icons - Edit",
-    "Icons - Add": "Icons - Add",
-    "ADD ICON": "ADD ICON",
-    "Back to the icons list": "Back to the icons list",
+    
     "Invalid Token": "Invalid Token",
     "Please, check Image File 48x48 pixels": "Please, check Image File 48x48 pixels",
     "Please, check Marker File 32x27 pixels": "Please, check Marker File 32x27 pixels"

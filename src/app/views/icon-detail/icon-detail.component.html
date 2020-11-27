@@ -3,55 +3,146 @@
     <div class="col-md-12 col-lg-8 mx-auto">
       <div class="card mt-4">
         <div class="card-body">
+          <!-- Back link -->
           <a [routerLink]="['/icons']"><i class="fa fa-chevron-left"></i> {{ 'Back to the icons list' | translate }}</a>
+
+          <!-- Form -->
           <form [formGroup] = "uploadForm" (ngSubmit)="onSubmit()">
-          <h1 class="mt-4"><span *ngIf="uuid">{{ 'Icons - Edit' | translate }}</span><span *ngIf="!uuid">{{ 'Icons - Add' | translate }}</span></h1>
-          <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>
+            <h1 class="mt-4">
+              <span *ngIf="uuid">{{ 'Icons - Edit' | translate }}</span>
+              <span *ngIf="!uuid">{{ 'Icons - Add' | translate }}</span>
+            </h1>
+            <p>{{ 'In questa sezione è possibile specificare le informazioni e le immagini dell\'icona.' | translate }}</p>
 
-          <div class="form-group mt-3">
-          <label>{{ 'Name' | translate }}</label>
-           <div class="input-group mb-3">
-            <input type="text" formControlName="name" id="name" class="form-control" placeholder="{{'Enter the name' | translate }}" required>
-           </div>
-          </div>
+            <!-- Name -->
+            <div class="form-group mt-3">
+              <label>{{ 'Name' | translate }}</label>
+              <div class="input-group mb-3">
+                <input type="text" formControlName="name" id="name" class="form-control" placeholder="{{'Enter the icon name' | translate }}" required>
+              </div>
+              <small class="form-text text-muted">{{ 'Specificare il nome dell\'icona.' | translate }}</small>
+            </div>
 
-          <div class="form-group mt-3">
-            <label>{{ 'Image' | translate }} <small>(PNG 48 x 48 pixels)</small></label>
-            <div class="my-2" *ngIf="image">
-              <img [src]="image">
+            <!-- Image (PNG)-->
+            <div class="form-group mt-3">
+              <label>{{ 'Image' | translate }} <small>{{ '(PNG 48 x 48 pixels)' | translate }}</small></label>
+              <div class="my-2" *ngIf="image">
+                <img [src]="image">
+              </div>
+              <div class="input-group mb-3">
+                <input formControlName="image" *ngIf="!uuid" id="image" type="file" (change)="onImageSelect($event)"/>
+                <input name="image" *ngIf="uuid" id="image" type="file" (change)="onImagePatchSelect($event)"/>
+              </div>
             </div>
-            <div class="input-group mb-3">
-              <input formControlName="image" *ngIf="!uuid" id="image" type="file" (change)="onImageSelect($event)"/>
-              <input name="image" *ngIf="uuid" id="image" type="file" (change)="onImagePatchSelect($event)"/>
-            </div>
-          </div>
 
-          <div class="form-group mt-3">
-            <label>{{ 'Marker' | translate }} <small>(PNG 32 x 37 pixels)</small></label>
-            <div class="my-2">
-              <img [src]="marker">
+            <!-- Marker (PNG)-->
+            <div class="form-group mt-3">
+              <label>{{ 'Marker' | translate }} <small>{{ '(PNG 32 x 37 pixels)' | translate }}</small></label>
+              <div class="my-2">
+                <img [src]="marker">
+              </div>
+              <div class="input-group mb-3">
+                <input formControlName="marker" *ngIf="!uuid" id="marker" type="file" (change)="onMarkerSelect($event)"/>
+                <input name="marker" *ngIf="uuid" id="marker" type="file" (change)="onMarkerPatchSelect($event)"/>
+              </div>
             </div>
-            <div class="input-group mb-3">
-              <input formControlName="marker" *ngIf="!uuid" id="marker" type="file" (change)="onMarkerSelect($event)"/>
-              <input name="marker" *ngIf="uuid" id="marker" type="file" (change)="onMarkerPatchSelect($event)"/>
-            </div>
-          </div>
 
-         <div class="row">
-          <div class="col-12 text-right">
-            <button type="submit" id="upload-submit" class="btn btn-primary rounded-0">{{ 'SAVE' | translate}}</button>
-          </div>
+            <!-- Delete and save buttons-->
+            <div class="row">
+              <div class="col-6 text-left">
+                <button [hidden]="!uuid" type="button" class="btn btn-danger rounded-0" (click)="modalDelete.show()">{{ 'Delete' | translate}}</button>
+              </div>
+              <div class="col-6 text-right">
+                <button type="submit" id="upload-submit" class="btn btn-primary rounded-0">{{ 'Save' | translate}}</button>
+              </div>
+            </div>
+          </form>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        <div class="row mt-3" *ngIf="uuid">
-          <div class="col-12 text-right">
-            <button type="button" class="btn btn-danger rounded-0" (click)="doDelete(uuid)">{{ 'DELETE' | translate}}</button>
+<!-- Modal info message -->
+<div bsModal #modalInfo="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInfoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Icona memorizzata' | translate }}</h4>
+        <button type="button" class="close" (click)="modalInfo.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ 'Le informazioni sull\'icona sono state memorizzate.' | translate }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modalInfo.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal delete message -->
+<div bsModal #modalDelete="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Eliminazione icona' | translate }}</h4>
+        <button type="button" class="close" (click)="modalDelete.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ 'Sei sicuro di voler eliminare l\'icona corrente?' | translate }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="doDelete(uuid)">{{ 'Delete' | translate }}</button>
+        <button type="button" class="btn btn-secondary" (click)="modalDelete.hide()">{{ 'Cancel' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal entering data error -->
+<div bsModal #modalError="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalErrorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">{{ messageError.title }}</h4>
+              <button type="button" class="close" (click)="modalError.hide()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
           </div>
-        </div>
+          <div class="modal-body">
+              <p>{{ messageError.description }}</p>
+              <ul>
+                  <li *ngFor="let errorDescription of errorsDescriptions">{{ errorDescription }}</li>
+              </ul>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modalError.hide()">{{ 'Close' | translate }}</button>
+          </div>
+      </div>
+  </div>
+</div>
 
-
-        </form>
-        </div>
+<!-- Modal exception error -->
+<div bsModal #modalException="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExceptionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageException.name }}</h4>
+        <button type="button" class="close" (click)="modalException.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><b>Status: </b>{{ messageException.statusText }} ({{ messageException.status }})</p>
+        <p><b>Description: </b>{{ messageException.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
       </div>
     </div>
   </div>

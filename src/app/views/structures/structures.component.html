@@ -23,19 +23,19 @@
           <div class="table-responsive">
             <table class="table table-hover" *ngIf='show_structures.length'>
               <thead>
+                <th class="text-center">{{ 'Icon' | translate }}</th>
                 <th>{{ 'Name' | translate }}</th>
                 <th>{{ 'Address' | translate }}</th>
                 <th>{{ 'E-Mail' | translate }}</th>
-                <th class="text-center">{{ 'Icon' | translate }}</th>
               </thead>
               <tbody>
                 <tr class="pointer" *ngFor="let structure of show_structures" (click)="doOpen(structure.idStructure)">
-                  <td>{{structure.structurename}}</td>
-                  <td>{{structure.address}} - {{structure.city}}</td>
-                  <td>{{structure.email}}</td>
                   <td class="text-center">
                     <img class="icon-list" [src]="structure.iconimage">
                   </td>
+                  <td>{{structure.structurename}}</td>
+                  <td>{{structure.address}} - {{structure.city}}</td>
+                  <td>{{structure.email}}</td>
                 </tr>
               </tbody>
             </table>

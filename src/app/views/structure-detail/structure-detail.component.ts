@@ -4,7 +4,6 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angula
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SlugifyPipe } from '../../pipes/slugify.pipe';
-import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps'
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';

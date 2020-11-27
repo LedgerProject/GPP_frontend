@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SlugifyPipe } from '../../pipes/slugify.pipe';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-icon-detail',
@@ -22,6 +23,17 @@ export class IconDetailComponent implements OnInit {
   token: any;
   name_langs: any;
   icon: any;
+
+  @ViewChild('modalInfo') public modalInfo: ModalDirective;
+
+  @ViewChild('modalDelete') public modalDelete: ModalDirective;
+
+  @ViewChild('modalError') public modalError: ModalDirective;
+  messageError: any;
+  errorsDescriptions: any;
+
+  @ViewChild('modalException') public modalException: ModalDirective;
+  messageException: any;
 
   image: any;
   marker: any;
@@ -51,6 +63,11 @@ export class IconDetailComponent implements OnInit {
     this.icon = { name: '', image: '', marker: ''};
     this.image = '';
     this.marker = '';
+
+    this.messageError = { title : '', description : '' };
+    this.errorsDescriptions = [];
+
+    this.messageException = { name : '', status : '', statusText : '', message : '' };
   }
 
   ngOnInit(): void {
@@ -59,13 +76,11 @@ export class IconDetailComponent implements OnInit {
     }
   }
 
-
   get f(){
     return this.uploadForm.controls;
   }
 
   onImageSelect(event) {
-
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.uploadForm.patchValue({
@@ -75,7 +90,6 @@ export class IconDetailComponent implements OnInit {
   }
 
   onImagePatchSelect(event) {
-
     const file = event.srcElement.files[0];
     if (event.target.files.length > 0) {
       const file = event.target.files[0];

@@ -3,36 +3,42 @@
     <div class="col-md-12 col-lg-8 mx-auto">
       <div class="card mt-4">
         <div class="card-body">
-
+          <!-- Information -->
           <h1 class="mt-4">{{ 'Icons - List' | translate }}</h1>
-          <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>
+          <p>{{ 'In questa sezione è possibile gestire le icone da visualizzare nell\'applicazione.' | translate }}</p>
+          <p>{{ 'Seleziona \'Add Icon\' per aggiungere una nuova icona, oppure selezionane una dall\'elenco per modificarla.' | translate }}</p>
+
+          <!-- Search form -->
           <form #form="ngForm">
             <div class="input-group mb-3">
                 <input type="text" (keyup)="onKey()" class="form-control" name="search" [(ngModel)]="formData.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
                 <div class="input-group-append">
-                  <button class="btn btn-primary rounded-0" type="submit">{{ 'SEARCH' | translate }}</button>
+                  <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
                 </div>
-                <button class="btn btn-primary ml-3 rounded-0" type="button" [routerLink]="['/icon-details']">{{ 'ADD ICON' | translate }}</button>
+                <button class="btn btn-primary ml-3 rounded-0" type="button" [routerLink]="['/icon-details']">{{ 'Add Icon' | translate }}</button>
             </div>
           </form>
+
+          <!-- Countries list -->
           <div class="table-responsive">
-          <table class="table table-hover" *ngIf='show_icons.length'>
-            <thead>
-              <th>{{ 'NAME' | translate }}</th>
-              <th class="text-center">{{ 'ICON' | translate }}</th>
-            </thead>
-            <tbody>
-              <tr class="pointer" *ngFor="let icon of show_icons" (click)="doOpen(icon.idIcon)">
-                <td>{{icon.name}}</td>
-                <td class="text-center">
-                  <!--<span *ngIf="structure.status == -1" class="text-muted"><i class="fa fa-hourglass"></i></span>
-                  <span *ngIf="structure.status == 1" class="text-danger"><i class="fa fa-remove"></i></span>
-                  <span *ngIf="structure.status == 10" class="text-success"><i class="fa fa-check"></i></span>-->
-                  <img [src]="icon.image">
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            <table class="table table-hover" *ngIf='show_icons.length'>
+              <thead>
+                <th>{{ 'Name' | translate }}</th>
+                <th class="text-center">{{ 'Icon' | translate }}</th>
+                <th class="text-center">{{ 'Marker' | translate }}</th>
+              </thead>
+              <tbody>
+                <tr class="pointer" *ngFor="let icon of show_icons" (click)="doOpen(icon.idIcon)">
+                  <td>{{icon.name}}</td>
+                  <td class="text-center">
+                    <img class="icon-list" [src]="icon.image">
+                  </td>
+                  <td class="text-center">
+                    <img class="marker-list" [src]="icon.marker">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <div class="text-danger" *ngIf="!show_icons.length"></div>
         </div>
