@@ -1,40 +1,37 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SlugifyPipe } from '../../pipes/slugify.pipe';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { Language, MessageException, MessageError, Category, CategoryLanguage } from '../../services/models';
+import { environment } from '../../../environments/environment';
+
+interface FormData {
+  identifier: string;
+  title: string[];
+}
 
 @Component({
   selector: 'app-category-detail',
   templateUrl: './category-detail.component.html',
   styleUrls: ['./category-detail.component.css']
 })
+
 export class CategoryDetailComponent implements OnInit {
+  token: string;
   @Input() uuid: string;
-  response:any;
-  formData: any;
-  http_response:any;
-  current_language:any;
-  languages:any;
-  token: any;
-  name_langs: any;
-  category: any;
-
+  formData: FormData;
+  currentLanguage: string;
+  languages:Array<Language>;
+  category: Category;
   @ViewChild('modalDelete') public modalDelete: ModalDirective;
-
   @ViewChild('modalError') public modalError: ModalDirective;
-  messageError: any;
-  errorsDescriptions: any;
-
+  messageError: MessageError;
+  errorsDescriptions: string[];
   @ViewChild('modalException') public modalException: ModalDirective;
-  messageException: any;
-
-  status: { isOpen: boolean } = { isOpen: false };
-  disabled: boolean = false;
-  isDropup: boolean = true;
-  autoClose: boolean = false;
+  messageException: MessageException;
 
   constructor (
     private router: Router,
@@ -44,56 +41,60 @@ export class CategoryDetailComponent implements OnInit {
     public userdata: UserdataService,
     private slugifyPipe: SlugifyPipe,
     ) {
-    this.formData = { identifier: '', title: [] };
-    this.response = { exit: '', error: '', success: '' };
-    this.http_response = null;
-    this.current_language = this.translate.getDefaultLang();
-    this.languages = [{ 'name': 'English', 'value':'en' },{ 'name': 'Français', 'value': 'fr' }];
-
     this.token = localStorage.getItem('token');
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
-    this.name_langs = [];
-    this.category = { identifier: '' };
-
-    this.messageError = { title : '', description : '' };
+    this.currentLanguage = this.translate.getDefaultLang();
+    this.languages = environment.languages;
+    this.messageException = environment.messageExceptionInit;
+    this.messageError = environment.messageErrorInit;
     this.errorsDescriptions = [];
-
-    this.messageException = { name : '', status : '', statusText : '', message : ''};
+    this.formData = {
+      identifier: '',
+      title: []
+    };
   }
 
+  // Page init
   ngOnInit(): void {
     if (this.uuid) {
-      this.getCategory(this.token);
+      this.getCategory();
     }
   }
 
-  async getCategory(token) {
-    let headers = new HttpHeaders().set("Authorization", "Bearer " + token);
+  // Get category details
+  async getCategory() {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/categories/" + this.uuid, {headers} )
-    .subscribe(data_category=> {
-      this.category = data_category;
+    this.http.get<Category>(this.userdata.mainUrl + this.userdata.mainPort + "/categories/" + this.uuid, {headers} )
+    .subscribe(dataCategory=> {
+      this.category = dataCategory;
 
       if (this.category) {
         this.formData.identifier = this.category.identifier;
+      
+        this.getCategoryLanguages();
       }
+    }, error => {
+      this.showExceptionMessage(error);
+    });
+  }
 
-      //Name (languages)
-      this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/categories/" + this.uuid + "/categories-languages", {headers} )
-      .subscribe(data_text=> {
-        this.name_langs = data_text;
-        this.name_langs.forEach(text_element => {
-          this.formData.title[text_element.language] = text_element.category;
-        });
-      }, error => {
-        this.showExceptionMessage(error);
+  // Get category languages
+  async getCategoryLanguages() {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
+    this.http.get<Array<CategoryLanguage>>(this.userdata.mainUrl + this.userdata.mainPort + "/categories/" + this.uuid + "/categories-languages", {headers} )
+    .subscribe(dataLangs=> {
+      dataLangs.forEach(elementLang => {
+        this.formData.title[elementLang.language] = elementLang.category;
       });
     }, error => {
       this.showExceptionMessage(error);
     });
   }
 
-  doSave() {
+  // Save category
+  async saveCategory() {
     this.errorsDescriptions = [];
 
     //Check if entered the identifier
@@ -113,7 +114,9 @@ export class CategoryDetailComponent implements OnInit {
       this.errorsDescriptions.push(this.translate.instant('Please, enter the category name in each language'));
     }
 
+    //Check if there are no errors
     if (this.errorsDescriptions.length === 0) {
+      //Data save
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
       let postParams = {
@@ -125,8 +128,8 @@ export class CategoryDetailComponent implements OnInit {
       if (this.uuid) {
         //Update the category
         this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/categories/" + this.uuid,postParams, {headers} )
-        .subscribe(data=> {
-          this.doSaveLanguages();
+        .subscribe(async data => {
+          await this.saveCategoryLanguages();
 
           this.router.navigateByUrl('/categories');
         }, error => {
@@ -134,11 +137,10 @@ export class CategoryDetailComponent implements OnInit {
         });
       } else {
         //Insert the category
-        this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/categories", postParams, {headers} )
-        .subscribe(data=> {
-          this.http_response= data;
-          this.uuid = this.http_response.idCategory;
-          this.doSaveLanguages();
+        this.http.post<Category>(this.userdata.mainUrl + this.userdata.mainPort + "/categories", postParams, {headers} )
+        .subscribe(async data => {
+          this.uuid = data.idCategory;
+          await this.saveCategoryLanguages();
 
           this.router.navigateByUrl('/categories');
         }, error => {
@@ -146,6 +148,7 @@ export class CategoryDetailComponent implements OnInit {
         });
       }
     } else {
+      //Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
         this.translate.instant('The data entered is incorrect or missing.')
@@ -153,7 +156,8 @@ export class CategoryDetailComponent implements OnInit {
     }
   }
 
-  doSaveLanguages() {
+  // Save category language
+  async saveCategoryLanguages() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     //Update the category languages
@@ -166,47 +170,28 @@ export class CategoryDetailComponent implements OnInit {
       };
 
       this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/categories-languages", subpostParams, {headers} )
-      .subscribe(subdata=> {
+      .subscribe(dataLang => {
       }, error => {
         this.showExceptionMessage(error);
       });
     });
   }
 
-  async doSwitchTextarea(lang) {
-    this.current_language = lang;
+  // Switch language
+  async switchTextarea(lang) {
+    this.currentLanguage = lang;
   }
 
-  doDelete(idCategory) {
+  // Delete category
+  deleteCategory(idCategory) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/categories/" + idCategory, {headers} )
     .subscribe(data=> {
-      this.http_response = data;
       this.router.navigateByUrl('/categories');
     }, error => {
       this.showExceptionMessage(error);
     });
-  }
-
-  onHidden(): void {
-    //console.log('Dropdown is hidden');
-  }
-  onShown(): void {
-    //console.log('Dropdown is shown');
-  }
-  isOpenChange(): void {
-    //console.log('Dropdown state is changed');
-  }
-
-  toggleDropdown($event: MouseEvent): void {
-    $event.preventDefault();
-    $event.stopPropagation();
-    this.status.isOpen = !this.status.isOpen;
-  }
-
-  change(value: boolean): void {
-    this.status.isOpen = value;
   }
 
   //Error message

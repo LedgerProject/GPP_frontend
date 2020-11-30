@@ -4,34 +4,20 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-
-interface Category {
-  idCategory: string;
-  identifier: string;
-  type: string;
-}
-
-interface Search {
-  search: string;
-}
-
-interface MessageException {
-  name: string;
-  status: number;
-  statusText: string;
-  message: string;
-}
+import { MessageException, QuickSearch, Category } from '../../services/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-categories',
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.css']
 })
+
 export class CategoriesComponent implements OnInit {
   token: string;
-  formSearch: Search;
-  filteredCategories: Array<Category> = [];
-  allCategories: Array<Category> = [];
+  formSearch: QuickSearch;
+  filteredCategories: Array<Category>;
+  allCategories: Array<Category>;
   @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
 
@@ -42,17 +28,10 @@ export class CategoriesComponent implements OnInit {
     public translate: TranslateService
   ) {
     this.token = localStorage.getItem('token');
-    this.formSearch = {
-      search: ''
-    };
     this.filteredCategories = [];
     this.allCategories = [];
-    this.messageException = { 
-      name : '', 
-      status : 0,
-      statusText : '',
-      message : ''
-    };
+    this.messageException = environment.messageExceptionInit
+    this.formSearch = { search: '' };
   }
 
   // Page init
@@ -77,7 +56,6 @@ export class CategoriesComponent implements OnInit {
           "type": true \
         }, \
         "offset": 0, \
-        "limit": 100, \
         "skip": 0, \
         "order": ["identifier"] \
       }';
@@ -85,21 +63,8 @@ export class CategoriesComponent implements OnInit {
     // HTTP Request
     this.http.get<Array<Category>>(this.userdata.mainUrl + this.userdata.mainPort + "/categories?filter=" + filter, {headers} )
     .subscribe(data => {
-      let categories: Array<Category>;
-      categories = data;
-
-      categories.forEach(element => {
-        let category: Category;
-
-        category = {
-          idCategory : element.idCategory,
-          identifier : element.identifier,
-          type : ''
-        };
-
-        this.allCategories.push(category);
-        this.filteredCategories.push(category);
-      });
+      this.allCategories = data;
+      this.filteredCategories = data;
     }, error => {
       this.showExceptionMessage(error);
     });
@@ -130,8 +95,13 @@ export class CategoriesComponent implements OnInit {
 
   //Exception message
   showExceptionMessage(error: HttpErrorResponse) {
-    this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
+    this.messageException = {
+      name : error.name,
+      status : error.status,
+      statusText : error.statusText,
+      message : error.message
+    };
+
     this.modalException.show();
   }
 }
-
