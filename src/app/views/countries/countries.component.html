@@ -12,7 +12,7 @@
           <!-- Search form -->
           <form #form="ngForm">
             <div class="input-group mb-3">
-                <input type="text" (keyup)="onKey()" class="form-control" name="search" [(ngModel)]="formData.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                <input type="text" (keyup)="filterCountries()" class="form-control" name="search" [(ngModel)]="formSearch.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
                 <div class="input-group-append">
                   <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
                 </div>
@@ -22,14 +22,14 @@
 
           <!-- Countries list -->
           <div class="table-responsive">
-            <table class="table table-hover" *ngIf='show_countries.length'>
+            <table class="table table-hover" *ngIf='filteredCountries.length'>
               <thead>
                 <th>{{ 'Country' | translate }}</th>
                 <th class="text-center">{{ 'Completed' | translate }}</th>
                 <th class="text-right">{{ 'Topics' | translate }}</th>
               </thead>
               <tbody>
-                <tr class="pointer" *ngFor="let country of show_countries" (click)="doOpen(country.idCountry)">
+                <tr class="pointer" *ngFor="let country of filteredCountries" (click)="countryDetails(country.idCountry)">
                   <td>{{ country.identifier }}</td>
                   <td class="text-center">
                     <span *ngIf="country.completed == false" class="text-danger"><i class="fa fa-remove"></i></span>
@@ -40,7 +40,7 @@
               </tbody>
             </table>
           </div>
-          <div class="text-danger" *ngIf="!show_countries.length"></div>
+          <div class="text-danger" *ngIf="!filteredCountries.length"></div>
         </div>
       </div>
     </div>

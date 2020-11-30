@@ -11,14 +11,15 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
   templateUrl: './country-detail.component.html',
   styleUrls: ['./country-detail.component.css']
 })
+
 export class CountryDetailComponent implements OnInit {
+  token: string;
   @Input() uuid: string;
-  response:any;
   formData: any;
   http_response:any;
   current_language:any;
   languages:any;
-  token: any;
+  
   name_langs: any;
   country: any;
 
@@ -45,7 +46,6 @@ export class CountryDetailComponent implements OnInit {
     private slugifyPipe: SlugifyPipe
     ) {
     this.formData = { identifier: '', title: [], completed: '' };
-    this.response = { exit: '', error: '', success: '' };
     this.http_response = null;
     this.current_language = this.translate.getDefaultLang();
     this.languages = [{ 'name': 'English', 'value': 'en'}, { 'name': 'Français', 'value': 'fr' }];

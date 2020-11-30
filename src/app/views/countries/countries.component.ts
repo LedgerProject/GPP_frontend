@@ -4,6 +4,8 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { MessageException, QuickSearch, Country } from '../../services/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-countries',
@@ -12,56 +14,33 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 })
 
 export class CountriesComponent implements OnInit {
-  formData: any;
-  response:any;
-  http_response:any;
-  show_countries:any;
-  all_countries:any;
-  token: any;
-
+  token: string;
+  formSearch: QuickSearch;
+  filteredCountries: Array<Country>;
+  allCountries: Array<Country>;
   @ViewChild('modalException') public modalException: ModalDirective;
-  messageException: any;
+  messageException: MessageException;
 
-  constructor (private router: Router, private http:HttpClient, public userdata: UserdataService, public translate: TranslateService) {
-    this.formData = { search: ''};
-    this.response = { exit: '', error: '', success: '' };
-    this.http_response = null;
-    this.show_countries = [];
-    this.all_countries = [];
+  constructor (
+    private router: Router,
+    private http:HttpClient,
+    public userdata: UserdataService,
+    public translate: TranslateService
+  ) {
     this.token = localStorage.getItem('token');
-
-    this.messageException = { name : '', status : '', statusText : '', message : ''};
+    this.filteredCountries = [];
+    this.allCountries = [];
+    this.messageException = environment.messageExceptionInit
+    this.formSearch = { search: '' };
   }
 
+  // Page init
   ngOnInit(): void {
-    this.doCountries();
-  }
-
-  // Countries search (onKeyUp)
-  async onKey() {
-    let search = this.formData.search;
-
-    if (search) {
-      this.show_countries = [];
-      this.all_countries.forEach(element => {
-        search = search.toLowerCase();
-        let name = element.identifier.toLowerCase();
-        if (name.includes(search)) {
-          this.show_countries.push(element);
-        }
-      });
-    } else {
-      this.show_countries = this.all_countries;
-    }
-  }
-
-  // Open country details
-  async doOpen(id) {
-    this.router.navigateByUrl('country-details/' + id);
+    this.loadCountries();
   }
 
   // Countries list
-  async doCountries() {
+  async loadCountries() {
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
     
@@ -74,7 +53,6 @@ export class CountriesComponent implements OnInit {
           "completed": true \
         }, \
         "offset": 0, \
-        "limit": 100, \
         "skip": 0, \
         "order": [ \
           "identifier" \
@@ -82,28 +60,36 @@ export class CountriesComponent implements OnInit {
       }';
 
     // HTTP Request
-    this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/countries?filter=" + filter, {headers})
+    this.http.get<Array<Country>>(this.userdata.mainUrl + this.userdata.mainPort + "/countries?filter=" + filter, {headers})
     .subscribe(data => {
-      this.http_response = data;
-      this.response.exit = 1000;
-      
-      let countries: any = [];
-      countries = this.http_response;
-      countries.forEach(element => {
-        let country: any = {};
-        country.idCountry = element.idCountry;
-        country.identifier = element.identifier;
-        country.completed = element.completed;
-
-        this.all_countries.push(country);
-        this.show_countries.push(country);
-      });
-      
-      this.response.error = '';
-      this.response.success = 'Operation Completed!';
+      this.allCountries = data;
+      this.filteredCountries = data;
     }, error => {
       this.showExceptionMessage(error);
     });
+  }
+
+  // Countries filter
+  async filterCountries() {
+    let search = this.formSearch.search;
+
+    if (search) {
+      this.filteredCountries = [];
+      this.allCountries.forEach(element => {
+        search = search.toLowerCase();
+        let name = element.identifier.toLowerCase();
+        if (name.includes(search)) {
+          this.filteredCountries.push(element);
+        }
+      });
+    } else {
+      this.filteredCountries = this.allCountries;
+    }
+  }
+
+  // Open country details
+  async countryDetails(id) {
+    this.router.navigateByUrl('country-details/' + id);
   }
 
   //Exception message

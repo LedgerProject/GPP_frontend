@@ -4,5 +4,23 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  languages: [
+    { 
+      'name': 'English', 
+      'value':'en'
+    }, { 
+      'name': 'Français',
+      'value': 'fr'
+    }],
+  messageExceptionInit: {
+    name: '',
+    status: 0,
+    statusText: '',
+    message: ''
+  },
+  messageErrorInit: {
+    title : '',
+    description : '' 
+  }
 };
