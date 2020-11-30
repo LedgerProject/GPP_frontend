@@ -4,7 +4,6 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angula
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SlugifyPipe } from '../../pipes/slugify.pipe';
-import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps'
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -314,7 +313,7 @@ export class StructureDetailComponent implements OnInit {
       //Check if update or insert
       if (this.uuid) {
         //Update the structure
-        this.http.patch(this.userdata.mainUrl+this.userdata.mainPort+"/structures/"+this.uuid,postParams, {headers} )
+        this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid, postParams, {headers} )
         .subscribe(data=> {
           this.doSaveLanguages();
 
@@ -467,7 +466,6 @@ export class StructureDetailComponent implements OnInit {
           this.showExceptionMessage(error);
         break;
       }
-      
     });
   }
 

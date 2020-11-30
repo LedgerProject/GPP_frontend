@@ -11,6 +11,7 @@
     "Change language": "Change language",
     "Country": "Country",
     "Completed": "Completed",
+    "Topic":"Topic",
     "Topics": "Topics",
     "Category": "Category",
     "Address":"Address",
@@ -20,8 +21,10 @@
     "Phone Number": "Phone Number",
     "Website": "Website",
     "Icon":"Icon",
+    "Marker": "Marker",
     "Description": "Description",
     "Gallery": "Gallery",
+    "Nationality": "Nationality",
     "Missing data": "Missing data",
     "The data entered is incorrect or missing.": "The data entered is incorrect or missing.",
 
@@ -128,9 +131,55 @@
     "Eliminazione immagine": "Eliminazione immagine",
     "Sei sicuro di voler eliminare l'immagine?": "Sei sicuro di voler eliminare l'immagine?",
 
-
+    "***ICONS***": "***ICONS***",
+    "Icons - List": "Icons - List",
+    "In questa sezione è possibile gestire le icone da visualizzare nell'applicazione.": "In questa sezione è possibile gestire le icone da visualizzare nell'applicazione.",
+    "Seleziona 'Add Icon' per aggiungere una nuova icona, oppure selezionane una dall'elenco per modificarla.": "Seleziona 'Add Icon' per aggiungere una nuova icona, oppure selezionane una dall'elenco per modificarla.",
+    "Add Icon": "Add Icon",
+    "Back to the icons list": "Back to the icons list",
+    "Icons - Edit": "Icons - Edit",
+    "Icons - Add": "Icons - Add",
+    "In questa sezione è possibile specificare le informazioni e le immagini dell'icona.": "In questa sezione è possibile specificare le informazioni e le immagini dell'icona.",
+    "Enter the icon name": "Enter the icon name",
     "Please, select the image File": "Please, select the image File",
     "Please, select the marker File": "Please, select the marker File",
+    "Specificare il nome dell'icona.": "Specificare il nome dell'icona.",
+    "(PNG 48 x 48 pixels)": "(PNG 48 x 48 pixels)",
+    "Selezionare un'immagine PNG di 48x48 pixels.": "Selezionare un'immagine PNG di 48x48 pixels.",
+    "(PNG 32 x 37 pixels)": "(PNG 32 x 37 pixels)",
+    "Selezionare un'immagine PNG di 32x37 pixels.": "Selezionare un'immagine PNG di 32x37 pixels.",
+    "Icona memorizzata": "Icona memorizzata",
+    "Le informazioni sull'icona sono state memorizzate.": "Le informazioni sull'icona sono state memorizzate.",
+    "Eliminazione icona": "Eliminazione icona",
+    "Sei sicuro di voler eliminare l'icona corrente?": "Sei sicuro di voler eliminare l'icona corrente?",
+    "Please, enter the icon name": "Please, enter the icon name",
+    "Please, select the image file": "Please, select the image file",
+    "Please, select the marker file": "Please, select the marker file",
+    "Error uploading icon": "Error uploading icon",
+    "Please check that image file is 48x48 pixels, and marker file is 32x37 pixels.": "Please check that image file is 48x48 pixels, and marker file is 32x37 pixels.",
+    "Please check that image file is 48x48 pixels.": "Please check that image file is 48x48 pixels.",
+    "Please check that marker file is 32x37 pixels.": "Please check that marker file is 32x37 pixels.",
+
+    "***NATIONALITIES***": "***NATIONALITIES***",
+    "Nationalities - List": "Nationalities - List",
+    "In questa sezione è possibile gestire le nazionalità da visualizzare nell'applicazione.": "In questa sezione è possibile gestire le nazionalità da visualizzare nell'applicazione.",
+    "Seleziona 'Add Nationality' per aggiungere una nuova nazionalità, oppure selezionane una dall'elenco per modificarla.": "Seleziona 'Add Nationality' per aggiungere una nuova nazionalità, oppure selezionane una dall'elenco per modificarla.",
+    "Add Nationality": "Add Nationality",
+    "Back to the nationalities list": "Back to the nationalities list",
+    "Nationalities - Edit": "Nationalities - Edit",
+    "Nationalities - Add": "Nationalities - Add",
+    "In questa sezione è possibile specificare le informazioni della nazionalità.": "In questa sezione è possibile specificare le informazioni della nazionalità.",
+    "Specificare il nome della nazionalità nella lingua di riferimento.": "Specificare il nome della nazionalità nella lingua di riferimento.",
+    "Enter the nationality name": "Enter the nationality name",
+    "Specificare il nome della nazionalità nelle varie lingue (per cambiare lingua selezionare 'Change Language').": "Specificare il nome della nazionalità nelle varie lingue (per cambiare lingua selezionare 'Change Language').",
+    "Eliminazione nazionalità": "Eliminazione nazionalità",
+    "Sei sicuro di voler eliminare la nazionalità corrente?": "Sei sicuro di voler eliminare la nazionalità corrente?",
+    "Please, enter the nationality identifier": "Please, enter the nationality identifier",
+    "Please, enter the nationality name in each language": "Please, enter the nationality name in each language",
+
+
+
+
 
     "Countries": "Countries",
     "Nationalities": "Nationalities",
@@ -220,9 +269,6 @@
     "CONFIRMED":"CONFIRMED",
     
 
-    "Name in English":"Name in English",
-    "Name in French":"Name in French",
-    "Enter a brief description about your structure":"Enter a brief description about your structure",
     "Registration completed." : "Registration completed.",
     "Secret Key": "Secret Key",
     "The email entered is already registered": "The email entered is already registered",
@@ -231,50 +277,6 @@
     "Organization name is not valid": "Organization name is not valid",
     "Save completed.": "Save completed.",
     
-    "Sorry, File already exists": "Sorry, File already exists",
     
-    "Please, check Image File 48x48 pixels, and Marker File 32x37 pixels": "Please, check Image File 48x48 pixels, and Marker File 32x37 pixels",
-    "The entered name already exists. Please enter a different name": "The entered name already exists. Please enter a different name",
-
-    
-
-    "COMPLETE": "COMPLETE",
-    "TOPIC": "TOPIC",
-    
-    "Please, enter the Identifier": "Please, enter the Identifier",
-    "Please, select Completed status": "Please, select Completed status",
-    "Please, enter the name in each language": "Please, enter the name in each language",
-    "Topic":"Topic",
-    "in English": "in English",
-    "in French": "in French",
-    "ADD TOPIC": "ADD TOPIC",
-    "ADD COUNTRY": "ADD COUNTRY",
-    
-    "ADD CATEGORY": "ADD CATEGORY",
-    
-    "Nationalities - List": "Nationalities - List",
-    "Nationalities - Edit": "Nationalities - Edit",
-    "Nationalities - Add": "Nationalities - Add",
-    "ADD NATIONALITY": "ADD NATIONALITY",
-    "Back to the nationalities list": "Back to the nationalities list",
-    "Icons - List": "Icons - List",
-    "Icons - Edit": "Icons - Edit",
-    "Icons - Add": "Icons - Add",
-    "ADD ICON": "ADD ICON",
-    "Back to the icons list": "Back to the icons list",
-    "Invalid Token": "Invalid Token",
-    "Please, check Image File 48x48 pixels": "Please, check Image File 48x48 pixels",
-    "Please, check Marker File 32x27 pixels": "Please, check Marker File 32x27 pixels"
-
-
-
-
-
-
-
-
-
-
-
-
+    "Invalid Token": "Invalid Token"
 }

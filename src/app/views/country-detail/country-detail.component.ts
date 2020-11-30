@@ -119,7 +119,7 @@ export class CountryDetailComponent implements OnInit {
       if (!this.formData.title[element.value]) {
         validate = 0;
       }
-    })
+    });
 
     if (validate === 0) {
       this.errorsDescriptions.push(this.translate.instant('Please, enter the country name in each language'));
@@ -154,7 +154,7 @@ export class CountryDetailComponent implements OnInit {
         //Insert the country
         this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/countries/", postParams, {headers} )
         .subscribe(data=> {
-          this.http_response= data;
+          this.http_response = data;
           this.uuid = this.http_response.idCountry;
           this.doSaveLanguages();
           
