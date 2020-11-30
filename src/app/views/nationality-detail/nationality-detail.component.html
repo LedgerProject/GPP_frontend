@@ -3,56 +3,124 @@
     <div class="col-md-12 col-lg-8 mx-auto">
       <div class="card mt-4">
         <div class="card-body">
+          <!-- Back link -->
           <a [routerLink]="['/nationalities']"><i class="fa fa-chevron-left"></i> {{ 'Back to the nationalities list' | translate }}</a>
+
+          <!-- Form -->
           <form  #form="ngForm" (ngSubmit)="doSave()">
-          <h1 class="mt-4"><span *ngIf="uuid">{{ 'Nationalities - Edit' | translate }}</span><span *ngIf="!uuid">{{ 'Nationalities - Add' | translate }}</span></h1>
-          <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>
+            <!-- Information -->
+            <h1 class="mt-4">
+              <span *ngIf="uuid">{{ 'Nationalities - Edit' | translate }}</span>
+              <span *ngIf="!uuid">{{ 'Nationalities - Add' | translate }}</span>
+            </h1>
+            <p>{{ 'In questa sezione è possibile specificare le informazioni della nazionalità.' | translate }}</p>
 
-          <div class="form-group mt-3">
-          <label>{{ 'Identifier' | translate }}</label>
-           <div class="input-group mb-3">
-            <input type="text" name="identifier" [(ngModel)]="formData.identifier" id="identifier" class="form-control" placeholder="{{'Enter the identifier' | translate }}" required>
-           </div>
-          </div>
+            <!-- Identifier -->
+            <div class="form-group md-3">
+              <label>{{ 'Identifier' | translate }}</label>
+              <input type="text" name="identifier" [(ngModel)]="formData.identifier" id="identifier" class="form-control" placeholder="{{'Enter the identifier' | translate }}" required>
+              <small class="form-text text-muted">{{ 'Specificare il nome della nazionalità nella lingua di riferimento.' | translate }}</small>
+            </div>
 
-<div class="row">
-  <div class="col-md-12">
+            <div class="form-group md-3">
+              <!-- Change language -->
+              <div dropdown (onShown)="onShown()" (onHidden)="onHidden()" (isOpenChange)="isOpenChange()" style="position:relative">
+                <small>
+                  <a href dropdownToggle (click)="false">{{ 'Change language' | translate }}</a>
+                  <ul *dropdownMenu class="dropdown-menu">
+                    <li *ngFor="let language of languages">
+                      <a class="dropdown-item btn pointer" role="button"  (click)="doSwitchTextarea(language.value)">{{language.name}}</a>
+                    </li>
+                  </ul>
+                </small>
+              </div>
 
-      <div dropdown (onShown)="onShown()" (onHidden)="onHidden()" (isOpenChange)="isOpenChange()" style="position:relative"><small>
-        <a href dropdownToggle (click)="false">{{ 'Change language' | translate }}</a>
-        <ul *dropdownMenu class="dropdown-menu">
-          <li *ngFor="let language of languages">
-            <a class="dropdown-item btn pointer" role="button"  (click)="doSwitchTextarea(language.value)">{{language.name}}</a>
-          </li>
-        </ul></small>
+              <!-- Name (language) -->
+              <div *ngFor="let language of languages; let i = index">
+                <label [hidden]="current_language != language.value">{{ 'Nationality' | translate }} ({{ language.name }})</label>
+                <div [hidden]="current_language != language.value">
+                  <input name="title[{{language.value}}]" [(ngModel)]="formData.title[language.value]" class="form-control" placeholder="{{'Enter the nationality name' | translate }}">
+                </div>
+                <small [hidden]="current_language != language.value" class="form-text text-muted">{{ 'Specificare il nome della nazionalità nelle varie lingue (per cambiare lingua selezionare \'Change Language\').' | translate }}</small>
+              </div>
+            </div>
+
+            <!-- Delete and save buttons-->
+            <div class="row">
+              <div class="col-6 text-left">
+                <button [hidden]="!uuid" type="button" class="btn btn-danger rounded-0" (click)="modalDelete.show()">{{ 'Delete' | translate}}</button>
+              </div>
+              <div class="col-6 text-right">
+                <button type="submit" class="btn btn-primary rounded-0">{{ 'Save' | translate}}</button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
-      <div class="form-group">
-        <div *ngFor="let language of languages; let i = index">
-        <label [hidden]="current_language != language.value">{{ 'Name in '+language.name | translate }}</label>
-        <div class="input-group mb-3" [hidden]="current_language != language.value">
-          <input name="title[{{language.value}}]" [(ngModel)]="formData.title[language.value]" class="form-control" placeholder="{{'Enter the name' | translate }}">
-        </div>
-        </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal delete message -->
+<div bsModal #modalDelete="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Eliminazione nazionalità' | translate }}</h4>
+        <button type="button" class="close" (click)="modalDelete.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ 'Sei sicuro di voler eliminare la nazionalità corrente?' | translate }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="doDelete(uuid)">{{ 'Delete' | translate }}</button>
+        <button type="button" class="btn btn-secondary" (click)="modalDelete.hide()">{{ 'Cancel' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal entering data error -->
+<div bsModal #modalError="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalErrorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">{{ messageError.title }}</h4>
+              <button type="button" class="close" (click)="modalError.hide()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <p>{{ messageError.description }}</p>
+              <ul>
+                  <li *ngFor="let errorDescription of errorsDescriptions">{{ errorDescription }}</li>
+              </ul>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modalError.hide()">{{ 'Close' | translate }}</button>
+          </div>
       </div>
   </div>
 </div>
 
-
-         <div class="row">
-          <div class="col-12 text-right">
-            <button type="submit" class="btn btn-primary rounded-0">{{ 'SAVE' | translate}}</button>
-          </div>
-        </div>
-
-        <div class="row mt-3" *ngIf="uuid">
-          <div class="col-12 text-right">
-            <button type="button" class="btn btn-danger rounded-0" (click)="doDelete(uuid)">{{ 'DELETE' | translate}}</button>
-          </div>
-        </div>
-
-
-        </form>
-        </div>
+<!-- Modal exception error -->
+<div bsModal #modalException="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExceptionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageException.name }}</h4>
+        <button type="button" class="close" (click)="modalException.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><b>Status: </b>{{ messageException.statusText }} ({{ messageException.status }})</p>
+        <p><b>Description: </b>{{ messageException.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
       </div>
     </div>
   </div>

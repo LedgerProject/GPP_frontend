@@ -11,7 +11,7 @@
           <!-- Search form -->
           <form #form="ngForm">
             <div class="input-group mb-3">
-                <input type="text" (keyup)="onKey()" class="form-control" name="search" [(ngModel)]="formData.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                <input type="text" (keyup)="filterCategories()" class="form-control" name="search" [(ngModel)]="formSearch.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
                 <div class="input-group-append">
                   <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
                 </div>
@@ -21,18 +21,18 @@
 
           <!-- Categories list -->
           <div class="table-responsive">
-          <table class="table table-hover" *ngIf='show_categories.length'>
+          <table class="table table-hover" *ngIf='filteredCategories.length'>
             <thead>
               <th>{{ 'Category' | translate }}</th>
             </thead>
             <tbody>
-              <tr class="pointer" *ngFor="let category of show_categories" (click)="doOpen(category.idCategory)">
+              <tr class="pointer" *ngFor="let category of filteredCategories" (click)="categoryDetails(category.idCategory)">
                 <td>{{ category.identifier }}</td>
               </tr>
             </tbody>
           </table>
           </div>
-          <div class="text-danger" *ngIf="!show_categories.length"></div>
+          <div class="text-danger" *ngIf="!filteredCategories.length"></div>
         </div>
       </div>
     </div>

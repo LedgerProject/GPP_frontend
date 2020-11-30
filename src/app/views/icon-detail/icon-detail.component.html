@@ -17,34 +17,30 @@
             <!-- Name -->
             <div class="form-group mt-3">
               <label>{{ 'Name' | translate }}</label>
-              <div class="input-group mb-3">
-                <input type="text" formControlName="name" id="name" class="form-control" placeholder="{{'Enter the icon name' | translate }}" required>
-              </div>
+              <input type="text" formControlName="name" id="name" class="form-control" placeholder="{{'Enter the icon name' | translate }}" required>
               <small class="form-text text-muted">{{ 'Specificare il nome dell\'icona.' | translate }}</small>
             </div>
 
             <!-- Image (PNG)-->
             <div class="form-group mt-3">
               <label>{{ 'Image' | translate }} <small>{{ '(PNG 48 x 48 pixels)' | translate }}</small></label>
-              <div class="my-2" *ngIf="image">
-                <img [src]="image">
+              <div class="my-2">
+                <img *ngIf="image" [src]="image">
               </div>
-              <div class="input-group mb-3">
-                <input formControlName="image" *ngIf="!uuid" id="image" type="file" (change)="onImageSelect($event)"/>
-                <input name="image" *ngIf="uuid" id="image" type="file" (change)="onImagePatchSelect($event)"/>
-              </div>
+              <input formControlName="image" *ngIf="!uuid" id="image" type="file" (change)="onImageSelect($event)"/>
+              <input name="image" *ngIf="uuid" id="image" type="file" (change)="onImagePatchSelect($event)"/>
+              <small class="form-text text-muted">{{ 'Selezionare un\'immagine PNG di 48x48 pixels.' | translate }}</small>
             </div>
 
             <!-- Marker (PNG)-->
             <div class="form-group mt-3">
               <label>{{ 'Marker' | translate }} <small>{{ '(PNG 32 x 37 pixels)' | translate }}</small></label>
               <div class="my-2">
-                <img [src]="marker">
+                <img *ngIf="marker" [src]="marker">
               </div>
-              <div class="input-group mb-3">
-                <input formControlName="marker" *ngIf="!uuid" id="marker" type="file" (change)="onMarkerSelect($event)"/>
-                <input name="marker" *ngIf="uuid" id="marker" type="file" (change)="onMarkerPatchSelect($event)"/>
-              </div>
+              <input formControlName="marker" *ngIf="!uuid" id="marker" type="file" (change)="onMarkerSelect($event)"/>
+              <input name="marker" *ngIf="uuid" id="marker" type="file" (change)="onMarkerPatchSelect($event)"/>
+              <small class="form-text text-muted">{{ 'Selezionare un\'immagine PNG di 32x37 pixels.' | translate }}</small>
             </div>
 
             <!-- Delete and save buttons-->

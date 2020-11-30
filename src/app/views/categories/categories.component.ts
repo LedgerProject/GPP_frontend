@@ -1,9 +1,26 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+
+interface Category {
+  idCategory: string;
+  identifier: string;
+  type: string;
+}
+
+interface Search {
+  search: string;
+}
+
+interface MessageException {
+  name: string;
+  status: number;
+  statusText: string;
+  message: string;
+}
 
 @Component({
   selector: 'app-categories',
@@ -11,98 +28,104 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
   styleUrls: ['./categories.component.css']
 })
 export class CategoriesComponent implements OnInit {
-  formData: any;
-  response:any;
-  http_response:any;
-  show_categories:any;
-  all_categories:any;
-  token: any;
-
+  token: string;
+  formSearch: Search;
+  filteredCategories: Array<Category> = [];
+  allCategories: Array<Category> = [];
   @ViewChild('modalException') public modalException: ModalDirective;
-  messageException: any;
+  messageException: MessageException;
 
-  constructor (private router: Router, private http:HttpClient, public userdata: UserdataService, public translate: TranslateService) {
-    this.formData = { search: ''};
-    this.response = { exit: '', error: '', success: '' };
-    this.http_response = null;
-    this.show_categories = [];
-    this.all_categories = [];
+  constructor (
+    private router: Router,
+    private http:HttpClient,
+    public userdata: UserdataService,
+    public translate: TranslateService
+  ) {
     this.token = localStorage.getItem('token');
-
-    this.messageException = { name : '', status : '', statusText : '', message : ''};
+    this.formSearch = {
+      search: ''
+    };
+    this.filteredCategories = [];
+    this.allCategories = [];
+    this.messageException = { 
+      name : '', 
+      status : 0,
+      statusText : '',
+      message : ''
+    };
   }
 
+  // Page init
   ngOnInit(): void {
-    this.doCategories();
+    this.loadCategories();
   }
 
-  // Categories search (onKeyUp)
-  async onKey() {
-    let search = this.formData.search;
+  // Categories list
+  async loadCategories() {
+    // Headers
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
+    // Filters
+    let filter = ' \
+      { \
+        "where": { \
+          "type": "structures" \
+        }, \
+        "fields": { \
+          "idCategory": true, \
+          "identifier": true, \
+          "type": true \
+        }, \
+        "offset": 0, \
+        "limit": 100, \
+        "skip": 0, \
+        "order": ["identifier"] \
+      }';
+
+    // HTTP Request
+    this.http.get<Array<Category>>(this.userdata.mainUrl + this.userdata.mainPort + "/categories?filter=" + filter, {headers} )
+    .subscribe(data => {
+      let categories: Array<Category>;
+      categories = data;
+
+      categories.forEach(element => {
+        let category: Category;
+
+        category = {
+          idCategory : element.idCategory,
+          identifier : element.identifier,
+          type : ''
+        };
+
+        this.allCategories.push(category);
+        this.filteredCategories.push(category);
+      });
+    }, error => {
+      this.showExceptionMessage(error);
+    });
+  }
+
+  // Categories filter
+  async filterCategories() {
+    let search = this.formSearch.search;
 
     if (search) {
-      this.show_categories = [];
-      this.all_categories.forEach(element => {
+      this.filteredCategories = [];
+      this.allCategories.forEach(element => {
         search = search.toLowerCase();
         let name = element.identifier.toLowerCase();
         if (name.includes(search)) {
-          this.show_categories.push(element);
+          this.filteredCategories.push(element);
         }
       });
     } else {
-      this.show_categories = this.all_categories;
+      this.filteredCategories = this.allCategories;
     }
   }
 
   // Open category details
-  async doOpen(id) {
+  async categoryDetails(id) {
     this.router.navigateByUrl('category-details/' + id);
-  }
-
-  // Categories list
-  async doCategories() {
-      // Headers
-      let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
-
-      // Filters
-      let filter = ' \
-        { \
-          "where": { \
-            "type": "structures" \
-          }, \
-          "fields": { \
-            "idCategory": true, \
-            "identifier": true, \
-            "type": true \
-          }, \
-          "offset": 0, \
-          "limit": 100, \
-          "skip": 0, \
-          "order": ["identifier"] \
-        }';
-
-      // HTTP Request
-      this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/categories?filter=" + filter, {headers} )
-      .subscribe(data=> {
-        this.http_response = data;
-        this.response.exit = 1000;
-
-        let categories: any = [];
-        categories = this.http_response;
-        categories.forEach(element => {
-          let category: any = {};
-          category.idCategory = element.idCategory;
-          category.identifier = element.identifier;
-
-          this.all_categories.push(category);
-          this.show_categories.push(category);
-        });
-
-        this.response.error = '';
-        this.response.success = 'Operation Completed!';
-      }, error => {
-        this.showExceptionMessage(error);
-      });
   }
 
   //Exception message

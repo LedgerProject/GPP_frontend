@@ -313,7 +313,7 @@ export class StructureDetailComponent implements OnInit {
       //Check if update or insert
       if (this.uuid) {
         //Update the structure
-        this.http.patch(this.userdata.mainUrl+this.userdata.mainPort+"/structures/"+this.uuid,postParams, {headers} )
+        this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid, postParams, {headers} )
         .subscribe(data=> {
           this.doSaveLanguages();
 
@@ -466,7 +466,6 @@ export class StructureDetailComponent implements OnInit {
           this.showExceptionMessage(error);
         break;
       }
-      
     });
   }
 

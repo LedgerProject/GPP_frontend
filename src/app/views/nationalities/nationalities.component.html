@@ -3,32 +3,58 @@
     <div class="col-md-12 col-lg-8 mx-auto">
       <div class="card mt-4">
         <div class="card-body">
-
+          <!-- Information -->
           <h1 class="mt-4">{{ 'Nationalities - List' | translate }}</h1>
-          <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>
+          <p>{{ 'In questa sezione è possibile gestire le nazionalità da visualizzare nell\'applicazione.' | translate }}</p>
+          <p>{{ 'Seleziona \'Add Nationality\' per aggiungere una nuova nazionalità, oppure selezionane una dall\'elenco per modificarla.' | translate }}</p>
+          
+          <!-- Search form -->
           <form #form="ngForm">
             <div class="input-group mb-3">
                 <input type="text" (keyup)="onKey()" class="form-control" name="search" [(ngModel)]="formData.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
                 <div class="input-group-append">
-                  <button class="btn btn-primary rounded-0" type="submit">{{ 'SEARCH' | translate }}</button>
+                  <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
                 </div>
-                <button class="btn btn-primary ml-3 rounded-0" type="button" [routerLink]="['/nationality-details']">{{ 'ADD NATIONALITY' | translate }}</button>
+                <button class="btn btn-primary ml-3 rounded-0" type="button" [routerLink]="['/nationality-details']">{{ 'Add Nationality' | translate }}</button>
             </div>
           </form>
+
+          <!-- Nationalities list -->
           <div class="table-responsive">
           <table class="table table-hover" *ngIf='show_nationalities.length'>
             <thead>
-              <th>{{ 'NAME' | translate }}</th>
+              <th>{{ 'Nationality' | translate }}</th>
             </thead>
             <tbody>
               <tr class="pointer" *ngFor="let nationality of show_nationalities" (click)="doOpen(nationality.idNationality)">
-                <td>{{nationality.name || nationality.identifier}}</td>
+                <td>{{nationality.identifier}}</td>
               </tr>
             </tbody>
           </table>
           </div>
           <div class="text-danger" *ngIf="!show_nationalities.length"></div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal exception error -->
+<div bsModal #modalException="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExceptionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageException.name }}</h4>
+        <button type="button" class="close" (click)="modalException.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><b>Status: </b>{{ messageException.statusText }} ({{ messageException.status }})</p>
+        <p><b>Description: </b>{{ messageException.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
       </div>
     </div>
   </div>
