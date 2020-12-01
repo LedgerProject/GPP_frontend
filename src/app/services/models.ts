@@ -26,6 +26,7 @@ export interface Category {
 }
 
 export interface CategoryLanguage {
+  idCategoryLanguage: string;
   idCategory: string;
   alias: string;
   category: string;
@@ -36,4 +37,26 @@ export interface Country {
   idCountry: string;
   identifier: string;
   completed: boolean;
+}
+
+export interface CountryLanguage {
+  idCountryLanguage: string;
+  idCountry: string;
+  alias: string;
+  country: string;
+  language: string;
+}
+
+export interface CountryTopic {
+  idCountryTopic: string;
+  idCountry: string;
+  identifier: string;
+}
+
+export interface CountryTopicLanguage {
+  idCountryTopicLanguage: string;
+  idCountryTopic: string;
+  topic: string;
+  description: string;
+  language: string;
 }

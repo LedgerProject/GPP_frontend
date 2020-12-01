@@ -24,7 +24,7 @@ export class CategoryDetailComponent implements OnInit {
   @Input() uuid: string;
   formData: FormData;
   currentLanguage: string;
-  languages:Array<Language>;
+  languages: Array<Language>;
   category: Category;
   @ViewChild('modalDelete') public modalDelete: ModalDirective;
   @ViewChild('modalError') public modalError: ModalDirective;
@@ -156,20 +156,20 @@ export class CategoryDetailComponent implements OnInit {
     }
   }
 
-  // Save category language
+  // Save category languages
   async saveCategoryLanguages() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     //Update the category languages
     this.languages.forEach(element => {
-      let subpostParams = {
+      let postParams = {
         idCategory: this.uuid,
         alias: this.slugifyPipe.transform(this.formData.identifier),
         language: element.value,
         category: this.formData.title[element.value]
       };
 
-      this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/categories-languages", subpostParams, {headers} )
+      this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/categories-languages", postParams, {headers} )
       .subscribe(dataLang => {
       }, error => {
         this.showExceptionMessage(error);
@@ -187,7 +187,7 @@ export class CategoryDetailComponent implements OnInit {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/categories/" + idCategory, {headers} )
-    .subscribe(data=> {
+    .subscribe(data => {
       this.router.navigateByUrl('/categories');
     }, error => {
       this.showExceptionMessage(error);
@@ -203,7 +203,13 @@ export class CategoryDetailComponent implements OnInit {
 
   //Exception message
   showExceptionMessage(error: HttpErrorResponse) {
-    this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
+    this.messageException = {
+      name : error.name,
+      status : error.status,
+      statusText : error.statusText,
+      message : error.message
+    };
+    
     this.modalException.show();
   }
 }
