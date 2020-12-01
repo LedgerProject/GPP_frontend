@@ -1,39 +1,40 @@
-import { LowerCasePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { MessageException, QuickSearch, Nationality } from '../../services/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-nationalities',
   templateUrl: './nationalities.component.html',
   styleUrls: ['./nationalities.component.css']
 })
+
 export class NationalitiesComponent implements OnInit {
-  formData: any;
-  response:any;
-  http_response:any;
-  show_nationalities:any;
-  all_nationalities:any;
-  token: any;
-  idOrganization:any;
-
+  token: string;
+  formSearch: QuickSearch;
+  filteredNationalities: Array<Nationality>;
+  allNationalities: Array<Nationality>;
   @ViewChild('modalException') public modalException: ModalDirective;
-  messageException: any;
+  messageException: MessageException;
 
-  constructor (private router: Router,private http:HttpClient,public userdata: UserdataService,public translate: TranslateService) {
-    this.formData = { search: ''};
-    this.response = { exit: '', error: '', success: '' };
-    this.http_response = null;
-    this.show_nationalities = [];
-    this.all_nationalities = [];
+  constructor (
+    private router: Router,
+    private http:HttpClient,
+    public userdata: UserdataService,
+    public translate: TranslateService
+  ) {
     this.token = localStorage.getItem('token');
-
-    this.messageException = { name : '', status : '', statusText : '', message : ''};
+    this.filteredNationalities = [];
+    this.allNationalities = [];
+    this.messageException = environment.messageExceptionInit;
+    this.formSearch = { search: '' };
   }
 
+  // Page init
   ngOnInit(): void {
     this.doNationalities();
   }
@@ -51,7 +52,6 @@ export class NationalitiesComponent implements OnInit {
           "identifier": true \
         }, \
         "offset": 0, \
-        "limit": 100, \
         "skip": 0, \
         "order": [ \
           "identifier" \
@@ -59,51 +59,36 @@ export class NationalitiesComponent implements OnInit {
       }';
 
     // HTTP Request
-    this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities?filter=" + filter, {headers} )
-    .subscribe(data=> {
-      this.http_response = data;
-      this.response.exit = 1000;
-
-      let nationalities: any = [];
-      nationalities = this.http_response;
-      nationalities.forEach(element => {
-        let nationality: any = {};
-
-        nationality.idNationality = element.idNationality;
-        nationality.identifier = element.identifier;
-        nationality.name = '';
-
-        this.all_nationalities.push(nationality);
-        this.show_nationalities.push(nationality);
-      });
-      this.response.error = '';
-      this.response.success = 'Operation Completed!';
+    this.http.get<Array<Nationality>>(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities?filter=" + filter, {headers} )
+    .subscribe(data => {
+      this.allNationalities = data;
+      this.filteredNationalities = data;
     }, error => {
       this.showExceptionMessage(error);
     });
   }
 
-  // Nationalities search (onKeyUp)
-  async onKey() {
-    let search = this.formData.search;
+  // Nationalities filter
+  async filterNationalities() {
+    let search = this.formSearch.search;
 
     if (search) {
-      this.show_nationalities = [];
-      this.all_nationalities.forEach(element => {
+      this.filteredNationalities = [];
+      this.allNationalities.forEach(element => {
         search = search.toLowerCase();
         let name = element.identifier.toLowerCase();
         if (name.includes(search)) {
-          this.show_nationalities.push(element);
+          this.filteredNationalities.push(element);
         }
       });
     } else {
-      this.show_nationalities = this.all_nationalities;
+      this.filteredNationalities = this.allNationalities;
     }
   }
 
   // Open nationality details
-  async doOpen(id) {
-   this.router.navigateByUrl('nationality-details/'+id);
+  async nationalityDetails(id) {
+   this.router.navigateByUrl('nationality-details/' + id);
   }
 
   //Exception message
@@ -112,4 +97,3 @@ export class NationalitiesComponent implements OnInit {
     this.modalException.show();
   }
 }
-

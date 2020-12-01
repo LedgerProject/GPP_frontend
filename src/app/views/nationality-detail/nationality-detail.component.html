@@ -7,7 +7,7 @@
           <a [routerLink]="['/nationalities']"><i class="fa fa-chevron-left"></i> {{ 'Back to the nationalities list' | translate }}</a>
 
           <!-- Form -->
-          <form  #form="ngForm" (ngSubmit)="doSave()">
+          <form  #form="ngForm" (ngSubmit)="saveNationality()">
             <!-- Information -->
             <h1 class="mt-4">
               <span *ngIf="uuid">{{ 'Nationalities - Edit' | translate }}</span>
@@ -24,12 +24,12 @@
 
             <div class="form-group md-3">
               <!-- Change language -->
-              <div dropdown (onShown)="onShown()" (onHidden)="onHidden()" (isOpenChange)="isOpenChange()" style="position:relative">
+              <div dropdown style="position:relative">
                 <small>
                   <a href dropdownToggle (click)="false">{{ 'Change language' | translate }}</a>
                   <ul *dropdownMenu class="dropdown-menu">
                     <li *ngFor="let language of languages">
-                      <a class="dropdown-item btn pointer" role="button"  (click)="doSwitchTextarea(language.value)">{{language.name}}</a>
+                      <a class="dropdown-item btn pointer" role="button"  (click)="switchTextarea(language.value)">{{language.name}}</a>
                     </li>
                   </ul>
                 </small>
@@ -37,11 +37,11 @@
 
               <!-- Name (language) -->
               <div *ngFor="let language of languages; let i = index">
-                <label [hidden]="current_language != language.value">{{ 'Nationality' | translate }} ({{ language.name }})</label>
-                <div [hidden]="current_language != language.value">
+                <label [hidden]="currentLanguage != language.value">{{ 'Nationality' | translate }} ({{ language.name }})</label>
+                <div [hidden]="currentLanguage != language.value">
                   <input name="title[{{language.value}}]" [(ngModel)]="formData.title[language.value]" class="form-control" placeholder="{{'Enter the nationality name' | translate }}">
                 </div>
-                <small [hidden]="current_language != language.value" class="form-text text-muted">{{ 'Specificare il nome della nazionalità nelle varie lingue (per cambiare lingua selezionare \'Change Language\').' | translate }}</small>
+                <small [hidden]="currentLanguage != language.value" class="form-text text-muted">{{ 'Specificare il nome della nazionalità nelle varie lingue (per cambiare lingua selezionare \'Change Language\').' | translate }}</small>
               </div>
             </div>
 
@@ -75,7 +75,7 @@
         <p>{{ 'Sei sicuro di voler eliminare la nazionalità corrente?' | translate }}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="doDelete(uuid)">{{ 'Delete' | translate }}</button>
+        <button type="button" class="btn btn-danger" (click)="deleteNationality(uuid)">{{ 'Delete' | translate }}</button>
         <button type="button" class="btn btn-secondary" (click)="modalDelete.hide()">{{ 'Cancel' | translate }}</button>
       </div>
     </div>

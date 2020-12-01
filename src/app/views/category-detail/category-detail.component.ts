@@ -40,7 +40,7 @@ export class CategoryDetailComponent implements OnInit {
     public translate: TranslateService,
     public userdata: UserdataService,
     private slugifyPipe: SlugifyPipe,
-    ) {
+  ) {
     this.token = localStorage.getItem('token');
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
     this.currentLanguage = this.translate.getDefaultLang();
@@ -213,4 +213,3 @@ export class CategoryDetailComponent implements OnInit {
     this.modalException.show();
   }
 }
-
