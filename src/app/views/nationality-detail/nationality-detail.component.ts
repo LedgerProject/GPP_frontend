@@ -1,40 +1,39 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SlugifyPipe } from '../../pipes/slugify.pipe';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { Language, MessageException, MessageError, Nationality, NationalityLanguage } from '../../services/models';
+import { environment } from '../../../environments/environment';
+
+interface FormData {
+  identifier: string;
+  title: string[];
+}
 
 @Component({
   selector: 'app-nationality-detail',
   templateUrl: './nationality-detail.component.html',
   styleUrls: ['./nationality-detail.component.css']
 })
+
 export class NationalityDetailComponent implements OnInit {
+  token: string;
   @Input() uuid: string;
-  response:any;
-  formData: any;
-  http_response:any;
-  current_language:any;
-  languages:any;
-  token: any;
-  name_langs: any;
-  nationality: any;
-
+  formData: FormData;
+  currentLanguage: string;
+  languages: Array<Language>;
+  nationality: Nationality;
   @ViewChild('modalDelete') public modalDelete: ModalDirective;
-
   @ViewChild('modalError') public modalError: ModalDirective;
-  messageError: any;
-  errorsDescriptions: any;
-
+  messageError: MessageError;
+  errorsDescriptions: string[];
   @ViewChild('modalException') public modalException: ModalDirective;
-  messageException: any;
-
-  status: { isOpen: boolean } = { isOpen: false };
-  disabled: boolean = false;
-  isDropup: boolean = true;
-  autoClose: boolean = false;
+  messageException: MessageException;
+  
+  name_langs: any;
 
   constructor (
     private router: Router,
@@ -43,78 +42,63 @@ export class NationalityDetailComponent implements OnInit {
     public translate: TranslateService,
     public userdata: UserdataService,
     private slugifyPipe: SlugifyPipe,
-    ) {
-    this.formData = { identifier: '', title: []};
-    this.response = { exit: '', error: '', success: '' };
-    this.http_response = null;
-    this.current_language = this.translate.getDefaultLang();
-    this.languages = [{ 'name': 'English', 'value': 'en' },{ 'name': 'Français', 'value': 'fr' }];
-
+  ) {
     this.token = localStorage.getItem('token');
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
-    this.name_langs = [];
-    this.nationality = { identifier: ''};
-
-    this.messageError = { title : '', description : '' };
+    this.currentLanguage = this.translate.getDefaultLang();
+    this.languages = environment.languages;
+    this.messageException = environment.messageExceptionInit;
+    this.messageError = environment.messageErrorInit;
     this.errorsDescriptions = [];
-
-    this.messageException = { name : '', status : '', statusText : '', message : '' };
+    this.formData = {
+      identifier: '',
+      title: []
+    };
+    
+    this.name_langs = [];
   }
 
+  // Page init
   ngOnInit(): void {
     if (this.uuid) {
-      this.getNationality(this.token);
+      this.getNationality();
     }
   }
 
-  async getNationality(token) {
-    let headers = new HttpHeaders().set("Authorization", "Bearer " + token);
+  // Get nationality details
+  async getNationality() {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities/" + this.uuid, {headers} )
-    .subscribe(data_nationality=> {
-      this.nationality = data_nationality;
+    this.http.get<Nationality>(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities/" + this.uuid, {headers} )
+    .subscribe(dataNationality => {
+      this.nationality = dataNationality;
 
       if (this.nationality) {
         this.formData.identifier = this.nationality.identifier;
-      }
 
-      //Name (languages)
-      this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities/" + this.uuid + "/nationalities-languages", {headers} )
-      .subscribe(data_text=> {
-        this.name_langs = data_text;
-        console.log(this.name_langs);
-        this.name_langs.forEach(text_element => {
-          this.formData.title[text_element.language] = text_element.nationality;
-        });
-      }, error => {
-        this.showExceptionMessage(error);
+        this.getNationalityLanguages();
+      }
+    }, error => {
+      this.showExceptionMessage(error);
+    });
+  }
+
+  // Get nationality languages
+  async getNationalityLanguages() {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
+    this.http.get<Array<NationalityLanguage>>(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities/" + this.uuid + "/nationalities-languages", {headers} )
+    .subscribe(dataLangs=> {
+      dataLangs.forEach(elementLang => {
+        this.formData.title[elementLang.language] = elementLang.nationality;
       });
     }, error => {
       this.showExceptionMessage(error);
     });
   }
 
-  doSaveLanguages() {
-    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
-
-    //Update the nationality languages
-    this.languages.forEach(element => {
-      let subpostParams = {
-        idNationality: this.uuid,
-        alias: this.slugifyPipe.transform(this.formData.identifier),
-        language: element.value,
-        nationality: this.formData.title[element.value]
-      };
-
-      this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities-languages", subpostParams, {headers} )
-      .subscribe(subdata=> {
-      }, error => {
-        this.showExceptionMessage(error);
-      });
-    });
-  }
-
-  doSave() {
+  // Save nationality
+  async saveNationality() {
     this.errorsDescriptions = [];
 
     //Check if entered the identifier
@@ -134,7 +118,9 @@ export class NationalityDetailComponent implements OnInit {
       this.errorsDescriptions.push(this.translate.instant('Please, enter the nationality name in each language'));
     }
 
+    //Check if there are no errors
     if (this.errorsDescriptions.length === 0) {
+      //Data save
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
       let postParams = {
@@ -143,20 +129,21 @@ export class NationalityDetailComponent implements OnInit {
 
       //Check if update or insert
       if (this.uuid) {
+        //Update the nationality
         this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities/" + this.uuid, postParams, {headers} )
-        .subscribe(data=> {
-          this.doSaveLanguages();
+        .subscribe(async data => {
+          await this.saveNationalityLanguages();
 
           this.router.navigateByUrl('/nationalities');
         }, error => {
           this.showExceptionMessage(error);
         });
       } else {
-        this.http.post(this.userdata.mainUrl+this.userdata.mainPort+"/nationalities/",postParams, {headers} )
-        .subscribe(data=> {
-          this.http_response = data;
-          this.uuid = this.http_response.idNationality;
-          this.doSaveLanguages();
+        //Insert the nationality
+        this.http.post<Nationality>(this.userdata.mainUrl+this.userdata.mainPort+"/nationalities/",postParams, {headers} )
+        .subscribe(async data => {
+          this.uuid = data.idNationality;
+          await this.saveNationalityLanguages();
 
           this.router.navigateByUrl('/nationalities');
         }, error => {
@@ -164,6 +151,7 @@ export class NationalityDetailComponent implements OnInit {
         });
       }
     } else {
+      //Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
         this.translate.instant('The data entered is incorrect or missing.')
@@ -171,40 +159,42 @@ export class NationalityDetailComponent implements OnInit {
     }
   }
 
-  async doSwitchTextarea(lang) {
-    this.current_language = lang;
+  // Save nationality languages
+  async saveNationalityLanguages() {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
+    //Update the nationality languages
+    this.languages.forEach(element => {
+      let subpostParams = {
+        idNationality: this.uuid,
+        alias: this.slugifyPipe.transform(this.formData.identifier),
+        language: element.value,
+        nationality: this.formData.title[element.value]
+      };
+
+      this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities-languages", subpostParams, {headers} )
+      .subscribe(dataLang=> {
+      }, error => {
+        this.showExceptionMessage(error);
+      });
+    });
   }
 
-  doDelete(idNationality) {
-    let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
+  // Switch language
+  async switchTextarea(lang) {
+    this.currentLanguage = lang;
+  }
+
+  // Delete nationality
+  deleteNationality(idNationality) {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities/" + idNationality, {headers} )
     .subscribe(data=> {
-      this.http_response = data;
       this.router.navigateByUrl('/nationalities');
     }, error => {
       this.showExceptionMessage(error);
     });
-  }
-
-  onHidden(): void {
-    //console.log('Dropdown is hidden');
-  }
-  onShown(): void {
-    //console.log('Dropdown is shown');
-  }
-  isOpenChange(): void {
-    //console.log('Dropdown state is changed');
-  }
-
-  toggleDropdown($event: MouseEvent): void {
-    $event.preventDefault();
-    $event.stopPropagation();
-    this.status.isOpen = !this.status.isOpen;
-  }
-
-  change(value: boolean): void {
-    this.status.isOpen = value;
   }
 
   //Error message
@@ -220,5 +210,3 @@ export class NationalityDetailComponent implements OnInit {
     this.modalException.show();
   }
 }
-
-

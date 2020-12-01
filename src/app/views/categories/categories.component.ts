@@ -30,7 +30,7 @@ export class CategoriesComponent implements OnInit {
     this.token = localStorage.getItem('token');
     this.filteredCategories = [];
     this.allCategories = [];
-    this.messageException = environment.messageExceptionInit
+    this.messageException = environment.messageExceptionInit;
     this.formSearch = { search: '' };
   }
 

@@ -11,7 +11,7 @@
           <!-- Search form -->
           <form #form="ngForm">
             <div class="input-group mb-3">
-                <input type="text" (keyup)="onKey()" class="form-control" name="search" [(ngModel)]="formData.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                <input type="text" (keyup)="filterIcons()" class="form-control" name="search" [(ngModel)]="formSearch.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
                 <div class="input-group-append">
                   <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
                 </div>
@@ -19,28 +19,28 @@
             </div>
           </form>
 
-          <!-- Countries list -->
+          <!-- Icons list -->
           <div class="table-responsive">
-            <table class="table table-hover" *ngIf='show_icons.length'>
+            <table class="table table-hover" *ngIf='filteredIcons.length'>
               <thead>
                 <th>{{ 'Name' | translate }}</th>
                 <th class="text-center">{{ 'Icon' | translate }}</th>
                 <th class="text-center">{{ 'Marker' | translate }}</th>
               </thead>
               <tbody>
-                <tr class="pointer" *ngFor="let icon of show_icons" (click)="doOpen(icon.idIcon)">
+                <tr class="pointer" *ngFor="let icon of filteredIcons" (click)="iconDetails(icon.idIcon)">
                   <td>{{icon.name}}</td>
                   <td class="text-center">
-                    <img class="icon-list" [src]="icon.image">
+                    <img class="icon-list" [src]="'data:image/png;base64,' + icon.image">
                   </td>
                   <td class="text-center">
-                    <img class="marker-list" [src]="icon.marker">
+                    <img class="marker-list" [src]="'data:image/png;base64,' + icon.marker">
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="text-danger" *ngIf="!show_icons.length"></div>
+          <div class="text-danger" *ngIf="!filteredIcons.length"></div>
         </div>
       </div>
     </div>

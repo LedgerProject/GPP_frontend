@@ -5,6 +5,14 @@ import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SlugifyPipe } from '../../pipes/slugify.pipe';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { Language, MessageException, MessageError, Country, CountryLanguage } from '../../services/models';
+import { environment } from '../../../environments/environment';
+
+interface FormData {
+  identifier: string;
+  title: string[];
+  completed: string;
+}
 
 @Component({
   selector: 'app-country-detail',
@@ -15,27 +23,16 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 export class CountryDetailComponent implements OnInit {
   token: string;
   @Input() uuid: string;
-  formData: any;
-  http_response:any;
-  current_language:any;
-  languages:any;
-  
-  name_langs: any;
-  country: any;
-
+  formData: FormData;
+  currentLanguage: string;
+  languages: Array<Language>;
+  country: Country;
   @ViewChild('modalDelete') public modalDelete: ModalDirective;
-
   @ViewChild('modalError') public modalError: ModalDirective;
-  messageError: any;
-  errorsDescriptions: any;
-
+  messageError: MessageError;
+  errorsDescriptions: string[];
   @ViewChild('modalException') public modalException: ModalDirective;
-  messageException: any;
-  
-  status: { isOpen: boolean } = { isOpen: false };
-  disabled: boolean = false;
-  isDropup: boolean = true;
-  autoClose: boolean = false;
+  messageException: MessageException;
 
   constructor (
     private router: Router,
@@ -44,40 +41,39 @@ export class CountryDetailComponent implements OnInit {
     public translate: TranslateService,
     public userdata: UserdataService,
     private slugifyPipe: SlugifyPipe
-    ) {
-    this.formData = { identifier: '', title: [], completed: '' };
-    this.http_response = null;
-    this.current_language = this.translate.getDefaultLang();
-    this.languages = [{ 'name': 'English', 'value': 'en'}, { 'name': 'Français', 'value': 'fr' }];
-    
+  ) {
     this.token = localStorage.getItem('token');
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
-    this.name_langs = [];
-    this.country = { identifier: '', completed: '' };
-
-    this.messageError = { title : '', description : '' };
+    this.currentLanguage = this.translate.getDefaultLang();
+    this.languages = environment.languages;
+    this.messageException = environment.messageExceptionInit;
+    this.messageError = environment.messageErrorInit;
     this.errorsDescriptions = [];
-
-    this.messageException = { name : '', status : '', statusText : '', message : '' };
+    this.formData = {
+      identifier: '',
+      title: [],
+      completed: 'no'
+    };
   }
 
+  // Page init
   ngOnInit(): void {
     if (this.uuid) {
-      this.getCountry(this.token);
-    } else {
-      this.formData.completed = 'no';
+      this.getCountry();
     }
   }
 
-  async getCountry(token) {
-    let headers = new HttpHeaders().set("Authorization", "Bearer " + token);
+  // Get country details
+  async getCountry() {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/countries/" + this.uuid, {headers} )
-    .subscribe(data_country=> {
-      this.country = data_country;
+    this.http.get<Country>(this.userdata.mainUrl + this.userdata.mainPort + "/countries/" + this.uuid, {headers} )
+    .subscribe(dataCountry=> {
+      this.country = dataCountry;
 
       if (this.country) {
         this.formData.identifier = this.country.identifier;
+
         if (this.country.completed == true) {
           this.formData.completed = 'yes';
         } else {
@@ -85,22 +81,28 @@ export class CountryDetailComponent implements OnInit {
         }
       }
 
-      //Name (languages)
-      this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/countries/" + this.uuid + "/countries-languages", {headers} )
-      .subscribe(data_text=> {
-        this.name_langs = data_text;
-        this.name_langs.forEach(text_element => {
-          this.formData.title[text_element.language] = text_element.country;
-        });
-      }, error => {
-        this.showExceptionMessage(error);
+      this.getCountryLanguages();
+    }, error => {
+      this.showExceptionMessage(error);
+    });
+  }
+
+  // Get country languages
+  async getCountryLanguages() {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
+    this.http.get<Array<CountryLanguage>>(this.userdata.mainUrl + this.userdata.mainPort + "/countries/" + this.uuid + "/countries-languages", {headers} )
+    .subscribe(dataLangs=> {
+      dataLangs.forEach(elementLang => {
+        this.formData.title[elementLang.language] = elementLang.country;
       });
     }, error => {
       this.showExceptionMessage(error);
     });
   }
 
-  doSave() {
+  // Save country
+  async saveCountry() {
     this.errorsDescriptions = [];
 
     //Check if entered the identifier
@@ -125,9 +127,12 @@ export class CountryDetailComponent implements OnInit {
       this.errorsDescriptions.push(this.translate.instant('Please, enter the country name in each language'));
     }
 
+    //Check if there are no errors
     if (this.errorsDescriptions.length === 0) {
+      //Data save
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
       let completed: Boolean;
+
       if (this.formData.completed == 'yes') {
         completed = true;
       } else {
@@ -143,8 +148,8 @@ export class CountryDetailComponent implements OnInit {
       if (this.uuid) {
         //Update the country
         this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/countries/" + this.uuid, postParams, {headers} )
-        .subscribe(data=> {
-          this.doSaveLanguages();
+        .subscribe(async data => {
+          await this.saveCountryLanguages();
 
           this.router.navigateByUrl('/countries');
         }, error => {
@@ -152,11 +157,10 @@ export class CountryDetailComponent implements OnInit {
         });
       } else {
         //Insert the country
-        this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/countries/", postParams, {headers} )
-        .subscribe(data=> {
-          this.http_response = data;
-          this.uuid = this.http_response.idCountry;
-          this.doSaveLanguages();
+        this.http.post<Country>(this.userdata.mainUrl + this.userdata.mainPort + "/countries/", postParams, {headers} )
+        .subscribe(async data => {
+          this.uuid = data.idCountry;
+          await this.saveCountryLanguages();
           
           this.router.navigateByUrl('/countries');
         }, error => {
@@ -164,6 +168,7 @@ export class CountryDetailComponent implements OnInit {
         });
       }
     } else {
+      //Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
         this.translate.instant('The data entered is incorrect or missing.')
@@ -171,60 +176,42 @@ export class CountryDetailComponent implements OnInit {
     }
   }
 
-  doSaveLanguages() {
+  // Save country languages
+  async saveCountryLanguages() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     //Update the country languages
     this.languages.forEach(element => {
-      let subpostParams = {
+      let postParams = {
         idCountry: this.uuid,
         alias: this.slugifyPipe.transform(this.formData.identifier),
         language: element.value,
         country: this.formData.title[element.value]
       };
 
-      this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/countries-languages", subpostParams, {headers} )
-      .subscribe(subdata=> {
+      this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/countries-languages", postParams, {headers} )
+      .subscribe(dataLang => {
       }, error => {
         this.showExceptionMessage(error);
       });
     });
   }
 
-  async doSwitchTextarea(lang) {
-    this.current_language = lang;
+  // Switch language
+  async switchTextarea(lang) {
+    this.currentLanguage = lang;
   }
 
-  doDelete(idCountry) {
+  // Delete country
+  deleteCountry(idCountry) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/countries/" + idCountry, {headers} )
-    .subscribe(data=> {
-      this.http_response = data;
+    .subscribe(data => {
       this.router.navigateByUrl('/countries');
     }, error => {
       this.showExceptionMessage(error);
     });
-  }
-
-  onHidden(): void {
-    //console.log('Dropdown is hidden');
-  }
-  onShown(): void {
-    //console.log('Dropdown is shown');
-  }
-  isOpenChange(): void {
-    //console.log('Dropdown state is changed');
-  }
-
-  toggleDropdown($event: MouseEvent): void {
-    $event.preventDefault();
-    $event.stopPropagation();
-    this.status.isOpen = !this.status.isOpen;
-  }
-
-  change(value: boolean): void {
-    this.status.isOpen = value;
   }
 
   //Error message
@@ -236,7 +223,13 @@ export class CountryDetailComponent implements OnInit {
 
   //Exception message
   showExceptionMessage(error: HttpErrorResponse) {
-    this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
+    this.messageException = {
+      name : error.name,
+      status : error.status,
+      statusText : error.statusText,
+      message : error.message
+    };
+
     this.modalException.show();
   }
 }

@@ -7,25 +7,25 @@
           <a [routerLink]="['/countries']"><i class="fa fa-chevron-left"></i> {{ 'Back to the countries list' | translate }}</a>
 
           <!-- Form -->
-          <form  #form="ngForm" (ngSubmit)="doSave()">
+          <form  #form="ngForm" (ngSubmit)="saveTopic()">
             <!-- Information -->
             <h1 class="mt-4">{{ 'Countries - Topic' | translate }} ({{country.identifier }})</h1>
             <p>{{ 'In questa sezione è possibile inserire delle informazioni relative alla nazione suddivise per topic.' | translate }}</p>
             <p>{{ 'Seleziona il pulsante \'Add Topic\' per aggiungere un nuovo topic oppure \'Delete\' per rimuoverne uno.' | translate }}</p>
             <p>{{ 'Ricorda dopo aver inserito tutte le informazioni di selezionare il pulsante \'Save\'' | translate }}</p>
 
-            <div class="row" *ngFor="let topic of topics; let counter = index">
+            <div class="row" *ngFor="let topic of formData; let counter = index">
               <div class="col-md-12">
                 <!-- Topic counter -->
                 <h4>{{ 'Topic: ' | translate }} {{counter + 1}}</h4>
 
                 <!-- Change language -->
-                <div dropdown (onShown)="onShown()" (onHidden)="onHidden()" (isOpenChange)="isOpenChange()" style="position:relative">
+                <div dropdown style="position:relative">
                   <small>
                     <a href dropdownToggle (click)="false">{{ 'Change language' | translate }}</a>
                     <ul *dropdownMenu class="dropdown-menu">
                       <li *ngFor="let language of languages">
-                        <a class="dropdown-item btn pointer" role="button"  (click)="doSwitchTextarea(language.value,counter)">{{language.name}}</a>
+                        <a class="dropdown-item btn pointer" role="button"  (click)="switchTextarea(language.value, counter)">{{language.name}}</a>
                       </li>
                     </ul>
                   </small>
@@ -58,7 +58,7 @@
             <!-- Add topic and save buttons -->
             <div class="row">
               <div class="col-6 text-left">
-                <button type="button" class="btn btn-primary rounded-0" (click)="doAdd()">{{ 'Add Topic' | translate}}</button>
+                <button type="button" class="btn btn-primary rounded-0" (click)="addEmptyTopic()">{{ 'Add Topic' | translate}}</button>
               </div>
               <div class="col-6 text-right">
                 <button type="submit" class="btn btn-primary rounded-0">{{ 'Save' | translate}}</button>
@@ -105,7 +105,7 @@
         <p>{{ 'Sei sicuro di voler eliminare il topic corrente?' | translate }}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="doDelete()">{{ 'Delete' | translate }}</button>
+        <button type="button" class="btn btn-danger" (click)="deleteTopic()">{{ 'Delete' | translate }}</button>
         <button type="button" class="btn btn-secondary" (click)="modalDelete.hide()">{{ 'Cancel' | translate }}</button>
       </div>
     </div>

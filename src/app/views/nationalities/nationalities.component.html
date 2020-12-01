@@ -11,7 +11,7 @@
           <!-- Search form -->
           <form #form="ngForm">
             <div class="input-group mb-3">
-                <input type="text" (keyup)="onKey()" class="form-control" name="search" [(ngModel)]="formData.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                <input type="text" (keyup)="filterNationalities()" class="form-control" name="search" [(ngModel)]="formSearch.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
                 <div class="input-group-append">
                   <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
                 </div>
@@ -21,18 +21,18 @@
 
           <!-- Nationalities list -->
           <div class="table-responsive">
-          <table class="table table-hover" *ngIf='show_nationalities.length'>
+          <table class="table table-hover" *ngIf='filteredNationalities.length'>
             <thead>
               <th>{{ 'Nationality' | translate }}</th>
             </thead>
             <tbody>
-              <tr class="pointer" *ngFor="let nationality of show_nationalities" (click)="doOpen(nationality.idNationality)">
+              <tr class="pointer" *ngFor="let nationality of filteredNationalities" (click)="nationalityDetails(nationality.idNationality)">
                 <td>{{nationality.identifier}}</td>
               </tr>
             </tbody>
           </table>
           </div>
-          <div class="text-danger" *ngIf="!show_nationalities.length"></div>
+          <div class="text-danger" *ngIf="!filteredNationalities.length"></div>
         </div>
       </div>
     </div>

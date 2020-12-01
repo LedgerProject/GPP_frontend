@@ -1,70 +1,46 @@
-import { LowerCasePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { MessageException, QuickSearch, Structure } from '../../services/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-structures',
   templateUrl: './structures.component.html',
   styleUrls: ['./structures.component.css']
 })
+
 export class StructuresComponent implements OnInit {
-  formData: any;
-  response:any;
-  http_response:any;
-  show_structures:any;
-  all_structures:any;
-  token: any;
-
+  token: string;
+  formSearch: QuickSearch;
+  filteredStructures: Array<Structure>;
+  allStructures: Array<Structure>;
   @ViewChild('modalException') public modalException: ModalDirective;
-  messageException: any;
+  messageException: MessageException;
 
-  constructor (private router: Router, private http:HttpClient, public userdata: UserdataService, public translate: TranslateService) {
-    this.formData = { search: ''};
-    this.response = { exit: '', error: '', success: '' };
-    this.http_response = null;
-    this.show_structures = {};
-    this.all_structures = {};
+  constructor (
+    private router: Router,
+    private http:HttpClient,
+    public userdata: UserdataService,
+    public translate: TranslateService
+  ) {
     this.token = localStorage.getItem('token');
-
-    this.messageException = { name : '', status : '', statusText : '', message : ''};
+    this.filteredStructures = [];
+    this.allStructures = [];
+    this.messageException = environment.messageExceptionInit;
+    this.formSearch = { search: '' };
   }
 
+  // Page init
   ngOnInit(): void {
-    this.doStructures();
+    this.loadStructures();
   }
 
-  // Structures search (onKeyUp)
-  async onKey() {
-    let search = this.formData.search;
-
-    if (search) {
-      this.show_structures = [];
-      this.all_structures.forEach(element => {
-        search = search.toLowerCase();
-        let name = element.structurename.toLowerCase();
-        let address = element.address.toLowerCase();
-        let city = element.city.toLowerCase();
-        let email = element.email.toLowerCase();
-        if (name.includes(search) || address.includes(search) || city.includes(search) || email.includes(search)) {
-          this.show_structures.push(element);
-        }
-      });
-    } else {
-      this.show_structures = this.all_structures;
-    }
-  }
-
-  // Open structure details
-  async doOpen(id) {
-    this.router.navigateByUrl('structure-details/' + id);
-  }
-
-  // Countries list
-  async doStructures() {
+  // Structures list
+  async loadStructures() {
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -90,32 +66,44 @@ export class StructuresComponent implements OnInit {
           "iconmarker":false \
         }, \
         "offset": 0, \
-        "limit": 100, \
         "skip": 0, \
         "order": ["structurename"] \
       }';
     
     // HTTP Request
-    this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/structures?filter=" + filter, {headers})
-    .subscribe(data=> {
-      this.http_response = data;
-      this.response.exit = 1000;
-
-      let x = 0;
-      this.http_response.forEach(element => {
-        let icon = this.http_response[x].iconimage;
-        this.http_response[x].iconimage = 'data:image/png;base64,' + icon;
-        x++;
-      });
-
-      this.all_structures = this.http_response;
-      this.show_structures = this.all_structures;
-
-      this.response.error = '';
-      this.response.success = 'Operation Completed!';
+    this.http.get<Array<Structure>>(this.userdata.mainUrl + this.userdata.mainPort + "/structures?filter=" + filter, {headers})
+    .subscribe(data => {
+      this.allStructures = data;
+      this.filteredStructures = data;
     }, error => {
       this.showExceptionMessage(error);
     });
+  }
+
+  // Structures filter
+  async filterStructures() {
+    let search = this.formSearch.search;
+
+    if (search) {
+      this.filteredStructures = [];
+      this.allStructures.forEach(element => {
+        search = search.toLowerCase();
+        let name = element.structurename.toLowerCase();
+        let address = element.address.toLowerCase();
+        let city = element.city.toLowerCase();
+        let email = element.email.toLowerCase();
+        if (name.includes(search) || address.includes(search) || city.includes(search) || email.includes(search)) {
+          this.filteredStructures.push(element);
+        }
+      });
+    } else {
+      this.filteredStructures = this.allStructures;
+    }
+  }
+
+  // Open structure details
+  async structureDetails(id) {
+    this.router.navigateByUrl('structure-details/' + id);
   }
 
   //Exception message

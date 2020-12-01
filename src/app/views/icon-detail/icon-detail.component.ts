@@ -1,85 +1,73 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SlugifyPipe } from '../../pipes/slugify.pipe';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { MessageException, MessageError, Icon } from '../../services/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-icon-detail',
   templateUrl: './icon-detail.component.html',
   styleUrls: ['./icon-detail.component.css']
 })
+
 export class IconDetailComponent implements OnInit {
+  token: string;
   @Input() uuid: string;
-  response:any;
-  formData: any;
-  http_response:any;
-  current_language:any;
-  languages:any;
-  token: any;
-  name_langs: any;
-  icon: any;
-
+  uploadForm: FormGroup;
+  icon: Icon;
   @ViewChild('modalInfo') public modalInfo: ModalDirective;
-
   @ViewChild('modalDelete') public modalDelete: ModalDirective;
-
   @ViewChild('modalError') public modalError: ModalDirective;
-  messageError: any;
-  errorsDescriptions: any;
-
+  messageError: MessageError;
+  errorsDescriptions: string[];
   @ViewChild('modalException') public modalException: ModalDirective;
-  messageException: any;
-
-  image: any;
-  marker: any;
-  uploadForm = new FormGroup({
-    name: new FormControl('', [Validators.required]),
-    image: new FormControl('', [Validators.required]),
-    marker: new FormControl('', [Validators.required]),
-    image_patch: new FormControl('', [Validators.required]),
-    marker_patch: new FormControl('', [Validators.required]),
-    fileImage: new FormControl('', [Validators.required]),
-    fileMarker: new FormControl('', [Validators.required]),
-  });
+  messageException: MessageException;
 
   constructor (
     private router: Router,
     private _Activatedroute:ActivatedRoute,
     private http:HttpClient,
     public translate: TranslateService,
-    public userdata: UserdataService,
-    private slugifyPipe: SlugifyPipe,
-    public _d: DomSanitizer,
-    ) {
-    this.response = { exit: '', error: '', success: '' };
-    this.http_response = null;
+    public userdata: UserdataService
+  ) {
     this.token = localStorage.getItem('token');
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
-    this.icon = { name: '', image: '', marker: '' };
-    this.image = '';
-    this.marker = '';
-
-    this.messageError = { title : '', description : '' };
+    this.messageException = environment.messageExceptionInit;
+    this.messageError = environment.messageErrorInit;
     this.errorsDescriptions = [];
-
-    this.messageException = { name : '', status : '', statusText : '', message : '' };
-  }
-
-  ngOnInit(): void {
-    if (this.uuid) {
-      this.getIcons(this.token);
+    this.uploadForm = new FormGroup({
+      name: new FormControl('', [Validators.required]),
+      image: new FormControl('', [Validators.required]),
+      marker: new FormControl('', [Validators.required]),
+      fileImage: new FormControl('', [Validators.required]),
+      fileMarker: new FormControl('', [Validators.required]),
+    });
+    this.icon = {
+      idIcon: '',
+      name: '',
+      image: '',
+      marker: ''
     }
   }
 
-  async getIcons(token) {
-    let headers = new HttpHeaders().set("Authorization", "Bearer " + token);
+  // Page init
+  ngOnInit(): void {
+    if (this.uuid) {
+      this.getIcon();
+    }
+  }
 
-    this.http.get(this.userdata.mainUrl + this.userdata.mainPort + "/icons/" + this.uuid, {headers} )
+  // Get icon details
+  async getIcon() {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
+    this.http.get<Icon>(this.userdata.mainUrl + this.userdata.mainPort + "/icons/" + this.uuid, {headers} )
     .subscribe(data=> {
       this.icon = data;
 
@@ -87,15 +75,14 @@ export class IconDetailComponent implements OnInit {
         this.uploadForm.patchValue({
           name: this.icon.name,
         });
-        this.image = 'data:image/png;base64,' + this.icon.image;
-        this.marker = 'data:image/png;base64,' + this.icon.marker;
       }
     }, error => {
       this.showExceptionMessage(error);
     });
   }
 
-  onSubmit() {
+  // Save icon
+  saveIcon() {
     let name = this.uploadForm.controls.name.value;
     let image = this.uploadForm.controls.image.value;
     let marker = this.uploadForm.controls.marker.value;
@@ -117,18 +104,21 @@ export class IconDetailComponent implements OnInit {
       this.errorsDescriptions.push(this.translate.instant('Please, select the marker file'));
     }
 
+    //Check if there are no errors
     if (this.errorsDescriptions.length === 0) {
+      //Data save
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
+      //Check if update or insert
       if (!this.uuid) {
         const formData = new FormData();
         formData.append('file', this.uploadForm.get('fileImage').value);
         formData.append('file', this.uploadForm.get('fileMarker').value);
 
-        this.http.post(this.userdata.mainUrl+this.userdata.mainPort+"/icons/"+name, formData,{headers} )
+        this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/icons/" + name, formData, {headers} )
         .subscribe(data => {
           this.router.navigateByUrl('/icons');
-        },error => {
+        }, error => {
           let code = error.status;
 
           switch (code) {
@@ -148,13 +138,13 @@ export class IconDetailComponent implements OnInit {
 
         this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/icons/" + this.uuid, postParams, {headers} )
         .subscribe(data=> {
-          this.http_response = data;
           this.router.navigateByUrl('/icons');
         }, error => {
           this.showExceptionMessage(error);
         });
       }
     } else {
+      //Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
         this.translate.instant('The data entered is incorrect or missing.')
@@ -162,7 +152,8 @@ export class IconDetailComponent implements OnInit {
     }
   }
 
-  onImageSelect(event) {
+  // Select icon image (post phase)
+  imageSelectPost(event) {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.uploadForm.patchValue({
@@ -171,7 +162,8 @@ export class IconDetailComponent implements OnInit {
     }
   }
 
-  onMarkerSelect(event) {
+  // Select marker image (post phase)
+  markerSelectPost(event) {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.uploadForm.patchValue({
@@ -180,9 +172,8 @@ export class IconDetailComponent implements OnInit {
     }
   }
 
-  onImagePatchSelect(event) {
-    const file = event.srcElement.files[0];
-
+  // Select icon image (patch phase)
+  imageSelectPatch(event) {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
 
@@ -197,9 +188,9 @@ export class IconDetailComponent implements OnInit {
 
       this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/icons/" + this.uuid + "/image/image", formData, {headers} )
       .subscribe(data => {
-        this.image = this._d.bypassSecurityTrustUrl(window.URL.createObjectURL(file));
+        this.getIcon();
         this.modalInfo.show();
-      },error => {
+      }, error => {
         let code = error.status;
 
         switch (code) {
@@ -215,9 +206,8 @@ export class IconDetailComponent implements OnInit {
     }
   }
 
+  // Select icon marker (patch phase)
   onMarkerPatchSelect(event) {
-    const file = event.srcElement.files[0];
-
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
 
@@ -232,9 +222,9 @@ export class IconDetailComponent implements OnInit {
 
       this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/icons/" + this.uuid + "/image/marker", formData, {headers} )
       .subscribe(data => {
-        this.marker = this._d.bypassSecurityTrustUrl(window.URL.createObjectURL(file));
+        this.getIcon();
         this.modalInfo.show();
-      },error => {
+      }, error => {
         let code = error.status;
 
         switch (code) {
@@ -250,12 +240,12 @@ export class IconDetailComponent implements OnInit {
     }
   }
 
-  doDelete(idIcon) {
+  // Delete icon
+  deleteIcon(idIcon) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/icons/" + idIcon, {headers} )
     .subscribe(data=> {
-      this.http_response = data;
       this.router.navigateByUrl('/icons');
     }, error => {
       this.showExceptionMessage(error);

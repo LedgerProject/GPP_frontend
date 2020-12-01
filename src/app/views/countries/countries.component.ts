@@ -43,7 +43,7 @@ export class CountriesComponent implements OnInit {
   async loadCountries() {
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
-    
+
     // Filters
     let filter = ' \
       { \

@@ -11,7 +11,7 @@
           <!-- Search form -->
           <form #form="ngForm">
             <div class="input-group mb-3">
-                <input type="text" (keyup)="onKey()" class="form-control" name="search" [(ngModel)]="formData.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                <input type="text" (keyup)="filterStructures()" class="form-control" name="search" [(ngModel)]="formSearch.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
                 <div class="input-group-append">
                   <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
                 </div>
@@ -21,7 +21,7 @@
 
           <!-- Countries list -->
           <div class="table-responsive">
-            <table class="table table-hover" *ngIf='show_structures.length'>
+            <table class="table table-hover" *ngIf='filteredStructures.length'>
               <thead>
                 <th class="text-center">{{ 'Icon' | translate }}</th>
                 <th>{{ 'Name' | translate }}</th>
@@ -29,9 +29,9 @@
                 <th>{{ 'E-Mail' | translate }}</th>
               </thead>
               <tbody>
-                <tr class="pointer" *ngFor="let structure of show_structures" (click)="doOpen(structure.idStructure)">
+                <tr class="pointer" *ngFor="let structure of filteredStructures" (click)="structureDetails(structure.idStructure)">
                   <td class="text-center">
-                    <img class="icon-list" [src]="structure.iconimage">
+                    <img class="icon-list" [src]="'data:image/png;base64,' + structure.iconimage">
                   </td>
                   <td>{{structure.structurename}}</td>
                   <td>{{structure.address}} - {{structure.city}}</td>
@@ -40,7 +40,7 @@
               </tbody>
             </table>
           </div>
-          <div class="text-danger" *ngIf="!show_structures.length"></div>
+          <div class="text-danger" *ngIf="!filteredStructures.length"></div>
         </div>
       </div>
     </div>

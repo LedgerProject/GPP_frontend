@@ -7,7 +7,7 @@
           <a [routerLink]="['/icons']"><i class="fa fa-chevron-left"></i> {{ 'Back to the icons list' | translate }}</a>
 
           <!-- Form -->
-          <form [formGroup] = "uploadForm" (ngSubmit)="onSubmit()">
+          <form [formGroup]="uploadForm" (ngSubmit)="saveIcon()">
             <h1 class="mt-4">
               <span *ngIf="uuid">{{ 'Icons - Edit' | translate }}</span>
               <span *ngIf="!uuid">{{ 'Icons - Add' | translate }}</span>
@@ -25,10 +25,10 @@
             <div class="form-group mt-3">
               <label>{{ 'Image' | translate }} <small>{{ '(PNG 48 x 48 pixels)' | translate }}</small></label>
               <div class="my-2">
-                <img *ngIf="image" [src]="image">
+                <img *ngIf="icon.image" [src]="'data:image/png;base64,' + icon.image">
               </div>
-              <input formControlName="image" *ngIf="!uuid" id="image" type="file" (change)="onImageSelect($event)"/>
-              <input name="image" *ngIf="uuid" id="image" type="file" (change)="onImagePatchSelect($event)"/>
+              <input formControlName="image" *ngIf="!uuid" id="image" type="file" (change)="imageSelectPost($event)"/>
+              <input name="image" *ngIf="uuid" id="image" type="file" (change)="imageSelectPatch($event)"/>
               <small class="form-text text-muted">{{ 'Selezionare un\'immagine PNG di 48x48 pixels.' | translate }}</small>
             </div>
 
@@ -36,9 +36,9 @@
             <div class="form-group mt-3">
               <label>{{ 'Marker' | translate }} <small>{{ '(PNG 32 x 37 pixels)' | translate }}</small></label>
               <div class="my-2">
-                <img *ngIf="marker" [src]="marker">
+                <img *ngIf="icon.marker" [src]="'data:image/png;base64,' + icon.marker">
               </div>
-              <input formControlName="marker" *ngIf="!uuid" id="marker" type="file" (change)="onMarkerSelect($event)"/>
+              <input formControlName="marker" *ngIf="!uuid" id="marker" type="file" (change)="markerSelectPost($event)"/>
               <input name="marker" *ngIf="uuid" id="marker" type="file" (change)="onMarkerPatchSelect($event)"/>
               <small class="form-text text-muted">{{ 'Selezionare un\'immagine PNG di 32x37 pixels.' | translate }}</small>
             </div>
@@ -93,7 +93,7 @@
         <p>{{ 'Sei sicuro di voler eliminare l\'icona corrente?' | translate }}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="doDelete(uuid)">{{ 'Delete' | translate }}</button>
+        <button type="button" class="btn btn-danger" (click)="deleteIcon(uuid)">{{ 'Delete' | translate }}</button>
         <button type="button" class="btn btn-secondary" (click)="modalDelete.hide()">{{ 'Cancel' | translate }}</button>
       </div>
     </div>
