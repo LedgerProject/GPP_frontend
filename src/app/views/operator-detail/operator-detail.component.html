@@ -3,43 +3,59 @@
       <div class="col-md-12 col-lg-8 mx-auto">
         <div class="card mt-4">
           <div class="card-body">
+            <!-- Back link -->
             <a [routerLink]="['/operators']"><i class="fa fa-chevron-left"></i> {{ 'Back to the operators list' | translate }}</a>
-      
+            
+            <!-- Information -->
             <h1 class="mt-4">{{ 'Operators - Edit Operator' | translate }}</h1>
-            <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>           
+            <p>{{ 'In questa sezione è possibile modificare i permessi dell\'operatore oppure rimuoverlo dall\'organizzazione corrente selezionando il pulsante \'Remove from Team\'.' | translate }}</p>         
+            
+            <!-- Operator information -->
             <div class="operator-detail my-3">
-                <i class='fa fa-user  mr-3'></i>
-                <span class="operator-detail-name mr-3">{{operator.first_name}} {{operator.last_name}} ({{operator.email}})</span>
-           </div>
+              <i class='fa fa-user mr-3'></i>
+              <span class="operator-detail-name mr-3">{{operator.firstName}} {{operator.lastName}} ({{operator.email}})</span>
+            </div>
 
-           <div class="form-group">
-               <label>
+            <!-- Form -->
+            <div class="form-group">
+              <!-- Permissions -->
+              <label>
                 <input type="checkbox" name="check_admin" value="admin">
                 {{ 'Administrator (can manage structures, operators and document wallet)' | translate }}
-               </label><br>
-               <label>
+              </label>
+              <br />
+              <label>
                 <input type="checkbox" name="check_wallet" value="wallet">
                 {{ 'Wallet (can manage document wallet)' | translate }}
-               </label><br>
-               <label>
+              </label>
+              <br>
+              <label>
                 <input type="checkbox" name="check_operators" value="operators">
                 {{ 'Operators (can manage operators)' | translate }}
-               </label><br>   
-               <label>
+              </label>
+              <br>
+              <label>
                 <input type="checkbox" name="check_structures" value="structures">
                 {{ 'Structures (can manage structures)' | translate }}
-               </label>                    
-            </div>  
-           <div class="row">  
-            <div class="col-6 text-left">
-              <button type="button" class="btn btn-primary rounded-0" (click)="doOperator_save(operator.uuid)">{{ 'SAVE' | translate}}</button>
+              </label>
             </div>
-            <div class="col-6 text-right">
-              <button type="button" class="btn btn-danger rounded-0" (click)="doOperator_remove(operator.uuid)">{{ 'REMOVE FROM TEAM' | translate}}</button>
-            </div>                    
-          </div>            
+
+            <!-- Save and remove buttons-->
+            <div class="row">
+              <div class="col-6 text-left">
+                <button type="button" class="btn btn-primary rounded-0" (click)="saveOperatorPermissions()">{{ 'Save' | translate}}</button>
+              </div>
+              <div class="col-6 text-right">
+                <button type="button" class="btn btn-danger rounded-0" (click)="removeOperatorFromTeam()">{{ 'Remove from Team' | translate}}</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Under costruction alert -->
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{ 'Attenzione, questa sezione è ancora in fase di sviluppo, quindi ancora non funzionante.' | translate }}</strong>
           </div>
         </div>
       </div>      
     </div>
-</div> 
+</div>

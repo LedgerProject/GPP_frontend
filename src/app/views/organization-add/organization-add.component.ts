@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
+import { MessageException, MessageError, Organization, TokenCredential } from '../../services/models';
+import { environment } from '../../../environments/environment';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-organization-add',
@@ -10,65 +13,109 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./organization-add.component.css']
 })
 export class OrganizationAddComponent implements OnInit {
-
-  response:any;
-  formData: any;
+  token: string;
+  formData: Organization;
+  @ViewChild('modalError') public modalError: ModalDirective;
+  messageError: MessageError;
+  errorsDescriptions: string[];
+  @ViewChild('modalException') public modalException: ModalDirective;
+  messageException: MessageException;
   http_response:any;
   permissions: any;
 
-  constructor (private router: Router,private http:HttpClient,public userdata: UserdataService,public translate: TranslateService) {
-    this.formData = { organization: ''};
-    this.response = { exit: '', error: '', success: '' };
-    this.http_response = null;
-    /*if (this.permissions.indexOf('ProfileEdit') == -1) {
-      this.router.navigateByUrl('wallet');
-    }*/
+  constructor (
+    private router: Router,
+    private http: HttpClient,
+    public userdata: UserdataService,
+    public translate: TranslateService
+  ) {
+    this.token = localStorage.getItem('token');
+    this.messageError = environment.messageErrorInit;
+    this.messageException = environment.messageExceptionInit;
+    this.formData = {
+      idOrganization: '',
+      name: ''
+    };
   }
 
-  ngOnInit(): void {
-  }
+  // Page init
+  ngOnInit(): void {}
 
-  async doSave_organization() {
-    let token = localStorage.getItem('token');
-    let postParams = {name: this.formData.organization};
-      let headers = new HttpHeaders()
-        .set("Authorization", "Bearer "+token)
-      ;    
-      this.http.post(this.userdata.mainUrl+this.userdata.mainPort+"/organizations",postParams, {headers} ) 
-      .subscribe(data=> {
-        this.http_response = data;
-        if (this.http_response.idOrganization) {
-          this.response.exit = 1000;
-          this.doSignInOrganization(this.http_response.idOrganization, token);
-        } else {
-          alert( this.translate.instant('There was a problem, please try again in a few seconds') );
+  // Save organization
+  async saveOrganization() {
+    this.errorsDescriptions = [];
+  
+    //Check if entered the name
+    if (!this.formData.name) {
+      this.errorsDescriptions.push(this.translate.instant('Please enter the organization name'));
+    }
+
+    //Check if there are no errors
+    if (this.errorsDescriptions.length === 0) {
+      //Data save
+      let postParams = {
+        name: this.formData.name
+      };
+    
+      let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
+      this.http.post<Organization>(this.userdata.mainUrl + this.userdata.mainPort + "/organizations", postParams, {headers} ) 
+      .subscribe(data => {
+        if (data.idOrganization) {
+          this.signInOrganization(data.idOrganization);
         }
-
       }, error => {
         let code = error.status;
-        if (code == 422) {
-          alert( this.translate.instant('Organization name is not valid') );
+
+        switch (code) {
+          case 422:
+            this.showErrorMessage(
+              this.translate.instant('Conflict'),
+              this.translate.instant('Il nome dell\'organizzazione è stato già specificato.')
+            );
+            break;
+
+          default:
+              this.showExceptionMessage(error);
+            break;
         }
-        //console.log(error); 
       });
-
-
+    } else {
+      //Missing data
+      this.showErrorMessage(
+        this.translate.instant('Missing data'),
+        this.translate.instant('The data entered is incorrect or missing.')
+      );
+    }
   }
 
-  doSignInOrganization(idOrganization,token) {
+  // Sign in with the inserted organization
+  async signInOrganization(idOrganization) {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    let headers = new HttpHeaders()
-      .set("Authorization", "Bearer "+token)
-    ;    
-    this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/users/change-organization/"+idOrganization, {headers}) 
-    .subscribe(data=> {
-      this.http_response = data;
-      if (this.http_response.token) {
-        localStorage.setItem('token',this.http_response.token);
-        localStorage.setItem('idOrganization',idOrganization);
+    this.http.get<TokenCredential>(this.userdata.mainUrl + this.userdata.mainPort + "/users/change-organization/" + idOrganization, {headers}) 
+    .subscribe(data => {
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('idOrganization', idOrganization);
+        this.router.routeReuseStrategy.shouldReuseRoute = function () {
+          return false;
+        };
+        this.router.navigateByUrl('wallet');
       }
     });
-
   }
 
+  //Error message
+  showErrorMessage(title: string, description: string): void {
+    this.messageError.title = title;
+    this.messageError.description = description;
+    this.modalError.show();
+  }
+
+  //Exception message
+  showExceptionMessage(error: HttpErrorResponse) {
+    this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
+    this.modalException.show();
+  }
 }

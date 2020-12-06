@@ -6,26 +6,19 @@ import { Router } from '@angular/router';
   templateUrl: './logout.component.html',
   styleUrls: ['./logout.component.css']
 })
-export class LogoutComponent implements OnInit {
 
+export class LogoutComponent implements OnInit {
   constructor(private router: Router) { }
 
+  // Page init
   ngOnInit(): void {
-
-    localStorage.setItem('token','');
-
-    localStorage.setItem('first_name','');
-    localStorage.setItem('last_name','');
-
-    localStorage.setItem('name','');
-    localStorage.setItem('email','');
-
-    localStorage.setItem('documents','');
-    localStorage.setItem('organizations','');
-    localStorage.setItem('permissions','');
-    localStorage.setItem('default_organization','');
+    // Reset all the local storage
+    localStorage.setItem('token', '');
+    localStorage.setItem('name', '');
+    localStorage.setItem('email', '');
+    localStorage.setItem('organizations', null);
+    localStorage.setItem('permissions', '');
 
     this.router.navigateByUrl('sign-in');
   }
-
 }

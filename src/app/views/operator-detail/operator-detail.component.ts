@@ -1,65 +1,83 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { MessageException, MessageError, User } from '../../services/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-operator-detail',
   templateUrl: './operator-detail.component.html',
   styleUrls: ['./operator-detail.component.css']
 })
+
 export class OperatorDetailComponent implements OnInit {
+  token: string;
   @Input() uuid: string;
-  operator: any;
-  formData: any;
-  response:any; 
-  http_response:any;  
-  all_operators:any;
-  constructor(private _Activatedroute:ActivatedRoute,private http:HttpClient) { 
-    this.operator = [];
+  @ViewChild('modalDelete') public modalDelete: ModalDirective;
+  @ViewChild('modalError') public modalError: ModalDirective;
+  messageError: MessageError;
+  errorsDescriptions: string[];
+  @ViewChild('modalException') public modalException: ModalDirective;
+  messageException: MessageException;
+  operator: User;
+  constructor(
+    private _Activatedroute: ActivatedRoute,
+    private http:HttpClient
+  ) { 
+    this.token = localStorage.getItem('token');
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
-    this.formData = { token: ''};
-    this.response = { exit: '', error: '', success: '' };
-    this.all_operators = [];
-    this.http_response = null;
+    this.operator = {
+      idUser: 'uuid',
+      userType: 'operator',
+      firstName: 'John',
+      lastName: 'Brown',
+      email: 'johnbrown@gmail.com',
+      emailConfirmed: false,
+      permissions: [],
+      idNationality: '',
+      gender: '',
+      birthday: ''
+    };
+    this.messageException = environment.messageExceptionInit;
+    this.messageError = environment.messageErrorInit;
+    this.errorsDescriptions = [];
   }
 
+  // Page init
   ngOnInit(): void {
-    this.doOperators();
+    this.getOperator();
   }
 
-  async doOperators() {
-
-    let postParams = {
-      //id: id
-    }
-
-    //this.http.post( ("assets/api/operators.json"), postParams)
-    this.http.get("assets/api/operators.json")//, postParams)    
-    .subscribe(data=> {
-      this.http_response = data;
-      this.response.exit = 1000;
-      this.all_operators = this.http_response.operators;
-      this.all_operators.forEach(element => {
-        if (element.uuid == this.uuid) {
-          this.operator = element;
-        }
-      });
-      //console.log( this.all_operators );
-      this.response.error = '';
-      this.response.success = 'Operation Completed!'
+  // Get operator details
+  async getOperator() {
+    this.http.get("assets/api/operators.json") 
+    .subscribe(data => {
     }, error => {
-      console.log(error); 
-      alert('Error');
-    });        
+      this.showExceptionMessage(error);
+    });
+  }  
 
-}  
+  // Save operator permissions
+  async saveOperatorPermissions() {
 
-async doOperator_save(uuid) {
+  }
 
-}
+  // Remove operator from team
+  async removeOperatorFromTeam() {
 
-async doOperator_remove(uuid) {
+  }
 
-}
+  //Error message
+  showErrorMessage(title: string, description: string): void {
+    this.messageError.title = title;
+    this.messageError.description = description;
+    this.modalError.show();
+  }
 
+  //Exception message
+  showExceptionMessage(error: HttpErrorResponse) {
+    this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
+    this.modalException.show();
+  }
 }

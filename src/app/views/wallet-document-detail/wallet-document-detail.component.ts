@@ -1,24 +1,31 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { UserdataService } from '../../services/userdata.service';
 
 @Component({
-  selector: 'app-document-detail',
-  templateUrl: './document-detail.component.html',
-  styleUrls: ['./document-detail.component.css']
+  selector: 'app-wallet-document-detail',
+  templateUrl: './wallet-document-detail.component.html',
+  styleUrls: ['./wallet-document-detail.component.css']
 })
-export class DocumentDetailComponent implements OnInit {
+export class WalletDocumentDetailComponent implements OnInit {
+  token: string;
   @Input() uuid: string;
   document: any;
-  token: any;
+  
   wallet: any;
   http_response:any;
   blob: any;
   file_type: any;
 
-  constructor(private _Activatedroute:ActivatedRoute, private router: Router,public translate: TranslateService,private http:HttpClient,public userdata: UserdataService) {
+  constructor(
+    private _Activatedroute:ActivatedRoute,
+    private router: Router,
+    public translate: TranslateService,
+    private http: HttpClient,
+    public userdata: UserdataService
+  ) {
     this.document = {'uuid':'','title':'','url':'','size':'','icon':''};
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
     let documents = JSON.parse(localStorage.getItem('documents'));

@@ -15,6 +15,8 @@ import { environment } from '../../../environments/environment';
 
 export class StructuresComponent implements OnInit {
   token: string;
+  idOrganization: string;
+  permissions: string;
   formSearch: QuickSearch;
   filteredStructures: Array<Structure>;
   allStructures: Array<Structure>;
@@ -28,6 +30,8 @@ export class StructuresComponent implements OnInit {
     public translate: TranslateService
   ) {
     this.token = localStorage.getItem('token');
+    this.idOrganization = localStorage.getItem('idOrganization');
+    this.permissions = localStorage.getItem('permissions');
     this.filteredStructures = [];
     this.allStructures = [];
     this.messageException = environment.messageExceptionInit;
@@ -36,7 +40,9 @@ export class StructuresComponent implements OnInit {
 
   // Page init
   ngOnInit(): void {
-    this.loadStructures();
+    if (this.idOrganization || this.permissions.includes('GeneralStructuresManagement')) {
+      this.loadStructures();
+    }
   }
 
   // Structures list

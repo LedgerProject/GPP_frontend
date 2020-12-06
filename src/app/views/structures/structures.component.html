@@ -40,7 +40,11 @@
               </tbody>
             </table>
           </div>
-          <div class="text-danger" *ngIf="!filteredStructures.length"></div>
+
+          <!-- Alert no organization selected -->
+          <div *ngIf="this.idOrganization==='' && this.permissions.includes('OrganizationStructuresManagement')" class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{ 'Seleziona o crea una nuova organizzazione prima di utilizzare questa sezione.' | translate }}</strong>
+          </div>
         </div>
       </div>
     </div>

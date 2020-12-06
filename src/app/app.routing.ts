@@ -10,12 +10,12 @@ import { SigninComponent } from './views/signin/signin.component';
 import { ForgotpasswordComponent } from './views/forgotpassword/forgotpassword.component';
 import { RegisterComponent } from './views/register/register.component';
 import { WalletComponent } from './views/wallet/wallet.component';
+import { WalletDocumentsComponent, } from './views/wallet-documents/wallet-documents.component';
+import { WalletDocumentDetailComponent } from './views/wallet-document-detail/wallet-document-detail.component';
 import { StructuresComponent } from './views/structures/structures.component';
 import { OperatorsComponent } from './views/operators/operators.component';
 import { AboutUsComponent } from './views/about-us/about-us.component';
 import { FeedbackComponent } from './views/feedback/feedback.component';
-import { DocumentsComponent } from './views/documents/documents.component';
-import { DocumentDetailComponent } from './views/document-detail/document-detail.component';
 import { OperatorDetailComponent } from './views/operator-detail/operator-detail.component';
 import { OperatorInviteComponent } from './views/operator-invite/operator-invite.component';
 import { StructureDetailComponent } from './views/structure-detail/structure-detail.component';
@@ -90,6 +90,14 @@ export const routes: Routes = [
         component: WalletComponent,
       },
       {
+        path: 'wallet-documents',
+        component: WalletDocumentsComponent,
+      },
+      {
+        path: 'wallet-document-details/:uuid',
+        component: WalletDocumentDetailComponent,
+      },
+      {
         path: 'structures',
         component: StructuresComponent,
       },
@@ -160,14 +168,6 @@ export const routes: Routes = [
       {
         path: 'icon-details/:uuid',
         component: IconDetailComponent,
-      },
-      {
-        path: 'documents',
-        component: DocumentsComponent,
-      },
-      {
-        path: 'document-details/:uuid',
-        component: DocumentDetailComponent,
       },
       {
         path: 'operator-details/:uuid',

@@ -3,19 +3,22 @@
       <div class="col-md-12 col-lg-8 mx-auto">
         <div class="card mt-4">
           <div class="card-body">
+            <!-- Back link -->
             <a [routerLink]="['/documents']"><i class="fa fa-chevron-left"></i> {{'Back to the documents list' | translate }}</a>
 
+            <!-- Information -->
             <h1 class="mt-4">{{'Document Wallet - Document Detail' | translate }}</h1>
+
             <div class="document-detail my-3">
                 <i class='fa fa-file-{{document.mimeType}}-o  mr-3'></i>
                 <span class="document-detail-title mr-3">{{document.title}}</span>
                 <span class="document-detail-size mr-3">{{document.size}} MB</span>
-                <span class="document-detail-download mr-3"><button *ngIf="blob" (click)="downloadFile(blob,file_type,document.filename)" class="btn btn-primary rounded-0">{{'DOWNLOAD' | translate }}</button></span>
-            </div>
-            <div class="document-detail-image" *ngIf="document.mimeType == 'image'">
-                <!--<img [src]="blob">-->
+                <span class="document-detail-download mr-3"><button *ngIf="blob" (click)="downloadFile(blob, file_type, document.filename)" class="btn btn-primary rounded-0">{{'Download' | translate }}</button></span>
             </div>
 
+            <div class="document-detail-image" *ngIf="document.mimeType == 'image'">
+                <!-- <img [src]="blob"> TODO: FILE PREVIEW -->
+            </div>
           </div>
         </div>
       </div>

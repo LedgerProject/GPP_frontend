@@ -6,21 +6,35 @@
           <div class="card-group">
             <div class="card p-4">
               <div class="card-body text-center">
-                <form  #form="ngForm" (ngSubmit)="doSignIn()">
-                  <h1>{{'Sign in' | translate }}</h1>
-                  <p class="text-muted">{{'Sign in to your account' | translate }}</p>
-                  <div class="bg-danger m-3" *ngIf='response.exit > 1000'>{{response.error}}</div>
+                <!-- Information -->
+                <h1>{{'Sign in' | translate }}</h1>
+                <p class="text-muted">{{'Sign in to your account' | translate }}</p>
+                
+                <!-- Form -->
+                <form  #form="ngForm" (ngSubmit)="signIn()">
+                  <!-- E-Mail -->
                   <div class="input-group mb-3">
                     <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required>
                   </div>
+
+                  <!-- Password -->
                   <div class="input-group mb-4">
                     <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required>
                   </div>
+
+                  <!-- Login alert -->
+                  <div *ngIf='this.messageException.status!==0' class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>{{this.messageException.message | translate }}</strong>
+                  </div>
+
+                  <!-- Sign in button -->
                   <div class="row">
                     <div class="col-12">
                       <button type="submit" [disabled]="form.invalid" class="btn btn-primary rounded-0 px-4">{{'Sign in' | translate}}</button>
                     </div>
                   </div>
+
+                  <!-- Forgot password and register links -->
                   <div class="row">  
                     <div class="col-6 text-left">
                       <button type="button" class="btn btn-link px-0" [routerLink]="['/forgot-password']">{{ 'Forgot Password?' | translate}}</button>
@@ -30,6 +44,8 @@
                     </div>                    
                   </div>
                 </form>
+
+                <!-- Language switch -->
                 <div class="row">  
                   <div class="col-12 text-right">                
                     <app-langswitch></app-langswitch>

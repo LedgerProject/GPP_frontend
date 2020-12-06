@@ -1,163 +1,146 @@
-import {Component, OnInit } from '@angular/core';
-//import { navItems } from '../../_nav';
-import { Router, NavigationEnd,ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+import {Component, OnInit, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
+import { MessageException, UserMe, OrganizationUser } from '../../services/models';
+import { environment } from '../../../environments/environment';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
+interface ChangeToken {
+  token: string;
+}
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './default-layout.component.html'
 })
+
 export class DefaultLayoutComponent implements OnInit {
-
-  mySubscription;
-  response:any;
-  http_response:any;
-  organizations: any;
-
-  public uservars: any;
+  token: string;
+  userMe: UserMe;
+  defaultOrganization: string;
+  organizations: Array<OrganizationUser>;
+  @ViewChild('modalException') public modalException: ModalDirective;
+  messageException: MessageException;
+  
   public isMenuCollapsed = true;
   navbarOpen = false;
 
-  constructor (private router: Router, private activatedRoute: ActivatedRoute,private http:HttpClient,public translate: TranslateService,public userdata: UserdataService,) {
-    this.uservars = { name: '', idOrganization: '', default_organization: '', organizations: [], permissions: []};
-    this.response = { exit: '', error: '', success: '' };
-    this.http_response = null;
-
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    this.mySubscription = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-         // Trick the Router into believing it's last link wasn't previously loaded
-         this.router.navigated = false;
-      }
-    });
+  constructor (
+    private router: Router, 
+    private http:HttpClient,
+    public translate: TranslateService,
+    public userdata: UserdataService
+  ) {
+    this.token = localStorage.getItem('token');
+    this.userMe = {
+      name: '',
+      permissions: [],
+      idUser: '',
+      userType: '',
+      idOrganization: '',
+      email: ''
+    };
+    this.defaultOrganization = '';
+    this.messageException = environment.messageExceptionInit;
+    this.organizations = [];
   }
 
   currentRouter = this.router.url;
 
+  // Page init
   ngOnInit() {
-    let token = localStorage.getItem('token');
-    //console.log(token);
-    this.doUsersMe(token);
-    //this.doMyOrganizations(token);
+    this.usersMe();
   }
 
+  // Toggle navbar
   toggleNavbar() {
     this.navbarOpen = !this.navbarOpen;
   }
 
-  /*public sidebarMinimized = false;
-  //public navItems = navItems;
+  // Get basic auth user information
+  async usersMe() {
+    if (this.token) {
+      let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-  toggleMinimize(e) {
-    this.sidebarMinimized = e;
-  }*/
+      this.http.get<UserMe>(this.userdata.mainUrl + this.userdata.mainPort + "/users/me", {headers})
+      .subscribe(data => {
+        if (data.idUser) {
+          this.userMe = data;
 
-  async doSwitchOrganization(idOrganization) {
-    let token = localStorage.getItem('token');
-
-    let headers = new HttpHeaders()
-      .set("Authorization", "Bearer "+token)
-    ;
-    this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/users/change-organization/"+idOrganization, {headers})
-    .subscribe(data=> {
-      this.http_response = data;
-      //console.log(data);
-      if (this.http_response.token) {
-        localStorage.setItem('token',this.http_response.token);
-        this.router.navigate([this.currentRouter]);
-      }
-    });
-  }
-
-async doUsersMe(token) {
-if (token) {
-  //console.log(token);
-    let postParams = {};
-    let headers = new HttpHeaders()
-      .set("Authorization", "Bearer "+token)
-    ;
-    this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/users/me", {headers})
-    .subscribe(data=> {
-      //console.log(data);
-      this.http_response = data;
-      if (this.http_response.idUser) {
-        this.response.exit = 1000;
-        this.uservars.name = this.http_response.name;
-        this.uservars.idOrganization = this.http_response.idOrganization;
-        if (this.http_response.idOrganization) {
-          localStorage.setItem('idOrganization',this.http_response.idOrganization);
-        } else {
-          localStorage.setItem('idOrganization','');
-        }
-        this.uservars.permissions = this.http_response.permissions;
-        this.uservars.userType = this.http_response.userType;
-        localStorage.setItem('name',this.http_response.name);
-        localStorage.setItem('email',this.http_response.email);
-        localStorage.setItem('permissions',JSON.stringify(this.http_response.permissions));
-
-        //My Organizations
-        this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/users/my-organizations", {headers})
-        .subscribe(subdata=> {
-          this.organizations = subdata;
-          localStorage.setItem('organizations',JSON.stringify(this.organizations));
-          if (this.organizations) {
-            if (this.uservars.idOrganization) {
-              this.organizations.forEach(element => {
-                if (element.idOrganization == this.uservars.idOrganization) {
-                  this.uservars.default_organization = element.name;
-                }
-                this.uservars.organizations.push(element);
-              });
-            }
+          if (this.userMe.idOrganization) {
+            localStorage.setItem('idOrganization', this.userMe.idOrganization);
+          } else {
+            localStorage.setItem('idOrganization', '');
           }
-          //console.log(this.uservars.organizations);
-        });
-        //
 
-      } else {
-        //alert( this.translate.instant('There was a problem, please try again in a few seconds') );
-        this.router.navigateByUrl('sign-in');
-      }
-    });
-  } else {
-    //alert( this.translate.instant('There was a problem, please try again in a few seconds') );
-    this.router.navigateByUrl('sign-in');
-  }
-  }
+          localStorage.setItem('name', this.userMe.name);
+          localStorage.setItem('email', this.userMe.email);
+          localStorage.setItem('permissions', JSON.stringify(this.userMe.permissions));
 
-  /*doMyOrganizations(token) {
-    let postParams = {};
-    let headers = new HttpHeaders()
-      .set("Authorization", "Bearer "+token)
-    ;
-    this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/users/my-organizations", {headers})
-    .subscribe(data=> {
-      let organizations:any;
-      organizations = data;
-      if (organizations) {
-        if (this.uservars.idOrganization) {
-          organizations.forEach(element => {
-            if (element.idOrganization == this.uservars.idOrganization) {
-              this.uservars.default_organization = element.name;
-            }
-            this.uservars.organizations.push(element);
-          });
+          //Get the user organizations
+          this.getOrganizations();
+        } else {
+          this.router.navigateByUrl('sign-in');
         }
-      }
-      console.log(this.uservars.organizations);
-    });
-  }*/
-
-  doCreateOrganization() {
-    if (!this.uservars.organizations.length) {
-      this.router.navigateByUrl('organization-add');
+      }, error => {
+        this.showExceptionMessage(error);
+      });
     } else {
-      alert( this.translate.instant('There was a problem, please try again in a few seconds') );
+      this.router.navigateByUrl('sign-in');
     }
   }
 
+  // Get the user organizations
+  async getOrganizations() {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
+    this.http.get<Array<OrganizationUser>>(this.userdata.mainUrl + this.userdata.mainPort + "/users/my-organizations", {headers})
+    .subscribe(dataOrg => {
+      localStorage.setItem('organizations', JSON.stringify(dataOrg));
+      if (dataOrg) {
+        if (this.userMe.idOrganization) {
+          dataOrg.forEach(element => {
+            if (element.idOrganization == this.userMe.idOrganization) {
+              this.defaultOrganization = element.name;
+            }
+            this.organizations.push(element);
+          });
+        }
+      }
+    }, error => {
+      this.showExceptionMessage(error);
+    });
+  }
+
+  // Switch organization
+  async switchOrganization(idOrganization) {
+    let token = localStorage.getItem('token');
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + token);
+
+    this.http.get<ChangeToken>(this.userdata.mainUrl + this.userdata.mainPort + "/users/change-organization/" + idOrganization, {headers})
+    .subscribe(data => {
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        this.router.navigate([this.currentRouter]);
+      }
+    }, error => {
+      this.showExceptionMessage(error);
+    });
+  }
+
+  // Create organization
+  createOrganization() {
+    if (!this.organizations.length) {
+      this.router.navigateByUrl('organization-add');
+    }
+  }
+
+  // Exception message
+  showExceptionMessage(error: HttpErrorResponse) {
+    this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
+    this.modalException.show();
+  }
 }

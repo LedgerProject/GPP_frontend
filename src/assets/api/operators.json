@@ -1,41 +1,57 @@
-{ "operators": [
-    {
-        "uuid":"operator_abcd001",
-        "first_name":"John",
-        "last_name":"Brown",
-        "email":"j.red@email.com",
-        "levels":[
-             {"role" : "admin" }
-        ]
-    },
-    {
-        "uuid":"operator_abcd002",
-        "first_name":"Johnny",
-        "last_name":"Walker",
-        "email":"j.walker@email.com",
-        "levels":[
-            {"role" : "wallet" }
-       ]
-    },
-    {
-        "uuid":"operator_abcd003",
-        "first_name":"Johnny",
-        "last_name":"Cash",
-        "email":"j.cash@email.com",
-        "levels":[
-            {"role" : "structures" },
-            {"role" : "wallet" }
-       ]
-    },
-    {
-        "uuid":"operator_abcd004",
-        "first_name":"Egon",
-        "last_name":"Spengler",
-        "email":"e.spengler@email.com",
-        "levels":[
-            {"role" : "wallet" }
-       ]
-    }
-         
-]
-}
+[{
+    "idUser":"operator_abcd001",
+    "userType": "operator",
+    "firstName":"John",
+    "lastName":"Brown",
+    "email":"j.red@email.com",
+    "emailConfirmed": true,
+    "permissions":[
+            {"role" : "admin" }
+    ],
+    "idNationality": "",
+    "gender": "",
+    "birthday": ""
+},
+{
+    "idUser":"operator_abcd002",
+    "userType": "operator",
+    "firstName":"Johnny",
+    "lastName":"Walker",
+    "email":"j.walker@email.com",
+    "emailConfirmed": true,
+    "permissions":[
+        {"role" : "wallet" }
+    ],
+    "idNationality": "",
+    "gender": "",
+    "birthday": ""
+},
+{
+    "idUser":"operator_abcd003",
+    "userType": "operator",
+    "firstName":"Johnny",
+    "lastName":"Cash",
+    "email":"j.cash@email.com",
+    "emailConfirmed": true,
+    "permissions":[
+        {"role" : "structures" },
+        {"role" : "wallet" }
+    ],
+    "idNationality": "",
+    "gender": "",
+    "birthday": ""
+},
+{
+    "idUser":"operator_abcd004",
+    "userType": "operator",
+    "firstName":"Egon",
+    "lastName":"Spengler",
+    "email":"e.spengler@email.com",
+    "emailConfirmed": true,
+    "permissions":[
+        {"role" : "wallet" }
+    ],
+    "idNationality": "",
+    "gender": "",
+    "birthday": ""
+}]

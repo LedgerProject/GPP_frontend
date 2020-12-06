@@ -63,6 +63,17 @@ export interface CountryTopicLanguage {
   language: string;
 }
 
+export interface Document {
+  idDocument: string;
+  idUser: string;
+  title: string;
+  filename: string;
+  mimeType: string;
+  size: number;
+  widthPixel: number;
+  heightPixel: number;
+}
+
 export interface Icon {
   idIcon: string;
   name: string;
@@ -81,6 +92,20 @@ export interface NationalityLanguage {
   alias: string;
   nationality: string;
   language: string;
+}
+
+export interface Organization {
+  idOrganization: string;
+  name: string;
+}
+
+export interface OrganizationUser {
+  idOrganizationUser: string;
+  idOrganization: string;
+  idUser: string;
+  name: string;
+  firstName: string;
+  lastName: string;
 }
 
 export interface Structure {
@@ -122,4 +147,38 @@ export interface StructureImage {
   mimeType: string;
   size: number;
   sorting: number;
+}
+
+export interface RegisteredUser {
+  idUser: string;
+  userType: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+export interface User {
+  idUser: string;
+  userType: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  emailConfirmed: boolean;
+  permissions: string[];
+  idNationality: string;
+  gender: string;
+  birthday: string;
+}
+
+export interface UserMe {
+  name: string;
+  permissions: string[];
+  idUser: string;
+  userType: string;
+  idOrganization: string;
+  email: string;
+}
+
+export interface TokenCredential {
+  token: string;
 }
