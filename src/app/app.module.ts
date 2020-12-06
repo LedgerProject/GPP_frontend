@@ -52,14 +52,14 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { LangswitchComponent } from './components/langswitch/langswitch.component';
 import { WalletComponent } from './views/wallet/wallet.component';
+import { WalletDocumentsComponent } from './views/wallet-documents/wallet-documents.component';
+import { WalletDocumentDetailComponent } from './views/wallet-document-detail/wallet-document-detail.component';
 import { StructuresComponent } from './views/structures/structures.component';
 import { OperatorsComponent } from './views/operators/operators.component';
 import { FeedbackComponent } from './views/feedback/feedback.component';
 import { AboutUsComponent } from './views/about-us/about-us.component';
 import { MyProfileComponent } from './views/my-profile/my-profile.component';
 import { ChangePasswordComponent } from './views/change-password/change-password.component';
-import { DocumentsComponent } from './views/documents/documents.component';
-import { DocumentDetailComponent } from './views/document-detail/document-detail.component';
 import { OperatorDetailComponent } from './views/operator-detail/operator-detail.component';
 import { OperatorInviteComponent } from './views/operator-invite/operator-invite.component';
 import { StructureDetailComponent } from './views/structure-detail/structure-detail.component';
@@ -119,14 +119,14 @@ import { IconComponent } from './views/icon/icon.component';
     ForgotpasswordComponent,
     LangswitchComponent,
     WalletComponent,
+    WalletDocumentsComponent,
+    WalletDocumentDetailComponent,
     StructuresComponent,
     OperatorsComponent,
     FeedbackComponent,
     AboutUsComponent,
     MyProfileComponent,
     ChangePasswordComponent,
-    DocumentsComponent,
-    DocumentDetailComponent,
     OperatorDetailComponent,
     OperatorInviteComponent,
     StructureDetailComponent,

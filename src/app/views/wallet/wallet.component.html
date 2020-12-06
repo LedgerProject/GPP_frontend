@@ -3,28 +3,70 @@
       <div class="col-md-12 col-lg-8 mx-auto">
         <div class="card mt-4">
           <div class="card-body">
-<h1 class="mt-4">{{'Document Wallet - Insert Token' | translate }}</h1>
-<p>{{'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis
-  nulla, ac eleifend mi. Morbi vel felis at orci cursus viverra ac sit amet arcu. Sed fermentum urna ante, vel hendrerit nulla volutpat vel. Sed
-  suscipit mauris augue, vel semper erat fringilla quis. Integer placerat turpis id mattis interdum. Donec lobortis ligula et sapien laoreet, ut
-  faucibus sem rutrum. Cras mattis, risus sed fermentum semper, felis ipsum blandit velit, a lacinia purus ex sit amet odio.' | translate }}
-</p>    
-<p>{{'Vivamus enim mauris, ullamcorper efficitur justo eget, semper luctus metus. Nunc a accumsan risus, vitae mattis dui. Nullam a augue sed
-  quam maximus elementum. Praesent facilisis vulputate diam a sodales. Nullam quis leo pretium, euismod lectus eget, hendrerit turpis. In
-  hac habitasse platea dictumst. Suspendisse egestas magna vitae velit aliquet, sit amet rhoncus diam faucibus. Integer rutrum lacinia
-  placerat. Fusce eu arcu et nisi ultrices egestas vulputate ac lectus.' | translate }}</p>
+            <!-- Information -->
+            <h1 class="mt-4">{{'Document Wallet - Insert Token' | translate }}</h1>
+            <p>{{ 'Inserisci il token comunicato dall\'utente per visualizzare la documentazione.' | translate }}</p>
+            <p>{{ 'Il token ha una durata di 30 minuti, scaduti i quali, sarà necessario richiedere un nuovo token all\'utente.' | translate }}</p>
+            <h4 class="text-uppercase">{{ 'Please insert the token to check the documents wallet' | translate }}</h4>
 
-    <h3 class="text-uppercase">{{ 'PLEASE INSERT THE TOKEN TO CHECK THE DOCUMENTS WALLET' | translate }}</h3>
-    <form #form="ngForm" (ngSubmit)="doCheck()">
-            <div class="input-group mb-3">
+            <!-- Form -->
+            <form #form="ngForm" (ngSubmit)="checkToken()">
+              <!-- Token -->
+              <div class="input-group mb-3">
                 <input type="text" class="form-control" name="token" [(ngModel)]="formData.token"  placeholder="{{ 'Insert the token' | translate }}" required>
+
+                <!-- Check button -->
                 <div class="input-group-append">
                   <button class="btn btn-primary rounded-0" type="submit">{{ 'Check' | translate }}</button>
-                </div>            
-            </div>       
-    </form>
-  </div>
-</div>    
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-    </div> 
-</div>   
+    </div>
+</div>
+
+<!-- Modal entering data error -->
+<div bsModal #modalError="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalErrorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">{{ messageError.title }}</h4>
+              <button type="button" class="close" (click)="modalError.hide()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <p>{{ messageError.description }}</p>
+              <ul>
+                  <li *ngFor="let errorDescription of errorsDescriptions">{{ errorDescription }}</li>
+              </ul>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modalError.hide()">{{ 'Close' | translate }}</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal exception error -->
+<div bsModal #modalException="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExceptionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageException.name }}</h4>
+        <button type="button" class="close" (click)="modalException.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><b>Status: </b>{{ messageException.statusText }} ({{ messageException.status }})</p>
+        <p><b>Description: </b>{{ messageException.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>

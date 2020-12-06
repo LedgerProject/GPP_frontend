@@ -3,32 +3,37 @@
       <div class="col-md-12 col-lg-8 mx-auto">
         <div class="card mt-4">
           <div class="card-body">
+            <!-- Back link -->
             <a [routerLink]="['/wallet']"><i class="fa fa-chevron-left"></i> {{ 'Back to insert token' | translate }}</a>
 
+            <!-- Information -->
             <h1 class="mt-4">{{ 'Document Wallet - List' | translate }}</h1>
-            <form #form="ngForm" (ngSubmit)="doSearch()">
+
+            <!-- Search form -->
+            <form #form="ngForm" (ngSubmit)="filterDocuments()">
               <div class="input-group mb-3">
-                  <input type="text" (keyup)="onKey()" class="form-control" name="search" [(ngModel)]="formData.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                  <input type="text" (keyup)="filterDocuments()" class="form-control" name="search" [(ngModel)]="formSearch.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
                   <div class="input-group-append">
                     <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
                   </div>
               </div>
             </form>
+
+            <!-- Table documents -->
             <div class="table-responsive">
-            <table class="table table-hover" *ngIf='show_documents.length'>
+            <table class="table table-hover" *ngIf='filteredDocuments.length'>
               <thead>
                 <th>{{ 'Document' | translate }}</th>
                 <th>{{ 'Size' | translate }}</th>
               </thead>
               <tbody>
-                <tr class="pointer" *ngFor="let document of show_documents" (click)="doOpen(document.idDocument)">
+                <tr class="pointer" *ngFor="let document of filteredDocuments" (click)="openDocument(document.idDocument)">
                   <td><i class='fa fa-file-{{document.mimeType}}-o'></i> {{document.title}}</td>
                   <td>{{document.size}} MB</td>
                 </tr>
               </tbody>
             </table>
             </div>
-            <div class="text-danger" *ngIf="!show_documents.length"></div>
           </div>
         </div>
       </div>

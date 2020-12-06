@@ -6,36 +6,97 @@
           <div class="card-group">
             <div class="card p-4">
               <div class="card-body text-center">
-                <form  #form="ngForm" (ngSubmit)="doSignOn()" *ngIf="!response.exit">
-                  <h1>{{'Registration' | translate }}</h1>
-                  <p class="text-muted"></p>
-                  <div class="bg-danger m-3" *ngIf='response.exit > 1000'>{{response.error}}</div>
-                  <div class="input-group mb-3">
-                    <input type="text" name="first_name" [(ngModel)]="formData.first_name" id="first_name" class="form-control" placeholder="{{'First name' | translate }}" required>
+                <!-- Information -->
+                <h1>{{'Registration' | translate }}</h1>
+                <p class="text-muted">{{ 'Registrati per utilizzare i servizi offerti dal portale di Global Passport Project.' | translate }}</p>
+
+                <!-- Form -->
+                <form  #form="ngForm" (ngSubmit)="signOn()">
+                  <!-- First name -->
+                  <div class="form-group mb-3 text-left">
+                    <label>{{ 'First name' | translate }}</label>
+                    <input type="text" name="firstName" [(ngModel)]="formData.firstName" id="firstName" class="form-control" placeholder="{{ 'First name' | translate }}" required>
                   </div>
-                  <div class="input-group mb-3">
-                    <input type="text" name="last_name" [(ngModel)]="formData.last_name" id="last_name" class="form-control" placeholder="{{'Last name' | translate }}" required>
-                  </div>                  
-                  <div class="input-group mb-3">
-                    <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required>
+
+                  <!-- First name alert -->
+                  <div *ngIf='this.messageException.status===51' class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>{{this.messageException.message | translate }}</strong>
                   </div>
-                  <div class="input-group mb-3">
-                    <input type="email" name="email_confirm" [(ngModel)]="formData.email_confirm" id="email_confirm" class="form-control" placeholder="{{'Confirm Email' | translate }}" required>
-                  </div>                  
-                  <div class="input-group mb-3">
-                    <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required>
+
+                  <!-- Last name -->
+                  <div class="form-group mb-3 text-left">
+                    <label>{{ 'Last name' | translate }}</label>
+                    <input type="text" name="lastName" [(ngModel)]="formData.lastName" id="lastName" class="form-control" placeholder="{{ 'Last name' | translate }}" required>
                   </div>
-                  <div class="input-group mb-3">
-                    <input type="password" name="password_confirm" id="password_confirm" [(ngModel)]="formData.password_confirm" class="form-control" placeholder="{{'Confirm Password' | translate }}" required>
+
+                  <!-- Last name alert -->
+                  <div *ngIf='this.messageException.status===61' class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>{{this.messageException.message | translate }}</strong>
+                  </div>
+
+                  <!-- E-Mail -->
+                  <div class="form-group mb-3 text-left">
+                    <label>{{ 'Email' | translate }}</label>
+                    <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{ 'Email' | translate }}" autocomplete="email" required>
+                  </div>
+
+                  <!-- E-mail alert -->
+                  <div *ngIf='this.messageException.status===71' class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>{{this.messageException.message | translate }}</strong>
+                  </div>
+
+                  <!-- Confirm e-mail -->
+                  <div class="form-group mb-3 text-left">
+                    <label>{{ 'Confirm e-mail' | translate }}</label>
+                    <input type="email" name="emailConfirm" [(ngModel)]="formData.emailConfirm" id="email_confirm" class="form-control" placeholder="{{ 'Confirm e-mail' | translate }}" required>
+                  </div>
+                  
+                  <!-- Password -->
+                  <div class="form-group mb-3 text-left">
+                    <label>{{ 'Password' | translate }}</label>
+                    <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{ 'Password' | translate }}" autocomplete="password" required>
+                  </div>
+
+                  <!-- Password alert -->
+                  <div *ngIf='this.messageException.status===81' class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>{{this.messageException.message | translate }}</strong>
+                  </div>
+
+                  <!-- Confirm password -->
+                  <div class="form-group mb-3 text-left">
+                    <label>{{ 'Confirm password' | translate }}</label>
+                    <input type="password" name="passwordConfirm" id="passwordConfirm" [(ngModel)]="formData.passwordConfirm" class="form-control" placeholder="{{ 'Confirm password' | translate }}" required>
                   </div>     
-                  <div class="input-group mb-4">
-                    <input type="password" name="secret_key" id="secret_key" [(ngModel)]="formData.secret_key" class="form-control" placeholder="{{'Secret Key' | translate }}">
-                  </div>                                    
+
+                  <!-- Secret key -->
+                  <div class="form-group mb-3 text-left">
+                    <label>{{ 'Secret key' | translate }}</label>
+                    <input type="password" name="secretKey" id="secretKey" [(ngModel)]="formData.secretKey" class="form-control" placeholder="{{ 'Secret key' | translate }}">
+                  </div>
+
+                  <!-- Secret key alert -->
+                  <div *ngIf='this.messageException.status===101' class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>{{this.messageException.message | translate }}</strong>
+                  </div>
+                  
+                  <!-- Sign on button -->
                   <div class="row">
                     <div class="col-12">
                       <button type="submit" [disabled]="form.invalid" class="btn btn-primary rounded-0 px-4">{{ 'Sign On' | translate }}</button>
                     </div>
                   </div>
+
+                  <!-- Registration completed -->
+                  <div *ngIf='this.signOnCompleted' class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>{{ 'Registrazione completata. Effettua il login per utilizzare il portale dei servizi.' | translate }}</strong>
+                  </div>
+
+                  <!-- Registration failed -->
+                  <div *ngIf='this.messageException.status===91' class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>{{this.messageException.message | translate }}</strong>
+                  </div>
+
+                  <!-- Forgot password and login links -->
                   <div class="row">  
                     <div class="col-6 text-left">
                       <button type="button" class="btn btn-link px-0" [routerLink]="['/forgot-password']">{{ 'Forgot Password?' | translate }}</button>
@@ -45,7 +106,6 @@
                     </div>                    
                   </div>
                 </form>
-                <div class="text-success" *ngIf="response.exit == 1000">{{ 'Registration completed.' | translate}}</div>
                 <app-langswitch></app-langswitch>
               </div>
             </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -9,26 +9,19 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './my-profile.component.html',
   styleUrls: ['./my-profile.component.css']
 })
+
 export class MyProfileComponent implements OnInit {
-
-  response:any;
   formData: any;
-  http_response:any;
-  permissions: any;
   constructor (private router: Router,private http:HttpClient,public userdata: UserdataService,public translate: TranslateService) {
-    this.formData = { name: localStorage.getItem('name')};
-    this.response = { exit: '', error: '', success: '' };
-    this.http_response = null;
-    this.permissions = localStorage.getItem('permissions');
-    if (this.permissions.indexOf('ProfileEdit') == -1) {
-      this.router.navigateByUrl('wallet');
-    }
+    this.formData = {
+      firstName: '',
+      lastName: ''
+    };
   }
 
-  ngOnInit(): void {
-  }
+  // Page init
+  ngOnInit(): void {}
 
-  async doSave_profile() {
-
-  }
+  // Save profile data
+  async saveProfile() {}
 }

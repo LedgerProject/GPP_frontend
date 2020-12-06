@@ -15,8 +15,6 @@ export class UserdataService {
   public mainPort = '';
 
   public name = '';
-  public first_name = '';
-  public last_name = '';
 
   public email = '';
   public organizations = '';
@@ -24,14 +22,6 @@ export class UserdataService {
 
   public setName(value) {
     this.name = value;
-  }
-
-  public setFirstName(value) {
-    this.first_name = value;
-  }
-
-  public setLastName(value) {
-    this.last_name = value;
   }
 
   public setEmail(value) {
@@ -45,5 +35,4 @@ export class UserdataService {
   public setDefaultOrganization(value) {
     this.default_organization = value;
   }
-
 }

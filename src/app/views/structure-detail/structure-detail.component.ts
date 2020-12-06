@@ -304,7 +304,7 @@ export class StructureDetailComponent implements OnInit {
         this.formData.longitude = 0;
       }
   
-      let postParams:any = {
+      let postParams = {
         idOrganization: this.idOrganization,
         alias: this.slugifyPipe.transform(this.formData.name),
         name: this.formData.name,
