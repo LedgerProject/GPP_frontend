@@ -157,6 +157,19 @@ export interface RegisteredUser {
   email: string;
 }
 
+export interface User {
+  idUser: string;
+  userType: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  emailConfirmed: boolean;
+  permissions: string[];
+  idNationality: string;
+  gender: string;
+  birthday: string;
+}
+
 export interface UserMe {
   name: string;
   permissions: string[];

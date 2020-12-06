@@ -3,41 +3,79 @@
     <div class="col-md-12 col-lg-8 mx-auto">
       <div class="card mt-4">
         <div class="card-body">
-    
+          <!-- Information -->
           <h1 class="mt-4">{{ 'Operators - List' | translate }}</h1>
-          <p>{{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id convallis risus. Nunc tristique nunc id porttitor sagittis. Etiam sed mollis nulla, ac eleifend mi.' | translate }}</p>           
+          <p *ngIf="this.permissions.includes('OrganizationUsersManagement')">{{ 'In questa sezione è possibile gestire gli operatori della propria organizzazione.' | translate }}</p>
+          <p *ngIf="this.permissions.includes('OrganizationUsersManagement')">{{ 'Seleziona \'Invite Operator\' per invitare un operatore nell\'organizzazione corrente, oppure selezionalo dall\'elenco per modificare i permessi.' | translate }}</p>
+
+          <p *ngIf="this.permissions.includes('GeneralUsersManagement')">{{ 'In questa sezione è possibile gestire gli operatori registrati tramite portale.' | translate }}</p>
+          <p *ngIf="this.permissions.includes('GeneralUsersManagement')">{{ 'Seleziona \'Invite Operator\' per invitare un operatore nel team di Global Passport Project, oppure selezionalo dall\'elenco per rimuoverlo.' | translate }}</p>
+          
+          <!-- Search form -->
           <form #form="ngForm">
             <div class="input-group mb-3">
-                <input type="text" (keyup)="onKey()" class="form-control" name="search" [(ngModel)]="formData.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                <input type="text" (keyup)="filterOperators()" class="form-control" name="search" [(ngModel)]="formSearch.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
                 <div class="input-group-append">
-                  <button class="btn btn-primary" type="submit">{{ 'SEARCH' | translate }}</button>
+                  <button class="btn btn-primary" type="submit">{{ 'Search' | translate }}</button>
                 </div>
-                <button class="btn btn-primary rounded-0 ml-3" type="button" [routerLink]="['/operator-invite']">{{ 'INVITE OPERATOR' | translate }}</button>            
+                <button class="btn btn-primary rounded-0 ml-3" type="button" [routerLink]="['/operator-invite']">{{ 'Invite Operator' | translate }}</button>            
             </div>       
-          </form> 
+          </form>
+
+          <!-- Operators list -->
           <div class="table-responsive">
-          <table class="table table-hover" *ngIf='show_operators.length'>
-            <thead>
-              <th>{{ 'First Name' | translate }}</th>
-              <th>{{ 'Last Name' | translate }}</th>
-              <th>{{ 'Email' | translate }}</th>
-              <th>{{ 'Access Level' | translate }}</th>
-            </thead>
-            <tbody>
-              <tr class="pointer" *ngFor="let operator of show_operators" (click)="doOpen(operator.uuid)">
-                <td>{{operator.first_name}}</td>
-                <td>{{operator.last_name}}</td>
-                <td>{{operator.email}}</td>
-                <td>
-                  <span *ngFor="let level of operator.levels; index as i"><span *ngIf="i > 0"> + </span>{{levels_array[level.role]}}</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            <table class="table table-hover" *ngIf='filteredOperators.length'>
+              <thead>
+                <th>{{ 'First name' | translate }}</th>
+                <th>{{ 'Last name' | translate }}</th>
+                <th>{{ 'Email' | translate }}</th>
+                <th>{{ 'Access level' | translate }}</th>
+              </thead>
+              <tbody>
+                <tr class="pointer" *ngFor="let operator of filteredOperators" (click)="operatorDetails(operator.idOperator)">
+                  <td>{{operator.firstName}}</td>
+                  <td>{{operator.lastName}}</td>
+                  <td>{{operator.email}}</td>
+                  <td>
+                    Roles<span *ngFor="let level of operator.levels; index as i"><span *ngIf="i > 0"> + </span>Role</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Alert no organization selected -->
+          <div *ngIf="this.idOrganization==='' && this.permissions.includes('OrganizationUsersManagement')" class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{ 'Seleziona o crea una nuova organizzazione prima di utilizzare questa sezione.' | translate }}</strong>
+          </div>
         </div>
-          <div class="text-danger" *ngIf="!show_operators.length"></div>
+
+        <!-- Under costruction alert -->
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <strong>{{ 'Attenzione, questa sezione è ancora in fase di sviluppo, quindi ancora non funzionante.' | translate }}</strong>
         </div>
       </div>
     </div>      
   </div>
-</div> 
+</div>
+
+<!-- Modal exception error -->
+<div bsModal #modalException="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExceptionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageException.name }}</h4>
+        <button type="button" class="close" (click)="modalException.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><b>Status: </b>{{ messageException.statusText }} ({{ messageException.status }})</p>
+        <p><b>Description: </b>{{ messageException.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>

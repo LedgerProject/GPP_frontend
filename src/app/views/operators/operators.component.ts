@@ -1,80 +1,87 @@
-import { LowerCasePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { MessageException, QuickSearch, User } from '../../services/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-operators',
   templateUrl: './operators.component.html',
   styleUrls: ['./operators.component.css']
 })
+
 export class OperatorsComponent implements OnInit {
-  levels_array: any;
-  formData: any;
-  response:any; 
-  http_response:any;
-  show_operators:any; 
-  all_operators:any;
-  constructor (private router: Router,private http:HttpClient) {
-    this.formData = { token: ''};
-    this.response = { exit: '', error: '', success: '' };
-    this.http_response = null;
-    this.show_operators = [];
-    this.all_operators = [];
-    this.levels_array = { '':'','admin': 'Administrator', 'wallet': 'Wallet','structures':'Structures','operators':'Operators' }
+  token: string;
+  idOrganization: string;
+  permissions: string;
+  formSearch: QuickSearch;
+  filteredOperators: Array<User>;
+  allOperators: Array<User>;
+  @ViewChild('modalException') public modalException: ModalDirective;
+  messageException: MessageException;
+
+  constructor (
+    private router: Router,
+    private http:HttpClient
+  ) {
+    this.token = localStorage.getItem('token');
+    this.idOrganization = localStorage.getItem('idOrganization');
+    this.permissions = localStorage.getItem('permissions');
+    this.filteredOperators = [];
+    this.allOperators = [];
+    this.messageException = environment.messageExceptionInit;
+    this.formSearch = { search: '' };
   }
 
+  // Page init
   ngOnInit(): void {
-    this.doOperators();
-  }
-  
-  async onKey() {
-    let search = this.formData.search;
-
-    if (search) {
-      this.show_operators = [];
-      this.all_operators.forEach(element => {
-        search = search.toLowerCase();
-        let first_name = element.first_name.toLowerCase();
-        let last_name = element.last_name.toLowerCase();
-        let email = element.email.toLowerCase();
-        let full_name = first_name+' '+last_name;
-
-        if (first_name.includes(search) || last_name.includes(search) || email.includes(search) || full_name.includes(search)) {
-          this.show_operators.push(element);
-        }
-      });
-    } else {
-      this.show_operators = this.all_operators;
+    if (this.idOrganization || this.permissions.includes('GeneralUsersManagement')) {
+      this.loadOperators();
     }
   }
 
-  async doOpen(uuid) {
-    this.router.navigateByUrl('operator-details/'+uuid);
-  }
-
-  async doOperators() {
-
-      let postParams = {
-        //id: id
-      }
-  
-      //this.http.post( ("assets/api/operators.json"), postParams)
-      this.http.get("assets/api/operators.json")//, postParams)    
-      .subscribe(data=> {
-        this.http_response = data;
-        this.response.exit = 1000;
-        this.all_operators = this.http_response.operators;
-        this.show_operators = this.all_operators;
-        //console.log( this.all_operators );
-        this.response.error = '';
-        this.response.success = 'Operation Completed!'
-      }, error => {
-        console.log(error); 
-        alert('Error');
-      });        
-  
+  // Operators list
+  async loadOperators() {
+    this.http.get<Array<User>>("assets/api/operators.json")
+    .subscribe(data => {
+      this.allOperators = data;
+      this.filteredOperators = this.allOperators;
+    }, error => {
+      this.showExceptionMessage(error);
+    });
   }  
   
+  // Operators filter
+  async filterOperators() {
+    let search = this.formSearch.search;
 
+    if (search) {
+      this.filteredOperators = [];
+      this.allOperators.forEach(element => {
+        search = search.toLowerCase();
+        let firstName = element.firstName.toLowerCase();
+        let lastName = element.lastName.toLowerCase();
+        let email = element.email.toLowerCase();
+        let fullName = firstName + ' ' + lastName;
+
+        if (firstName.includes(search) || lastName.includes(search) || email.includes(search) || fullName.includes(search)) {
+          this.filteredOperators.push(element);
+        }
+      });
+    } else {
+      this.filteredOperators = this.allOperators;
+    }
+  }
+
+  // Open operator details
+  async operatorDetails(uuid) {
+    this.router.navigateByUrl('operator-details/' + uuid);
+  }
+
+  //Exception message
+  showExceptionMessage(error: HttpErrorResponse) {
+    this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
+    this.modalException.show();
+  }
 }

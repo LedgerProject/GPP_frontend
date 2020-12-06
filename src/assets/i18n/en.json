@@ -287,21 +287,25 @@
     "Document Wallet - Document Detail": "Document Wallet - Document Detail",
     "Download": "Download",
 
-
-
-    "INVITE OPERATOR":"INVITE OPERATOR",
-    "Operators - List":"Operators - List",
-    "Access Level":"Access Level",
-    "Operators - Invite Operator":"Operators - Invite Operator",
+    "***OPERATORS***": "***OPERATORS***",
+    "Operators - List": "Operators - List",
+    "In questa sezione è possibile gestire gli operatori della propria organizzazione.": "In questa sezione è possibile gestire gli operatori della propria organizzazione.",
+    "In questa sezione è possibile gestire gli operatori registrati tramite portale.": "In questa sezione è possibile gestire gli operatori registrati tramite portale.",
+    "Seleziona 'Invite Operator' per invitare un operatore nell'organizzazione corrente, oppure selezionalo dall'elenco per modificare i permessi.": "Seleziona 'Invite Operator' per invitare un operatore nell'organizzazione corrente, oppure selezionalo dall'elenco per modificare i permessi.",
+    "Seleziona 'Invite Operator' per invitare un operatore nel team di Global Passport Project, oppure selezionalo dall'elenco per rimuoverlo.": "Seleziona 'Invite Operator' per invitare un operatore nel team di Global Passport Project, oppure selezionalo dall'elenco per rimuoverlo.",
+    "Invite Operator":"Invite Operator",
+    "Access level": "Access level",
     "Back to the operators list":"Back to the operators list",
-    "Search the operator to invite":"Search the operator to invite",
-    "Enter the invitation text":"Enter the invitation text",
-    "Administrator (can manage structures, operators and document wallet)":"Administrator (can manage structures, operators and document wallet)",
+    "Operators - Edit Operator":"Operators - Edit Operator",
+    "In questa sezione è possibile modificare i permessi dell'operatore oppure rimuoverlo dall'organizzazione corrente selezionando il pulsante 'Remove from Team'.": "In questa sezione è possibile modificare i permessi dell'operatore oppure rimuoverlo dall'organizzazione corrente selezionando il pulsante 'Remove from Team'.",
+    "Administrator (can manage structures, operators and document wallet)": "Administrator (can manage structures, operators and document wallet)",
     "Wallet (can manage document wallet)":"Wallet (can manage document wallet)",
     "Operators (can manage operators)": "Operators (can manage operators)",
     "Structures (can manage structures)": "Structures (can manage structures)",
-    "INVITE":"INVITE",
-    "Operators - Edit Operator":"Operators - Edit Operator",
-    "REMOVE FROM TEAM":"REMOVE FROM TEAM",
-    "CONFIRMED":"CONFIRMED"
+    "Remove from Team":"Remove from Team",
+    "Operators - Invite Operator":"Operators - Invite Operator",
+    "In questa sezione è possibile invitare un operatore a far parte dell'organizzazione corrente. Seleziona l'operatore, specifica i vari permessi ed inserisci un messaggio di invito.": "In questa sezione è possibile invitare un operatore a far parte dell'organizzazione corrente. Seleziona l'operatore, specifica i vari permessi ed inserisci un messaggio di invito.",
+    "Search the operator to invite":"Search the operator to invite",
+    "Enter the invitation text":"Enter the invitation text",
+    "Invite":"Invite"
 }

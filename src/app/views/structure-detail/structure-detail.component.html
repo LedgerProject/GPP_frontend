@@ -6,15 +6,15 @@
           <!-- Back link -->
           <a [routerLink]="['/structures']"><i class="fa fa-chevron-left"></i> {{ 'Back to the structures list' | translate }}</a>
 
+          <!-- Information -->
+          <h1 class="mt-4">
+            <span *ngIf="uuid">{{ 'Structures - Edit Structure' | translate }}</span>
+            <span *ngIf="!uuid">{{ 'Structures - Add Structure' | translate }}</span>
+          </h1>
+          <p>{{ 'In questa sezione è possibile specificare le informazioni della struttura.' | translate }}</p>
+
           <!-- Form -->
           <form #form="ngForm" (ngSubmit)="saveStructure()">
-            <!-- Information -->
-            <h1 class="mt-4">
-              <span *ngIf="uuid">{{ 'Structures - Edit Structure' | translate }}</span>
-              <span *ngIf="!uuid">{{ 'Structures - Add Structure' | translate }}</span>
-            </h1>
-            <p>{{ 'In questa sezione è possibile specificare le informazioni della struttura.' | translate }}</p>
-
             <!-- Identifier -->
             <div class="form-group md-3">
               <label>{{ 'Name' | translate }}</label>
