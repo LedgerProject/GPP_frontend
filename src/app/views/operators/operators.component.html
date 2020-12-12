@@ -5,11 +5,11 @@
         <div class="card-body">
           <!-- Information -->
           <h1 class="mt-4">{{ 'Operators - List' | translate }}</h1>
-          <p *ngIf="this.permissions.includes('OrganizationUsersManagement')">{{ 'In questa sezione è possibile gestire gli operatori della propria organizzazione.' | translate }}</p>
-          <p *ngIf="this.permissions.includes('OrganizationUsersManagement')">{{ 'Seleziona \'Invite Operator\' per invitare un operatore nell\'organizzazione corrente, oppure selezionalo dall\'elenco per modificare i permessi.' | translate }}</p>
+          <p *ngIf="this.permissions.includes('OrganizationUsersManagement')">{{ 'In this section it is possible to manage the profiles of the operators of your organization.' | translate }}</p>
+          <p *ngIf="this.permissions.includes('OrganizationUsersManagement')">{{ 'Click on \'Invite Operator\' to invite an operator in the current organization, or select the operator from the list to modify the authorizations.' | translate }}</p>
 
-          <p *ngIf="this.permissions.includes('GeneralUsersManagement')">{{ 'In questa sezione è possibile gestire gli operatori registrati tramite portale.' | translate }}</p>
-          <p *ngIf="this.permissions.includes('GeneralUsersManagement')">{{ 'Seleziona \'Invite Operator\' per invitare un operatore nel team di Global Passport Project, oppure selezionalo dall\'elenco per rimuoverlo.' | translate }}</p>
+          <p *ngIf="this.permissions.includes('GeneralUsersManagement')">{{ 'In this section it is possible to manager the operators registered through the portal.' | translate }}</p>
+          <p *ngIf="this.permissions.includes('GeneralUsersManagement')">{{ 'Click on \'Invite Operator\' to invite an operator of the Global Passport Project team, or select the operator from the list to remove him/her.' | translate }}</p>
           
           <!-- Search form -->
           <form #form="ngForm">
@@ -46,13 +46,13 @@
 
           <!-- Alert no organization selected -->
           <div *ngIf="this.idOrganization==='' && this.permissions.includes('OrganizationUsersManagement')" class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>{{ 'Seleziona o crea una nuova organizzazione prima di utilizzare questa sezione.' | translate }}</strong>
+            <strong>{{ 'Select or create a new organization before using this section.' | translate }}</strong>
           </div>
         </div>
 
         <!-- Under costruction alert -->
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
-          <strong>{{ 'Attenzione, questa sezione è ancora in fase di sviluppo, quindi ancora non funzionante.' | translate }}</strong>
+          <strong>{{ 'Attention! This section is under construction, hence is not working.' | translate }}</strong>
         </div>
       </div>
     </div>      

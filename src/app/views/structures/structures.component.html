@@ -5,8 +5,8 @@
         <div class="card-body">
           <!-- Information -->
           <h1 class="mt-4">{{ 'Structures - List' | translate }}</h1>
-          <p>{{ 'In questa sezione è possibile gestire le strutture da visualizzare nell\'applicazione.' | translate }}</p>
-          <p>{{ 'Seleziona \'Add Structure\' per aggiungere una nuova struttura, oppure selezionane una dall\'elenco per modificarla.' | translate }}</p>
+          <p>{{ 'In this section you can manage the structures to be displayed in the application.' | translate }}</p>
+          <p>{{ 'Select \'Add Structure\' to add a new structure, or select one from the list to edit it.' | translate }}</p>
 
           <!-- Search form -->
           <form #form="ngForm">
@@ -43,7 +43,7 @@
 
           <!-- Alert no organization selected -->
           <div *ngIf="this.idOrganization==='' && this.permissions.includes('OrganizationStructuresManagement')" class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>{{ 'Seleziona o crea una nuova organizzazione prima di utilizzare questa sezione.' | translate }}</strong>
+            <strong>{{ 'Select or create a new organization before using this section.' | translate }}</strong>
           </div>
         </div>
       </div>

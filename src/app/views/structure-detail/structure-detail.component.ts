@@ -487,7 +487,7 @@ export class StructureDetailComponent implements OnInit {
         break;
 
         case 409:
-          this.showErrorMessage(this.translate.instant('Error uploading image'), this.translate.instant('Un immagine con questo nome già esiste. Verifica che tu non l\'abbia già memorizzata, altrimenti rinomina il file.'));
+          this.showErrorMessage(this.translate.instant('Error uploading image'), this.translate.instant('An image with this name already exists. Check if you have already uploaded it, or rename the file.'));
         break;
 
         default:
@@ -532,7 +532,7 @@ export class StructureDetailComponent implements OnInit {
     } else {
       this.showErrorMessage(
         this.translate.instant('Unable geocoding'),
-        this.translate.instant('Specifica l\'indirizzo ed il comune per effettuare la ricerca.')
+        this.translate.instant('Enter the address and the city to search the position on the map.')
       );
     }
   }

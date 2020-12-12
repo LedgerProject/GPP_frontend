@@ -71,7 +71,7 @@ export class OrganizationAddComponent implements OnInit {
           case 422:
             this.showErrorMessage(
               this.translate.instant('Conflict'),
-              this.translate.instant('Il nome dell\'organizzazione è stato già specificato.')
+              this.translate.instant('The organization name has already been specified.')
             );
             break;
 

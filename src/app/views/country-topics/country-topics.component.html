@@ -10,9 +10,9 @@
           <form  #form="ngForm" (ngSubmit)="saveTopic()">
             <!-- Information -->
             <h1 class="mt-4">{{ 'Countries - Topic' | translate }} ({{country.identifier }})</h1>
-            <p>{{ 'In questa sezione è possibile inserire delle informazioni relative alla nazione suddivise per topic.' | translate }}</p>
-            <p>{{ 'Seleziona il pulsante \'Add Topic\' per aggiungere un nuovo topic oppure \'Delete\' per rimuoverne uno.' | translate }}</p>
-            <p>{{ 'Ricorda dopo aver inserito tutte le informazioni di selezionare il pulsante \'Save\'' | translate }}</p>
+            <p>{{ 'In this section you can enter information about the country divided by topic.' | translate }}</p>
+            <p>{{ 'Select the \'Add Topic\' button to add a new topic or \'Delete\' to remove it.' | translate }}</p>
+            <p>{{ 'Remember to select the \'Save\' button after entering all the information.' | translate }}</p>
 
             <div class="row" *ngFor="let topic of formData; let counter = index">
               <div class="col-md-12">
@@ -41,14 +41,14 @@
                       <!-- Delete button -->
                       <button type="button" class="btn btn-danger rounded-0" (click)="showDeleteMessage(counter, topic.id)">{{ 'Delete' | translate}}</button>
                     </div>
-                    <small [hidden]="topic.lang != language.value" class="form-text text-muted info-field">{{ 'Specificare il titolo del topic nelle varie lingue.' | translate }}</small>
+                    <small [hidden]="topic.lang != language.value" class="form-text text-muted info-field">{{ 'Specify the topic title in each language.' | translate }}</small>
 
                     <!-- Topic description -->
                     <label style="margin-top: 10px;" [hidden]="topic.lang != language.value">{{ 'Topic description' | translate }} {{counter+1}} ({{language.name}})</label>
                     <div class="input-group mb-3" [hidden]="topic.lang != language.value">
                       <textarea name="text[{{counter}}][{{language.value}}]" [(ngModel)]="topic.text[language.value]" class="form-control" placeholder="{{'Enter topic description' | translate }}" rows="5" required></textarea>
                     </div>
-                    <small [hidden]="topic.lang != language.value" class="form-text text-muted info-field">{{ 'Inserire la descrizione del topic nelle varie lingue.' | translate }}</small>
+                    <small [hidden]="topic.lang != language.value" class="form-text text-muted info-field">{{ 'Enter the description of the topic for each language.' | translate }}</small>
                     <hr [hidden]="topic.lang != language.value" />
                   </div>
                 </div>
@@ -76,13 +76,13 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">{{ 'Topic memorizzati' | translate }}</h4>
+        <h4 class="modal-title">{{ 'Topic saved' | translate }}</h4>
         <button type="button" class="close" (click)="modalInfo.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>{{ 'I topic sono stati memorizzati.' | translate }}</p>
+        <p>{{ 'Topic has been saved.' | translate }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modalInfo.hide()">{{ 'Close' | translate }}</button>
@@ -96,13 +96,13 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">{{ 'Eliminazione topic' | translate }}</h4>
+        <h4 class="modal-title">{{ 'Delete topic' | translate }}</h4>
         <button type="button" class="close" (click)="modalDelete.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>{{ 'Sei sicuro di voler eliminare il topic corrente?' | translate }}</p>
+        <p>{{ 'Are you sure you want to delete the current topic?' | translate }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="deleteTopic()">{{ 'Delete' | translate }}</button>

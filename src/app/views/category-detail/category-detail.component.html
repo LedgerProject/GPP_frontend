@@ -13,13 +13,13 @@
               <span *ngIf="uuid">{{ 'Categories - Edit' | translate }}</span>
               <span *ngIf="!uuid">{{ 'Categories - Add' | translate }}</span>
             </h1>
-            <p>{{ 'In questa sezione è possibile specificare le informazioni della categoria.' | translate }}</p>
+            <p>{{ 'In this section you can specify the category information.' | translate }}</p>
 
             <!-- Identifier -->
             <div class="form-group md-3">
               <label>{{ 'Identifier' | translate }}</label>
               <input type="text" name="identifier" [(ngModel)]="formData.identifier" id="identifier" class="form-control" placeholder="{{'Enter the category identifier' | translate }}" required>
-              <small class="form-text text-muted">{{ 'Specificare il nome della categoria nella lingua di riferimento.' | translate }}</small>
+              <small class="form-text text-muted">{{ 'Enter the category name in the reference language.' | translate }}</small>
             </div>
 
             <div class="form-group md-3">
@@ -41,7 +41,7 @@
                 <div [hidden]="currentLanguage != language.value">
                   <input name="title[{{language.value}}]" [(ngModel)]="formData.title[language.value]" class="form-control" placeholder="{{'Enter the category name' | translate }}">
                 </div>
-                <small [hidden]="currentLanguage != language.value" class="form-text text-muted">{{ 'Specificare il nome della categoria nelle varie lingue (per cambiare lingua selezionare \'Change Language\').' | translate }}</small>
+                <small [hidden]="currentLanguage != language.value" class="form-text text-muted">{{ 'Enter the name of the category in the various languages (to change language select \'Change Language\')' | translate }}</small>
               </div>
             </div>
 
@@ -66,13 +66,13 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">{{ 'Eliminazione categoria' | translate }}</h4>
+        <h4 class="modal-title">{{ 'Delete category' | translate }}</h4>
         <button type="button" class="close" (click)="modalDelete.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>{{ 'Sei sicuro di voler eliminare la categoria corrente?' | translate }}</p>
+        <p>{{ 'Are you sure you want to delete the current category?' | translate }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="deleteCategory(uuid)">{{ 'Delete' | translate }}</button>
