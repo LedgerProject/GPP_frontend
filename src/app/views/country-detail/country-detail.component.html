@@ -13,13 +13,13 @@
               <span *ngIf="uuid">{{ 'Countries - Edit' | translate }}</span>
               <span *ngIf="!uuid">{{ 'Countries - Add' | translate }}</span>
             </h1>
-            <p>{{ 'In questa sezione è possibile specificare le informazioni della nazione.' | translate }}</p>
+            <p>{{ 'In this section you can specify the country information.' | translate }}</p>
 
             <!-- Identifier -->
             <div class="form-group md-3">
               <label>{{ 'Identifier' | translate }}</label>
               <input type="text" name="identifier" [(ngModel)]="formData.identifier" id="identifier" class="form-control" aria-describedby="identifierHelpBlock" placeholder="{{'Enter the country identifier' | translate }}" required>
-              <small class="form-text text-muted">{{ 'Specificare il nome della nazione nella lingua di riferimento.' | translate }}</small>
+              <small class="form-text text-muted">{{ 'Specify the name of the country in the reference language.' | translate }}</small>
             </div>
 
             <div class="form-group md-3">
@@ -41,7 +41,7 @@
                 <div [hidden]="currentLanguage != language.value">
                   <input name="title[{{language.value}}]" [(ngModel)]="formData.title[language.value]" class="form-control" placeholder="{{'Enter the country name' | translate }}">
                 </div>
-                <small [hidden]="currentLanguage != language.value" class="form-text text-muted">{{ 'Specificare il nome della nazione nelle varie lingue (per cambiare lingua selezionare \'Change Language\').' | translate }}</small>
+                <small [hidden]="currentLanguage != language.value" class="form-text text-muted">{{ 'Enter the name of the country in the various languages (to change language select \'Change Language\').' | translate }}</small>
               </div>
             </div>
             
@@ -52,7 +52,7 @@
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
-              <small class="form-text text-muted">{{ 'Specificare \'No\' se le informazioni della nazione (topics) non sono state ancora inserite o non sono complete, altrimenti specificare \'Yes\'.' | translate }}</small>
+              <small class="form-text text-muted">{{ 'Specify \'No\' if the information of the country (topics) has not yet been entered or is not complete, otherwise specify \'Yes\'.' | translate }}</small>
             </div>
 
             <!-- Delete and save buttons-->
@@ -76,13 +76,13 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">{{ 'Eliminazione nazione' | translate }}</h4>
+        <h4 class="modal-title">{{ 'Delete country' | translate }}</h4>
         <button type="button" class="close" (click)="modalDelete.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>{{ 'Sei sicuro di voler eliminare la nazione corrente?' | translate }}</p>
+        <p>{{ 'Are you sure you want to delete the current country?' | translate }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="deleteCountry(uuid)">{{ 'Delete' | translate }}</button>

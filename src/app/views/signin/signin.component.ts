@@ -45,8 +45,8 @@ export class SigninComponent implements OnInit {
       this.messageException = {
         name : '',
         status : 422,
-        statusText : this.translate.instant('Specifica i dati di accesso'),
-        message : this.translate.instant('Specifica l\'e-mail e la password per accedere.')
+        statusText : this.translate.instant('Specify access data'),
+        message : this.translate.instant('Enter email and password to log in.')
       };
 
       tryLogin = false;
@@ -56,8 +56,8 @@ export class SigninComponent implements OnInit {
       this.messageException = {
         name : '',
         status : 422,
-        statusText : this.translate.instant('Password errata'),
-        message : this.translate.instant('Specifica una password di almeno 8 caratteri.')
+        statusText : this.translate.instant('Wrong password'),
+        message : this.translate.instant('Enter a password of at least 8 characters.')
       };
 
       tryLogin = false;
@@ -81,8 +81,8 @@ export class SigninComponent implements OnInit {
             this.messageException = {
               name : '',
               status : 401,
-              statusText : this.translate.instant('Password errata'),
-              message : this.translate.instant('La password specificata non è corretta. Riprova, oppure seleziona \'Forgot password?\' per ripristinare la password.')
+              statusText : this.translate.instant('Wrong password'),
+              message : this.translate.instant('The specified password is incorrect. Please try again, or select \'Forgot password?\' to reset the password.')
             };
           break;
 
@@ -90,8 +90,8 @@ export class SigninComponent implements OnInit {
             this.messageException = {
               name : '',
               status : 422,
-              statusText : this.translate.instant('Utente non trovato'),
-              message : this.translate.instant('Utente non trovato. Controlla la tua e-mail, oppure se non sei registrato, seleziona \'Not a member yet?\' ed effettua la registrazione.')
+              statusText : this.translate.instant('User not found'),
+              message : this.translate.instant('User not found. Check your email, or if you are not registered, select \'Not a member yet?\' and register.')
             };
           break;
 

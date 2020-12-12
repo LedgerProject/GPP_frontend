@@ -69,8 +69,8 @@ export class RegisterComponent implements OnInit {
       this.messageException = {
         name : '',
         status : 51,
-        statusText : this.translate.instant('Nome non specificato'),
-        message : this.translate.instant('Specificare il proprio nome.')
+        statusText : this.translate.instant('Name not specified'),
+        message : this.translate.instant('Enter your first name.')
       };
 
       trySignOn = false;
@@ -81,8 +81,8 @@ export class RegisterComponent implements OnInit {
       this.messageException = {
         name : '',
         status : 61,
-        statusText : this.translate.instant('Cognome non specificato'),
-        message : this.translate.instant('Specificare il proprio cognome.')
+        statusText : this.translate.instant('Last name not specified'),
+        message : this.translate.instant('Enter your last name.')
       };
 
       trySignOn = false;
@@ -93,8 +93,8 @@ export class RegisterComponent implements OnInit {
       this.messageException = {
         name : '',
         status : 71,
-        statusText : this.translate.instant('E-Mail non specificata'),
-        message : this.translate.instant('Specificare l\'e-mail di autenticazione.')
+        statusText : this.translate.instant('E-mail not specified'),
+        message : this.translate.instant('Enter the authentication email.')
       };
 
       trySignOn = false;
@@ -105,8 +105,8 @@ export class RegisterComponent implements OnInit {
       this.messageException = {
         name : '',
         status : 81,
-        statusText : this.translate.instant('Password non corretta'),
-        message : this.translate.instant('Specificare una password di almeno 8 caratteri.')
+        statusText : this.translate.instant('Incorrect password'),
+        message : this.translate.instant('Enter a password of at least 8 characters.')
       };
 
       trySignOn = false;
@@ -117,8 +117,8 @@ export class RegisterComponent implements OnInit {
       this.messageException = {
         name : '',
         status : 71,
-        statusText : this.translate.instant('E-Mail di conferma non corretta'),
-        message : this.translate.instant('L\'e-mail di conferma non corrisponde all\'e-mail immessa.')
+        statusText : this.translate.instant('Confirmation email incorrect'),
+        message : this.translate.instant('The confirmation email does not match the specified email')
       };
 
       trySignOn = false;
@@ -166,15 +166,15 @@ export class RegisterComponent implements OnInit {
           this.messageException = {
             name : '',
             status : 81,
-            statusText : this.translate.instant('Password non corretta'),
-            message : this.translate.instant('Specificare una password di almeno 8 caratteri.')
+            statusText : this.translate.instant('Incorrect password'),
+            message : this.translate.instant('Enter a password of at least 8 characters.')
           };
         } else if (code == 400) {
           this.messageException = {
             name : '',
             status : 101,
-            statusText : this.translate.instant('E-Mail già registrata'),
-            message : this.translate.instant('L\'e-mail specificata è già registrata nei nostri sistemi. Se hai dimenticato la password, seleziona il link \'Forgot password?\'')
+            statusText : this.translate.instant('Already registered email'),
+            message : this.translate.instant('The specified email is already registered in our systems. If you have forgotten your password, select the \'Forgot password?\' link')
           };
         } else if (code == 403) {
           this.messageException = {

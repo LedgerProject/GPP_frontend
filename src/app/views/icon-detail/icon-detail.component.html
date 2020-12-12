@@ -12,13 +12,13 @@
               <span *ngIf="uuid">{{ 'Icons - Edit' | translate }}</span>
               <span *ngIf="!uuid">{{ 'Icons - Add' | translate }}</span>
             </h1>
-            <p>{{ 'In questa sezione è possibile specificare le informazioni e le immagini dell\'icona.' | translate }}</p>
+            <p>{{ 'In this section it is possible to add the information and the image relative to the icon.' | translate }}</p>
 
             <!-- Name -->
             <div class="form-group mt-3">
               <label>{{ 'Name' | translate }}</label>
               <input type="text" formControlName="name" id="name" class="form-control" placeholder="{{'Enter the icon name' | translate }}" required>
-              <small class="form-text text-muted">{{ 'Specificare il nome dell\'icona.' | translate }}</small>
+              <small class="form-text text-muted">{{ 'Enter a name for the icon.' | translate }}</small>
             </div>
 
             <!-- Image (PNG)-->
@@ -29,7 +29,7 @@
               </div>
               <input formControlName="image" *ngIf="!uuid" id="image" type="file" (change)="imageSelectPost($event)"/>
               <input name="image" *ngIf="uuid" id="image" type="file" (change)="imageSelectPatch($event)"/>
-              <small class="form-text text-muted">{{ 'Selezionare un\'immagine PNG di 48x48 pixels.' | translate }}</small>
+              <small class="form-text text-muted">{{ 'Select an image PNG 48x48 pixels.' | translate }}</small>
             </div>
 
             <!-- Marker (PNG)-->
@@ -40,7 +40,7 @@
               </div>
               <input formControlName="marker" *ngIf="!uuid" id="marker" type="file" (change)="markerSelectPost($event)"/>
               <input name="marker" *ngIf="uuid" id="marker" type="file" (change)="onMarkerPatchSelect($event)"/>
-              <small class="form-text text-muted">{{ 'Selezionare un\'immagine PNG di 32x37 pixels.' | translate }}</small>
+              <small class="form-text text-muted">{{ 'Select an image PNG 32x37 pixels.' | translate }}</small>
             </div>
 
             <!-- Delete and save buttons-->
@@ -64,13 +64,13 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">{{ 'Icona memorizzata' | translate }}</h4>
+        <h4 class="modal-title">{{ 'Icon saved' | translate }}</h4>
         <button type="button" class="close" (click)="modalInfo.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>{{ 'Le informazioni sull\'icona sono state memorizzate.' | translate }}</p>
+        <p>{{ 'The information on the icon has been saved.' | translate }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modalInfo.hide()">{{ 'Close' | translate }}</button>
@@ -84,13 +84,13 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">{{ 'Eliminazione icona' | translate }}</h4>
+        <h4 class="modal-title">{{ 'Delete icon' | translate }}</h4>
         <button type="button" class="close" (click)="modalDelete.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>{{ 'Sei sicuro di voler eliminare l\'icona corrente?' | translate }}</p>
+        <p>{{ 'Are you sure you want to delete this icon?' | translate }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="deleteIcon(uuid)">{{ 'Delete' | translate }}</button>

@@ -11,7 +11,7 @@
             <span *ngIf="uuid">{{ 'Structures - Edit Structure' | translate }}</span>
             <span *ngIf="!uuid">{{ 'Structures - Add Structure' | translate }}</span>
           </h1>
-          <p>{{ 'In questa sezione è possibile specificare le informazioni della struttura.' | translate }}</p>
+          <p>{{ 'In this section, you can enter the structure’s information.' | translate }}</p>
 
           <!-- Form -->
           <form #form="ngForm" (ngSubmit)="saveStructure()">
@@ -19,21 +19,21 @@
             <div class="form-group md-3">
               <label>{{ 'Name' | translate }}</label>
               <input type="text" name="name" [(ngModel)]="formData.name" id="name" class="form-control" placeholder="{{'Enter the structure name' | translate }}" required>
-              <small class="form-text text-muted">{{ 'Specificare il nome della struttura.' | translate }}</small>
+              <small class="form-text text-muted">{{ 'Enter the structure name.' | translate }}</small>
             </div>
 
             <!-- Address -->
             <div class="form-group md-3">
               <label>{{ 'Address' | translate }}</label>
               <input type="text" name="address" [(ngModel)]="formData.address" id="address" class="form-control" placeholder="{{'Enter the structure address' | translate }}" required>
-              <small class="form-text text-muted">{{ 'Specificare l\'indirizzo della struttura.' | translate }}</small>
+              <small class="form-text text-muted">{{ 'Enter the address.' | translate }}</small>
             </div>
 
             <!-- City -->
             <div class="form-group md-3">
               <label>{{ 'City' | translate }}</label>
               <input type="text" name="city" [(ngModel)]="formData.city" id="city" class="form-control" placeholder="{{'Enter the structure city' | translate }}" required>
-              <small class="form-text text-muted">{{ 'Specificare il comune della struttura.' | translate }}</small>
+              <small class="form-text text-muted">{{ 'Enter the city.' | translate }}</small>
             </div>
 
             <!-- Icon -->
@@ -43,14 +43,14 @@
                 <option value="">{{ 'Select' | translate }}</option>
                 <option *ngFor="let icon of icons" value="{{icon.idIcon}}">{{icon.name}}</option>
               </select>
-              <small class="form-text text-muted">{{ 'Selezionare l\'icona da associare alla struttura.' | translate }}</small>
+              <small class="form-text text-muted">{{ 'Select an icon for the structure.' | translate }}</small>
             </div>
 
             <!-- E-Mail -->
             <div class="form-group md-3">
               <label>{{ 'E-Mail' | translate }}</label>
               <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Enter the structure e-mail address' | translate }}" required>
-              <small class="form-text text-muted">{{ 'Specificare l\'indirizzo e-mail della struttura.' | translate }}</small>
+              <small class="form-text text-muted">{{ 'Enter the email address.' | translate }}</small>
             </div>
 
             <!-- Phone Number -->
@@ -59,7 +59,7 @@
               <div class="row">
                 <div class="col-3">
                   <select name="phonePrefix" [(ngModel)]="formData.phonePrefix" id="phonePrefix" class="form-control" required>
-                    <option value="">{{ 'Select prefix' | translate }}</option>
+                    <option value="">{{ 'Select the country\'s prefix' | translate }}</option>
                     <option *ngFor="let prefix of prefixes" value="{{prefix}}">{{prefix}}</option>
                   </select>
                 </div>
@@ -67,14 +67,14 @@
                   <input type="tel" name="phone" [(ngModel)]="formData.phone" id="phone" class="form-control" placeholder="{{'Enter the structure phone number' | translate }}" required>
                 </div>
               </div>
-              <small class="form-text text-muted">{{ 'Specificare il numero di telefono della struttura.' | translate }}</small>
+              <small class="form-text text-muted">{{ 'Enter the phone number.' | translate }}</small>
             </div>
 
             <!-- Website -->
             <div class="form-group md-3">
               <label>{{ 'Website' | translate }}</label>
               <input type="text" name="website" [(ngModel)]="formData.website" id="website" class="form-control" placeholder="{{'Enter the structure website' | translate }}" required>
-              <small class="form-text text-muted">{{ 'Specificare il sito web della struttura (ricorda di aggiungere anche http o https).' | translate }}</small>
+              <small class="form-text text-muted">{{ 'Enter the website (remember to add http or https).' | translate }}</small>
             </div>
 
             <!-- Change language -->
@@ -95,7 +95,7 @@
                 <div *ngFor="let language of languages; let i = index">
                   <label [hidden]="currentLanguage != language.value">{{ 'Description' | translate }} ({{ language.name }})</label>
                   <textarea [hidden]="currentLanguage != language.value" name="text[{{language.value}}]" [(ngModel)]="formData.text[language.value]" class="form-control" placeholder="{{'Enter a brief description about the structure' | translate }}" rows="5" required></textarea>
-                  <small [hidden]="currentLanguage != language.value" class="form-text text-muted">{{ 'Inserire una breve descrizione sulla struttura.' | translate }}</small>
+                  <small [hidden]="currentLanguage != language.value" class="form-text text-muted">{{ 'Enter a brief description.' | translate }}</small>
                 </div>
               </div>
             </div>
@@ -144,7 +144,7 @@
                 <i class="fa fa-close"></i>
               </label>
             </div>
-            <small class="form-text text-muted clear-both">{{ 'Selezionare le categorie da associare alla struttura.' | translate }}</small>
+            <small class="form-text text-muted clear-both">{{ 'Select the categories for the structure.' | translate }}</small>
           </div>
         </div>
       </div>
@@ -165,7 +165,7 @@
                   <i class="fa fa-close pointer text-white" (click)="structureImageAskDelete(image.idStructureImage)"></i>
                 </div>
               </div>
-              <div [hidden]="structureImages.length">{{ 'Non sono presenti immagini per la struttura corrente. Per aggiungere una nuova immagine, seleziona \'Add Image\'' | translate}}</div>
+              <div [hidden]="structureImages.length">{{ 'There are no images for this structure. To add a new image, click on \'Add Image\'.' | translate}}</div>
             </div>
             <div class="col-sm-12 mt-3">
               <div class="text-right">
@@ -190,13 +190,13 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">{{ 'Struttura memorizzata' | translate }}</h4>
+        <h4 class="modal-title">{{ 'Structure saved' | translate }}</h4>
         <button type="button" class="close" (click)="modalInfo.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>{{ 'Le informazioni sulla struttura sono state memorizzate.' | translate }}</p>
+        <p>{{ 'The information has been saved.' | translate }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modalInfo.hide()">{{ 'Close' | translate }}</button>
@@ -210,13 +210,13 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">{{ 'Eliminazione struttura' | translate }}</h4>
+        <h4 class="modal-title">{{ 'Delete structure' | translate }}</h4>
         <button type="button" class="close" (click)="modalDelete.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>{{ 'Sei sicuro di voler eliminare la struttura corrente?' | translate }}</p>
+        <p>{{ 'Are you sure you want to delete this structure?' | translate }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="deleteStructure(uuid)">{{ 'Delete' | translate }}</button>
@@ -231,13 +231,13 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">{{ 'Eliminazione immagine' | translate }}</h4>
+        <h4 class="modal-title">{{ 'Delete image' | translate }}</h4>
         <button type="button" class="close" (click)="modalDeleteImage.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>{{ 'Sei sicuro di voler eliminare l\'immagine?' | translate }}</p>
+        <p>{{ 'Are you sure you want to delete this image?' | translate }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="structureImageDelete(idStructureImageDelete)">{{ 'Delete' | translate }}</button>
