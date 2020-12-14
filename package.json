@@ -1,22 +1,7 @@
 {
-  "name": "@coreui/coreui-free-angular-admin-template",
-  "version": "2.9.2",
-  "description": "CoreUI Free Angular 2+ Admin Template",
-  "author": {
-    "name": "Łukasz Holeczek",
-    "url": "http://holeczek.pl",
-    "github": "https://github.com/mrholek",
-    "twitter": "https://twitter.com/lukaszholeczek"
-  },
-  "contributors": [
-    {
-      "name": "Andrzej Kopański",
-      "url": "https://github.com/xidedix"
-    }
-  ],
-  "homepage": "https://coreui.io/angular",
-  "copyright": "Copyright 2020 creativeLabs Łukasz Holeczek",
-  "license": "MIT",
+  "name": "gpp-frontend",
+  "version": "0.5.3",
+  "description": "Service portal for third sector operators",
   "scripts": {
     "ng": "ng",
     "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
@@ -49,6 +34,7 @@
     "bootstrap": "^4.5.3",
     "chart.js": "^2.9.4",
     "core-js": "^2.6.11",
+    "dotenv": "^8.2.0",
     "flag-icon-css": "^3.4.6",
     "font-awesome": "^4.7.0",
     "moment": "^2.24.0",
@@ -66,12 +52,13 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.901.1",
-    "@angular/cli": "^9.1.1",
+    "@angular/cli": "^9.1.12",
     "@angular/compiler-cli": "^9.1.1",
     "@angular/language-service": "^9.1.1",
+    "@types/dotenv": "^8.2.0",
     "@types/jasmine": "^3.6.1",
     "@types/jasminewd2": "^2.0.8",
-    "@types/node": "^13.13.30",
+    "@types/node": "^13.13.36",
     "codelyzer": "^5.2.2",
     "jasmine-core": "^3.5.0",
     "jasmine-spec-reporter": "^5.0.1",
@@ -83,7 +70,8 @@
     "protractor": "^5.4.3",
     "ts-node": "^8.8.2",
     "tslint": "^6.1.1",
-    "typescript": "~3.7.5"
+    "typescript": "~3.7.5",
+    "yargs": "^16.2.0"
   },
   "engines": {
     "node": ">= 10.13",
