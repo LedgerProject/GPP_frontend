@@ -61,7 +61,7 @@ export class CategoriesComponent implements OnInit {
       }';
 
     // HTTP Request
-    this.http.get<Array<Category>>(this.userdata.mainUrl + this.userdata.mainPort + "/categories?filter=" + filter, {headers} )
+    this.http.get<Array<Category>>(environment.apiUrl + environment.apiPort + "/categories?filter=" + filter, {headers} )
     .subscribe(data => {
       this.allCategories = data;
       this.filteredCategories = data;

@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { UserdataService } from '../../services/userdata.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-wallet-document-detail',
@@ -62,7 +63,7 @@ export class WalletDocumentDetailComponent implements OnInit {
       .set("Authorization", "Bearer "+this.token)
       ;
 
-      this.http.get(this.userdata.mainUrl+this.userdata.mainPort+"/documents/"+this.document.idDocument+"/operator/"+this.wallet, {headers, responseType: 'arraybuffer'} )
+      this.http.get(environment.apiUrl + environment.apiPort + "/documents/" + this.document.idDocument + "/operator/" + this.wallet, {headers, responseType: 'arraybuffer'} )
       .subscribe(data=> {
         //console.log(data);
         this.blob = data;

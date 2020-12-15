@@ -71,7 +71,7 @@ export class SigninComponent implements OnInit {
   
       let headers = new HttpHeaders().set("Content-Type", "application/json");
 
-      this.http.post<TokenCredential>(this.userdata.mainUrl + this.userdata.mainPort + "/users/login", postParams, {headers})
+      this.http.post<TokenCredential>(environment.apiUrl + environment.apiPort + "/users/login", postParams, {headers})
       .subscribe(data => {
         localStorage.setItem('token', data.token);
         this.router.navigateByUrl('wallet');

@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SlugifyPipe } from '../../pipes/slugify.pipe';
+import { SlugifyPipe } from '../../services/slugify.pipe';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -136,7 +136,7 @@ export class StructureDetailComponent implements OnInit {
         "order": ["name"] \
       }';
 
-    this.http.get<Array<Icon>>(this.userdata.mainUrl + this.userdata.mainPort + "/icons?filter=" + filter, {headers} )
+    this.http.get<Array<Icon>>(environment.apiUrl + environment.apiPort + "/icons?filter=" + filter, {headers} )
     .subscribe(dataIcons => {
       this.icons = dataIcons;
 
@@ -156,7 +156,7 @@ export class StructureDetailComponent implements OnInit {
 
     // Get structure data
     if (this.uuid) {
-      this.http.get<Structure>(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid, {headers} )
+      this.http.get<Structure>(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid, {headers} )
       .subscribe(data => {
         this.formData.name = data.name;
         this.formData.address = data.address;
@@ -180,7 +180,7 @@ export class StructureDetailComponent implements OnInit {
   async getStructureLanguages() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get<Array<StructureLanguage>>(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid + "/structures-languages", {headers} )
+    this.http.get<Array<StructureLanguage>>(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid + "/structures-languages", {headers} )
     .subscribe(dataLangs=> {
       dataLangs.forEach(elementLang => {
         let desc = "";
@@ -216,10 +216,10 @@ export class StructureDetailComponent implements OnInit {
       }';
 
     // Get categories list
-    this.http.get<Array<Category>>(this.userdata.mainUrl + this.userdata.mainPort + "/categories?filter=" + filter, {headers} )
+    this.http.get<Array<Category>>(environment.apiUrl + environment.apiPort + "/categories?filter=" + filter, {headers} )
     .subscribe(dataCategories => {
       // Get categories associated to the structure
-      this.http.get<Array<StructureCategory>>(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid + '/structures-categories', {headers} )
+      this.http.get<Array<StructureCategory>>(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid + '/structures-categories', {headers} )
       .subscribe(dataStructureCategories => {
         dataCategories.forEach(elementCategory => {
           let categoriesList: FormDataStructureCategories;
@@ -252,7 +252,7 @@ export class StructureDetailComponent implements OnInit {
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get<Array<StructureImage>>(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid + "/structures-images", {headers} )
+    this.http.get<Array<StructureImage>>(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid + "/structures-images", {headers} )
     .subscribe(dataImage=> {
       this.structureImages = dataImage;
       let x = 0;
@@ -329,7 +329,7 @@ export class StructureDetailComponent implements OnInit {
       //Check if update or insert
       if (this.uuid) {
         //Update the structure
-        this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + this.uuid, postParams, {headers} )
+        this.http.patch(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid, postParams, {headers} )
         .subscribe(async data => {
           await this.saveStructureLanguages();
 
@@ -339,7 +339,7 @@ export class StructureDetailComponent implements OnInit {
         });
       } else {
         //Insert the structure
-        this.http.post<Structure>(this.userdata.mainUrl + this.userdata.mainPort + "/structures", postParams, {headers} )
+        this.http.post<Structure>(environment.apiUrl + environment.apiPort + "/structures", postParams, {headers} )
         .subscribe(async data => {
           this.uuid = data.idStructure;
   
@@ -371,7 +371,7 @@ export class StructureDetailComponent implements OnInit {
         description: this.formData.text[element.value]
       };
   
-      this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/structures-languages", postParams, {headers} )
+      this.http.post(environment.apiUrl + environment.apiPort + "/structures-languages", postParams, {headers} )
       .subscribe(subdata=> {
       }, error => {
         this.showExceptionMessage(error);
@@ -388,7 +388,7 @@ export class StructureDetailComponent implements OnInit {
   deleteStructure(idStructure) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/structures/" + idStructure, {headers} )
+    this.http.delete(environment.apiUrl + environment.apiPort + "/structures/" + idStructure, {headers} )
     .subscribe(data=> {
       this.router.navigateByUrl('/structures');
     }, error => {
@@ -425,7 +425,7 @@ export class StructureDetailComponent implements OnInit {
       idStructure: this.uuid
     };
     
-    this.http.post<StructureCategory>(this.userdata.mainUrl + this.userdata.mainPort + "/structures-categories", postParams, {headers} )
+    this.http.post<StructureCategory>(environment.apiUrl + environment.apiPort + "/structures-categories", postParams, {headers} )
     .subscribe(data => {
       if (data.idStructureCategory) {
         let x = 0;
@@ -447,7 +447,7 @@ export class StructureDetailComponent implements OnInit {
   deleteStructureCategory(idStructureCategory) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
   
-    this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/structures-categories/" + idStructureCategory, {headers} )
+    this.http.delete(environment.apiUrl + environment.apiPort + "/structures-categories/" + idStructureCategory, {headers} )
     .subscribe(data => {
     }, error => {
       this.showExceptionMessage(error);
@@ -474,7 +474,7 @@ export class StructureDetailComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', this.uploadForm.get('profile').value);
     
-    this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/structures-images/" + this.uuid, formData, {headers})
+    this.http.post(environment.apiUrl + environment.apiPort + "/structures-images/" + this.uuid, formData, {headers})
     .subscribe(res => {
       this.structureImageSrc = '';
       this.getStructureImages();
@@ -510,7 +510,7 @@ export class StructureDetailComponent implements OnInit {
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/structures-images/" + idStructureImage, {headers} )
+    this.http.delete(environment.apiUrl + environment.apiPort + "/structures-images/" + idStructureImage, {headers} )
     .subscribe(data=> {
       this.getStructureImages();
     }, error => {

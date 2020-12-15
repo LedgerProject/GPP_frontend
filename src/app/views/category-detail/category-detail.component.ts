@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SlugifyPipe } from '../../pipes/slugify.pipe';
+import { SlugifyPipe } from '../../services/slugify.pipe';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Language, MessageException, MessageError, Category, CategoryLanguage } from '../../services/models';
 import { environment } from '../../../environments/environment';
@@ -65,7 +65,7 @@ export class CategoryDetailComponent implements OnInit {
   async getCategory() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get<Category>(this.userdata.mainUrl + this.userdata.mainPort + "/categories/" + this.uuid, {headers} )
+    this.http.get<Category>(environment.apiUrl + environment.apiPort + "/categories/" + this.uuid, {headers} )
     .subscribe(dataCategory=> {
       this.category = dataCategory;
 
@@ -83,7 +83,7 @@ export class CategoryDetailComponent implements OnInit {
   async getCategoryLanguages() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get<Array<CategoryLanguage>>(this.userdata.mainUrl + this.userdata.mainPort + "/categories/" + this.uuid + "/categories-languages", {headers} )
+    this.http.get<Array<CategoryLanguage>>(environment.apiUrl + environment.apiPort + "/categories/" + this.uuid + "/categories-languages", {headers} )
     .subscribe(dataLangs=> {
       dataLangs.forEach(elementLang => {
         this.formData.title[elementLang.language] = elementLang.category;
@@ -127,7 +127,7 @@ export class CategoryDetailComponent implements OnInit {
       //Check if update or insert
       if (this.uuid) {
         //Update the category
-        this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/categories/" + this.uuid,postParams, {headers} )
+        this.http.patch(environment.apiUrl + environment.apiPort + "/categories/" + this.uuid,postParams, {headers} )
         .subscribe(async data => {
           await this.saveCategoryLanguages();
 
@@ -137,7 +137,7 @@ export class CategoryDetailComponent implements OnInit {
         });
       } else {
         //Insert the category
-        this.http.post<Category>(this.userdata.mainUrl + this.userdata.mainPort + "/categories", postParams, {headers} )
+        this.http.post<Category>(environment.apiUrl + environment.apiPort + "/categories", postParams, {headers} )
         .subscribe(async data => {
           this.uuid = data.idCategory;
           await this.saveCategoryLanguages();
@@ -169,7 +169,7 @@ export class CategoryDetailComponent implements OnInit {
         category: this.formData.title[element.value]
       };
 
-      this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/categories-languages", postParams, {headers} )
+      this.http.post(environment.apiUrl + environment.apiPort + "/categories-languages", postParams, {headers} )
       .subscribe(dataLang => {
       }, error => {
         this.showExceptionMessage(error);
@@ -186,7 +186,7 @@ export class CategoryDetailComponent implements OnInit {
   deleteCategory(idCategory) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/categories/" + idCategory, {headers} )
+    this.http.delete(environment.apiUrl + environment.apiPort + "/categories/" + idCategory, {headers} )
     .subscribe(data => {
       this.router.navigateByUrl('/categories');
     }, error => {

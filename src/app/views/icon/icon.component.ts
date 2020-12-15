@@ -59,7 +59,7 @@ export class IconComponent implements OnInit {
       }';
 
     // HTTP Request
-    this.http.get<Array<Icon>>(this.userdata.mainUrl + this.userdata.mainPort + "/icons?filter=" + filter, {headers})
+    this.http.get<Array<Icon>>(environment.apiUrl + environment.apiPort + "/icons?filter=" + filter, {headers})
     .subscribe(data=> {
       this.allIcons = data;
       this.filteredIcons = data;

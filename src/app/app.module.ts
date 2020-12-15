@@ -66,7 +66,7 @@ import { StructureDetailComponent } from './views/structure-detail/structure-det
 import { LogoutComponent } from './views/logout/logout.component';
 import { OrganizationAddComponent } from './views/organization-add/organization-add.component';
 import { CountriesComponent } from './views/countries/countries.component';
-import { SlugifyPipe } from './pipes/slugify.pipe';
+import { SlugifyPipe } from './services/slugify.pipe';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { CountryTopicsComponent } from './views/country-topics/country-topics.component';
 import { CountryDetailComponent } from './views/country-detail/country-detail.component';

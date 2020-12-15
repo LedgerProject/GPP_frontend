@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { SlugifyPipe } from '../../pipes/slugify.pipe';
+import { SlugifyPipe } from '../../services/slugify.pipe';
 import { Language, MessageException, MessageError, Country, CountryTopic, CountryTopicLanguage } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { strict } from 'assert';
@@ -76,7 +76,7 @@ export class CountryTopicsComponent implements OnInit {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     // Get the country information
-    this.http.get<Country>(this.userdata.mainUrl + this.userdata.mainPort + "/countries/" + this.uuid, {headers} )
+    this.http.get<Country>(environment.apiUrl + environment.apiPort + "/countries/" + this.uuid, {headers} )
     .subscribe(dataCountry=> {
       this.country = dataCountry;
 
@@ -107,7 +107,7 @@ export class CountryTopicsComponent implements OnInit {
         "order":["identifier"] \
       }';
 
-    this.http.get<Array<CountryTopic>>(this.userdata.mainUrl + this.userdata.mainPort + "/countries-topics?filter=" + filter, {headers} )
+    this.http.get<Array<CountryTopic>>(environment.apiUrl + environment.apiPort + "/countries-topics?filter=" + filter, {headers} )
     .subscribe(dataTopics=> {
       //For each topic get the related information
       dataTopics.forEach(currentTopic => {
@@ -119,7 +119,7 @@ export class CountryTopicsComponent implements OnInit {
         };
         
         //Get the language information for the current topic
-        this.http.get<Array<CountryTopicLanguage>>(this.userdata.mainUrl + this.userdata.mainPort + "/countries-topics/" + currentTopic.idCountryTopic + '/countries-topics-languages', {headers} )
+        this.http.get<Array<CountryTopicLanguage>>(environment.apiUrl + environment.apiPort + "/countries-topics/" + currentTopic.idCountryTopic + '/countries-topics-languages', {headers} )
         .subscribe(dataTopicLangs => {
           dataTopicLangs.forEach(dataLang => {
             topic.title[dataLang.language] = dataLang.topic;
@@ -195,14 +195,14 @@ export class CountryTopicsComponent implements OnInit {
           //Check if update or insert
           if (element.id) {
             //Update the topic
-            this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/countries-topics/" + element.id, postParams, {headers} )
+            this.http.patch(environment.apiUrl + environment.apiPort + "/countries-topics/" + element.id, postParams, {headers} )
             .subscribe(async data => {
               await this.saveTopicLanguages(element);
             }, error => {
               this.showExceptionMessage(error);
             });
           } else {
-            this.http.post<CountryTopic>(this.userdata.mainUrl + this.userdata.mainPort + "/countries-topics", postParams, {headers} )
+            this.http.post<CountryTopic>(environment.apiUrl + environment.apiPort + "/countries-topics", postParams, {headers} )
             .subscribe(async data => {
               element.id = data.idCountryTopic;
 
@@ -237,7 +237,7 @@ export class CountryTopicsComponent implements OnInit {
         language: elementLang.value,
       };
 
-      this.http.post(this.userdata.mainUrl+this.userdata.mainPort+"/countries-topics-languages", subpostParams, {headers} )
+      this.http.post(environment.apiUrl + environment.apiPort + "/countries-topics-languages", subpostParams, {headers} )
       .subscribe(dataLang => {
       }, error => {
         this.showExceptionMessage(error);
@@ -257,7 +257,7 @@ export class CountryTopicsComponent implements OnInit {
     } else {
       let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
 
-      this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/countries-topics/" + this.topicIdDelete, {headers} )
+      this.http.delete(environment.apiUrl + environment.apiPort + "/countries-topics/" + this.topicIdDelete, {headers} )
       .subscribe(data => {
         this.formData.splice(this.topicCounterDelete, 1);
       }, error => {

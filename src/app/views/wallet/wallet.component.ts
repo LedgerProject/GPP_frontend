@@ -58,7 +58,7 @@ export class WalletComponent implements OnInit {
     if (this.errorsDescriptions.length === 0) {
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-      this.http.get<Document>(this.userdata.mainUrl + this.userdata.mainPort + "/documents/operator/" + this.formData.token, {headers} )
+      this.http.get<Document>(environment.apiUrl + environment.apiPort + "/documents/operator/" + this.formData.token, {headers} )
       .subscribe(data => {
         localStorage.setItem('documents', JSON.stringify(data));
         localStorage.setItem('tokenWallet', this.formData.token);

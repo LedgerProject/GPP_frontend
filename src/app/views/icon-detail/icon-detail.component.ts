@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SlugifyPipe } from '../../pipes/slugify.pipe';
+import { SlugifyPipe } from '../../services/slugify.pipe';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -67,7 +67,7 @@ export class IconDetailComponent implements OnInit {
   async getIcon() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get<Icon>(this.userdata.mainUrl + this.userdata.mainPort + "/icons/" + this.uuid, {headers} )
+    this.http.get<Icon>(environment.apiUrl + environment.apiPort + "/icons/" + this.uuid, {headers} )
     .subscribe(data=> {
       this.icon = data;
 
@@ -115,7 +115,7 @@ export class IconDetailComponent implements OnInit {
         formData.append('file', this.uploadForm.get('fileImage').value);
         formData.append('file', this.uploadForm.get('fileMarker').value);
 
-        this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/icons/" + name, formData, {headers} )
+        this.http.post(environment.apiUrl + environment.apiPort + "/icons/" + name, formData, {headers} )
         .subscribe(data => {
           this.router.navigateByUrl('/icons');
         }, error => {
@@ -136,7 +136,7 @@ export class IconDetailComponent implements OnInit {
           name: name
         };
 
-        this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/icons/" + this.uuid, postParams, {headers} )
+        this.http.patch(environment.apiUrl + environment.apiPort + "/icons/" + this.uuid, postParams, {headers} )
         .subscribe(data=> {
           this.router.navigateByUrl('/icons');
         }, error => {
@@ -186,7 +186,7 @@ export class IconDetailComponent implements OnInit {
       const formData = new FormData();
       formData.append('file', this.uploadForm.get('fileImage').value);
 
-      this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/icons/" + this.uuid + "/image/image", formData, {headers} )
+      this.http.patch(environment.apiUrl + environment.apiPort + "/icons/" + this.uuid + "/image/image", formData, {headers} )
       .subscribe(data => {
         this.getIcon();
         this.modalInfo.show();
@@ -220,7 +220,7 @@ export class IconDetailComponent implements OnInit {
       const formData = new FormData();
       formData.append('file', this.uploadForm.get('fileMarker').value);
 
-      this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/icons/" + this.uuid + "/image/marker", formData, {headers} )
+      this.http.patch(environment.apiUrl + environment.apiPort + "/icons/" + this.uuid + "/image/marker", formData, {headers} )
       .subscribe(data => {
         this.getIcon();
         this.modalInfo.show();
@@ -244,7 +244,7 @@ export class IconDetailComponent implements OnInit {
   deleteIcon(idIcon) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/icons/" + idIcon, {headers} )
+    this.http.delete(environment.apiUrl + environment.apiPort + "/icons/" + idIcon, {headers} )
     .subscribe(data=> {
       this.router.navigateByUrl('/icons');
     }, error => {

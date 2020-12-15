@@ -9,10 +9,6 @@ export class UserdataService {
   constructor() { }
 
   public current_version = 1001;
-  public apiKey = 'GlobalPassport';
-  public mainUrl ='https://www.globalpassportproject.org/gpp-backend';
-  public mainUrlImages ='https://www.globalpassportproject.org/gpp-backend';
-  public mainPort = '';
 
   public name = '';
 

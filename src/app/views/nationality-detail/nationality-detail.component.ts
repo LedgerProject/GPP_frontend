@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SlugifyPipe } from '../../pipes/slugify.pipe';
+import { SlugifyPipe } from '../../services/slugify.pipe';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Language, MessageException, MessageError, Nationality, NationalityLanguage } from '../../services/models';
 import { environment } from '../../../environments/environment';
@@ -69,7 +69,7 @@ export class NationalityDetailComponent implements OnInit {
   async getNationality() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get<Nationality>(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities/" + this.uuid, {headers} )
+    this.http.get<Nationality>(environment.apiUrl + environment.apiPort + "/nationalities/" + this.uuid, {headers} )
     .subscribe(dataNationality => {
       this.nationality = dataNationality;
 
@@ -87,7 +87,7 @@ export class NationalityDetailComponent implements OnInit {
   async getNationalityLanguages() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get<Array<NationalityLanguage>>(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities/" + this.uuid + "/nationalities-languages", {headers} )
+    this.http.get<Array<NationalityLanguage>>(environment.apiUrl + environment.apiPort + "/nationalities/" + this.uuid + "/nationalities-languages", {headers} )
     .subscribe(dataLangs=> {
       dataLangs.forEach(elementLang => {
         this.formData.title[elementLang.language] = elementLang.nationality;
@@ -130,7 +130,7 @@ export class NationalityDetailComponent implements OnInit {
       //Check if update or insert
       if (this.uuid) {
         //Update the nationality
-        this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities/" + this.uuid, postParams, {headers} )
+        this.http.patch(environment.apiUrl + environment.apiPort + "/nationalities/" + this.uuid, postParams, {headers} )
         .subscribe(async data => {
           await this.saveNationalityLanguages();
 
@@ -140,7 +140,7 @@ export class NationalityDetailComponent implements OnInit {
         });
       } else {
         //Insert the nationality
-        this.http.post<Nationality>(this.userdata.mainUrl+this.userdata.mainPort+"/nationalities/",postParams, {headers} )
+        this.http.post<Nationality>(environment.apiUrl + environment.apiPort + "/nationalities/",postParams, {headers} )
         .subscribe(async data => {
           this.uuid = data.idNationality;
           await this.saveNationalityLanguages();
@@ -172,7 +172,7 @@ export class NationalityDetailComponent implements OnInit {
         nationality: this.formData.title[element.value]
       };
 
-      this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities-languages", subpostParams, {headers} )
+      this.http.post(environment.apiUrl + environment.apiPort + "/nationalities-languages", subpostParams, {headers} )
       .subscribe(dataLang=> {
       }, error => {
         this.showExceptionMessage(error);
@@ -189,7 +189,7 @@ export class NationalityDetailComponent implements OnInit {
   deleteNationality(idNationality) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities/" + idNationality, {headers} )
+    this.http.delete(environment.apiUrl + environment.apiPort + "/nationalities/" + idNationality, {headers} )
     .subscribe(data=> {
       this.router.navigateByUrl('/nationalities');
     }, error => {

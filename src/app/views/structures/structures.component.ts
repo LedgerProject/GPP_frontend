@@ -77,7 +77,7 @@ export class StructuresComponent implements OnInit {
       }';
     
     // HTTP Request
-    this.http.get<Array<Structure>>(this.userdata.mainUrl + this.userdata.mainPort + "/structures?filter=" + filter, {headers})
+    this.http.get<Array<Structure>>(environment.apiUrl + environment.apiPort + "/structures?filter=" + filter, {headers})
     .subscribe(data => {
       this.allStructures = data;
       this.filteredStructures = data;

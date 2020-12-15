@@ -1,197 +1,255 @@
-[![@coreui angular](https://img.shields.io/badge/@coreui%20-angular-lightgrey.svg?style=flat-square)](https://github.com/coreui/angular)
-[![npm package][npm-coreui-angular-badge]][npm-coreui-angular]
-[![NPM downloads][npm-coreui-angular-download]][npm-coreui-angular]  
-[![@coreui coreui](https://img.shields.io/badge/@coreui%20-coreui-lightgrey.svg?style=flat-square)](https://github.com/coreui/coreui)
-[![npm package][npm-coreui-badge]][npm-coreui]
-[![NPM downloads][npm-coreui-download]][npm-coreui]  
-![angular](https://img.shields.io/badge/angular-^9.1.1-lightgrey.svg?style=flat-square&logo=angular)  
+<!-- PROJECT LOGO -->
+<br />
+<p>
+  <h3>Global Passport Project Frontend</h3>
+  <img src="logo.png" />
+</p>
 
-[npm-coreui-angular]: https://www.npmjs.com/package/@coreui/angular  
-[npm-coreui-angular-badge]: https://img.shields.io/npm/v/@coreui/angular.png?style=flat-square  
-[npm-coreui-angular-download]: https://img.shields.io/npm/dm/@coreui/angular.svg?style=flat-square  
-[npm-coreui]: https://www.npmjs.com/package/@coreui/coreui
-[npm-coreui-badge]: https://img.shields.io/npm/v/@coreui/coreui.png?style=flat-square
-[npm-coreui-download]: https://img.shields.io/npm/dm/@coreui/coreui.svg?style=flat-square
+<!-- GETTING STARTED -->
+## Table of contents
 
-# CoreUI Free Angular 2+ Admin Template [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/intent/tweet?text=CoreUI%20-%20Free%20Bootstrap%204%20Admin%20Template%20&url=https://coreui.io&hashtags=bootstrap,admin,template,dashboard,panel,free,angular,react,vue)
+* [Global Passport Project](#global-passport-project)
+* [Build with](#built-with)
+* [Software Used](#software-used)
+* [Side technologies](#side-technologies)
+* [Directory structure](#directory-structure)
+* [Starting a development environment](#starting-a-development-environment)
+* [Available scripts](#available-scripts)
+* [How the backend works](#how-the-backend-works)
 
-Please help us on [Product Hunt](https://www.producthunt.com/posts/coreui-open-source-bootstrap-4-admin-template-with-angular-2-react-js-vue-js-support) and [Designer News](https://www.designernews.co/stories/81127). Thanks in advance!
+## Global Passport Project
 
-Curious why I decided to create CoreUI? Please read this article: [Jack of all trades, master of none. Why Bootstrap Admin Templates suck.](https://medium.com/@lukaszholeczek/jack-of-all-trades-master-of-none-5ea53ef8a1f#.7eqx1bcd8)
+Global Passport Project is a breakthrough initiative that leverages on decentralized technology to support mixed migrants along their journey, protect
+their privacy while reporting human rights violations, and engage them as citizens integrating in their new communities. GPP will also enormously
+improve the capacity of NGOs and social enterprises to reach out to migrants and design their actions, thus streamlining their resources and improving
+their performance and records when applying for funds and calls.
 
-CoreUI is an Open Source Bootstrap Admin Template. But CoreUI is not just another Admin Template. It goes way beyond hitherto admin templates thanks to transparent code and file structure. And if that's not enough, let’s just add that CoreUI consists bunch of unique features and over 1000 high quality icons.
+GPP is a blockchain-based platform with a website and mobile App through which mixed migrants can safely store important documents, access info on
+the countries crossed and the solidarity network in the area they are in, as well as report on abuses they might face along the journey. All data is personal
+and inviolable, and it will be kept on Blockchain with a double-level encryption component.
 
-CoreUI is based on Bootstrap 4 and offers 6 versions: 
-[HTML5 AJAX](https://github.com/coreui/coreui-free-bootstrap-admin-template-ajax), 
-[HTML5](https://github.com/coreui/coreui-free-angular-admin-template), 
-[Angular 2+](https://github.com/coreui/coreui-free-angular-admin-template), 
-[React.js](https://github.com/coreui/coreui-free-react-admin-template), 
-[Vue.js](https://github.com/coreui/coreui-free-vue-admin-template)
- & [.NET Core 2](https://github.com/mrholek/CoreUI-NET).
+* GPP’s key tool is the first ever DocWallet, a unique and innovative "safe space" where migrants can scan and upload their ID, educational or medical
+records that might get lost during their journey or might not be convenient to keep them physically with them. The lack of documentation is often a
+key issue in the migratory process.
 
-CoreUI is meant to be the UX game changer. Pure & transparent code is devoid of redundant components, so the app is light enough to offer ultimate user experience. This means mobile devices also, where the navigation is just as easy and intuitive as on a desktop or laptop. The CoreUI Layout API lets you customize your project for almost any device – be it Mobile, Web or WebApp – CoreUI covers them all!
+* GPP App will provide the user with a detailed and comprehensive mapping of solidarity structures in transit/destination countries: upon voluntary
+geolocalization, an interactive map will provide information on the structures (i.e. associations, collectives, unions, NGOs, lawyers, humanitarian
+protection) and also up-to-date information on the legislation in force in every country and territory crossed.
 
-## Table of Contents
+* GPP is also a multimedia tool for mixed migrant to report and document abuses faced along the journey after being provided with a brief tutorial on
+citizen journalism.
 
-- [CoreUI Free Angular 2+ Admin Template ![Tweet](https://twitter.com/intent/tweet?text=CoreUI%20-%20Free%20Bootstrap%204%20Admin%20Template%20&url=https://coreui.io&hashtags=bootstrap,admin,template,dashboard,panel,free,angular,react,vue)](#coreui-free-angular-2-admin-template-tweethttpstwittercomintenttweettextcoreui20-20free20bootstrap20420admin20template20urlhttpscoreuiiohashtagsbootstrapadmintemplatedashboardpanelfreeangularreactvue)
-  - [Table of Contents](#table-of-contents)
-  - [Versions](#versions)
-  - [CoreUI Pro](#coreui-pro)
-  - [Admin Templates built on top of CoreUI Pro](#admin-templates-built-on-top-of-coreui-pro)
-      - [Prerequisites](#prerequisites)
-          - [Node.js](#nodejs)
-          - [Angular CLI](#angular-cli)
-        - [Update to Angular 9](#update-to-angular-9)
-  - [Installation](#installation)
-    - [Clone repo](#clone-repo)
-  - [Usage](#usage)
-  - [What's included](#whats-included)
-  - [Documentation](#documentation)
-  - [Contributing](#contributing)
-  - [Versioning](#versioning)
-  - [Creators](#creators)
-  - [Community](#community)
-    - [Community Projects](#community-projects)
-  - [Copyright and license](#copyright-and-license)
-  - [Support CoreUI Development](#support-coreui-development)
+The platform is designed WITH migrants rather than FOR migrants: they are the main and ultimate beneficiaries of this project, whose aim is to enable
+them to embark in safer journeys and experience an easier settling, but also to engage them as active subjects of participatory democracy practices and a
+narrative process that will start from their first hand experiences as narrating subjects rather than narrated ones.
 
-## Versions
+It is meant to serve as an innovative tool also for the third sector (NGOs, aid agencies) to access information and first-hand data that go beyond
+government control and a useful tool to improve and strengthen their interventions. GPP may also contribute to an in-depth reconsideration of the
+operational modalities which are very often blamed for adopting a top-down approach. The possibility to receive detailed information and to be able to
+directly get in contact with their targets and potential beneficiaries will allow to improve the effectiveness and efficiency of their actions, and ensure a
+streamlined use of the resources.
 
-CoreUI is built on top of Bootstrap 4 and supports popular frameworks.
+## Built with
 
-* [CoreUI Free Bootstrap Admin Template](https://github.com/coreui/coreui-free-bootstrap-admin-template)
-* [CoreUI Free Bootstrap Admin Template (Ajax)](https://github.com/coreui/coreui-free-bootstrap-admin-template-ajax)
-* [CoreUI Free Angular 2+ Admin Template](https://github.com/coreui/coreui-free-angular-admin-template)
-* 🚧 CoreUI Free .NET Core 2 Admin Template (Available Soon)
-* [CoreUI Free React.js Admin Template](https://github.com/coreui/coreui-free-react-admin-template)
-* [CoreUI Free Vue.js Admin Template](https://github.com/coreui/coreui-free-vue-admin-template)
+* [Angular 10](https://angular.io/)
+* [Typescript](https://www.typescriptlang.org)
+* [CoreUI](https://coreui.io)
 
-## CoreUI Pro
+## Software used
 
-* 💪  [CoreUI Pro Bootstrap Admin Template](https://coreui.io/pro/)
-* 💪  [CoreUI Pro Bootstrap Admin Template (Ajax)](https://coreui.io/pro/)
-* 💪  [CoreUI Pro Angular Admin Template](https://coreui.io/pro/angular)
-* 💪  [CoreUI Pro React Admin Template](https://coreui.io/pro/react)
-* 💪  [CoreUI Pro Vue Admin Template](https://coreui.io/pro/vue)
+* [npm](https://www.npmjs.com)
+* [Visual Studio Code](https://code.visualstudio.com)
+* [Postman](https://www.postman.com)
+* [GitHub](https://github.com)
 
-## Admin Templates built on top of CoreUI Pro
+## Side technologies
 
-| CoreUI Pro | Prime | Root | Alba | Leaf |
-| --- | --- | --- | --- | --- |
-| [![CoreUI Pro Admin Template](https://coreui.io/assets/img/example-coureui.jpg)](https://coreui.io/pro/angular/)| [![Prime Admin Template](https://coreui.io/assets/img/responsive-prime.png)](https://coreui.io/admin-templates/angular/prime/?support=1)| [![Root Admin Template](https://coreui.io/assets/img/responsive-root.png)](https://coreui.io/admin-templates/angular/root/?support=1)| [![Alba Admin Template](https://coreui.io/assets/img/responsive-alba.png)](https://coreui.io/admin-templates/angular/alba/?support=1)| [![Leaf Admin Template](https://coreui.io/assets/img/responsive-leaf.png)](https://coreui.io/admin-templates/angular/leaf/?support=1)
+### Production dependencies
 
-#### Prerequisites
-Before you begin, make sure your development environment includes `Node.js®` and an `npm` package manager.
+* agm/core: contains solutions for the Google Maps JavaScript Core API.
+* angular/animations: Angular animations integration with web-animations.
+* angular/common: Angular commonly needed directives and services.
+* angular/compiler: Angular compiler library.
+* angular/core: Angular core framework.
+* angular/forms: Angular directives and services for creating forms.
+* angular/google-maps: Angular Google Maps.
+* angular/localize: Angular library for localizing messages.
+* angular/platform-browser: library for using Angular in a web browser.
+* angular/platform-browser-dynamic: library for using Angular in a web browser with JIT compilation.
+* angular/router: Angular routing library.
+* auth0/angular-jwt: this library provides an HttpInterceptor which automatically attaches a JSON Web Token to HttpClient requests.
+* coreui/coreui: CoreUI is an Open Source UI Kit built on top of Bootstrap 4.
+* coreui/angular: CoreUI Angular libraries.
+* ngx-translate/core: the internationalization (i18n) library for Angular.
+* ngx-translate/http-loader: a loader for ngx-translate that loads translations using http.
+* bootstrap: popular front-end framework for developing responsive and mobile first projects.
+* core-js: modular standard library for JavaScript.
+* ngx-bootstrap: native Angular Bootstrap components.
+* rxjs: reactive extensions For JavaScript.
+* rxjs-compat: reactive extensions For JavaScript.
 
-###### Node.js
-Angular 9 requires `Node.js` version 10.13 or later.
+### Development dependencies
 
-- To check your version, run `node -v` in a terminal/console window.
-- To get `Node.js`, go to [nodejs.org](https://nodejs.org/).
+* typescript: a language for application-scale JavaScript.
+* angular-devkit/build-angular: Angular webpack build facade.
+* angular/cli: CLI tool for Angular.
+* angular/compiler-cli: Angular compiler CLI for Node.js.
+* angular/language-service: Angular language service.
+* jasmine-core: a behavior driven development testing framework for JavaScript.
+* jasmine-spec-reporter: real time console spec reporter for Jasmine testing framework.
+* types/jasmine: TypeScript definitions for jasmine.
+* types/jasminewd2: TypeScript definitions for jasminewd2.
+* types/node: TypeScript definitions for Node.js.
+* codelyzer: a set of tslint rules for static code analysis of Angular TypeScript projects.
+* karma: tool that allows you to execute JavaScript code in multiple real browsers..
+* karma-chrome-launcher: Karma launcher for Chrome.
+* karma-coverage-istanbul-reporter: Karma reporter.
+* karma-jasmine: Karma adapter for Jasmine testing framework.
+* karma-jasmine-html-reporter: reporter that dynamically shows tests results at debug.html page.
+* protractor: webdriver E2E test wrapper for Angular.
+* ts-node: TypeScript execution and REPL for node.js, with source map support.
+* tslint: extensible static analysis linter for the TypeScript language.
+* yargs: help build interactive command line tools.
 
-###### Angular CLI
-Install the Angular CLI globally using a terminal/console window.
-```bash
+## Directory structure
+
+* e2e: end to end testing directory
+* src: TypeScript source code, having the following structure:
+  * app: application core
+    * auth: authentication service functions for JSON web token (JWT) authentication strategy.
+    * components: contains the custom application components.
+    * containers: application containers (for example container like this: header, body, footer)
+    * services: various services functions.
+    * views: application views. Each view is contained in a folder with the following files: CSS file, HTML file, TypeScript file which defines the operating logic of the view and spec.ts file which defines a unit test. Some folders will be deleted in production (probably: base, buttons, chartjs, dashboard, notifications, theme, widgets).
+  * assets: assets directory containing images, test API and translations.
+    * api: test API (to be deleted when in production).
+    * i18n: localization files in JSON format.
+    * img: application images.
+  * environments: development and production environment configuration files.
+  * scss: SCSS files.
+
+## Starting a development environment
+
+### Prerequisites
+
+* npm and node.js: first of all install npm and node.js (https://nodejs.org/it/download/)
+
+* Angular CLI: install the Angular CLI (https://angular.io/guide/setup-local)
+
+```sh
 npm install -g @angular/cli
 ```
 
-##### Update to Angular 9
-Angular 9 requires `Node.js` version 10.x or newer    
-Update guide - see: [https://update.angular.io](https://update.angular.io)
+* GPP_backend: configure the GPP_backend environment, available at: (https://github.com/LedgerProject/GPP_backend)
 
-## Installation
+### Configure the environment
 
-### Clone repo
+Open a terminal and make a clone of this repository on your machine:
 
-``` bash
-# clone the repo
-$ git clone https://github.com/coreui/coreui-free-angular-admin-template.git my-project
-
-# go into app's directory
-$ cd my-project
-
-# install app's dependencies
-$ npm install
+```sh
+git clone https://github.com/LedgerProject/GPP_frontend
 ```
 
-## Usage
+Install the npm packages. Go to the project directory and run:
 
-``` bash
-# serve with hot reload at localhost:4200.
-$ ng serve
-
-# build for production with minification
-$ ng build
+```sh
+npm install
 ```
 
-## What's included
+After the modules installation, configure the environment. Open /src/environments/environment.ts (remember to edit also the /src/environments/environment.prod.ts) and edit the following parameters:
 
-Within the download you'll find the following directories and files, logically grouping common assets and providing both compiled and minified variations. You'll see something like this:
-
+```sh
+export const environment = {
+  production: <true or false>,
+  apiUrl: '<API url of GPP_backend>',
+  apiPort: '<API port of GPP_backend>',
+  imagesUrl: '<Images URL>',
+  languages: [
+    { 
+      'name': '<language name>', 
+      'value':'<language abbreviation>'
+    }, { 
+      'name': '<language name>',
+      'value': '<language abbreviation>'
+    }, { 
+      'name': '<n language name>',
+      'value': '<n language abbreviation>'
+    }],
+  messageExceptionInit: {
+    name: '',
+    status: 0,
+    statusText: '',
+    message: ''
+  },
+  messageErrorInit: {
+    title : '',
+    description : '' 
+  }
+};
 ```
-free-angular-admin-template/
-├── e2e/
-├── src/
-│   ├── app/
-│   ├── assets/
-│   ├── environments/
-│   ├── scss/
-│   ├── index.html
-│   └── ...
-├── .angular-cli.json
-├── ...
-├── package.json
-└── ...
+
+Here an example
+
+```sh
+export const environment = {
+  production: false,
+  apiUrl: 'https://www.myawesomeapidomain.org',
+  apiPort: '4200',
+  imagesUrl: 'https://www.myawesomeimagesdomain.org',
+  languages: [
+    { 
+      'name': 'English', 
+      'value':'en'
+    }, { 
+      'name': 'Français',
+      'value': 'fr'
+    }],
+  messageExceptionInit: {
+    name: '',
+    status: 0,
+    statusText: '',
+    message: ''
+  },
+  messageErrorInit: {
+    title : '',
+    description : '' 
+  }
+};
 ```
 
-## Documentation
+Finally run this script and wait that the service start:
 
-The documentation for the CoreUI Free Angularp Admin Template is hosted at our website [CoreUI](https://coreui.io/angular/)
+```sh
+ng serve
+```
 
-## Contributing
+If everything went well, you should see something like this:
 
-Please read through our [contributing guidelines](https://github.com/coreui/coreui-free-angular-admin-template/blob/master/CONTRIBUTING.md). Included are directions for opening issues, coding standards, and notes on development.
+```sh
+** Angular Live Development Server is listening on localhost:4200, open your browser on http://localhost:4200/ **
+: Compiled successfully.
+```
 
-Editor preferences are available in the [editor config](https://github.com/coreui/coreui-free-angular-admin-template/blob/master/.editorconfig) for easy use in common text editors. Read more and download plugins at <http://editorconfig.org>.
+## Available scripts
 
-## Versioning
+To compile the project run:
 
-For transparency into our release cycle and in striving to maintain backward compatibility, CoreUI Free Admin Template is maintained under [the Semantic Versioning guidelines](http://semver.org/).
+```sh
+npm run build
+```
 
-See [the Releases section of our project](https://github.com/coreui/coreui-free-angular-admin-template/releases) for changelogs for each release version.
+To clean the project run:
 
-## Creators
+```sh
+npm run clean
+```
 
-**Łukasz Holeczek**
+To run the project run:
 
-* <https://twitter.com/lukaszholeczek>
-* <https://github.com/mrholek>
+```sh
+npm start
+```
 
-**Andrzej Kopański**
+## How the backend works
 
-* <https://github.com/xidedix>
-
-## Community
-
-Get updates on CoreUI's development and chat with the project maintainers and community members.
-
-- Follow [@core_ui on Twitter](https://twitter.com/core_ui).
-- Read and subscribe to [CoreUI Blog](https://coreui.io/blog/).
-
-### Community Projects
-
-Some of projects created by community but not maintained by CoreUI team.
-
-* [NuxtJS + Vue CoreUI](https://github.com/muhibbudins/nuxt-coreui)
-* [Colmena](https://github.com/colmena/colmena)
-
-## Copyright and license
-
-copyright 2017-2020 creativeLabs Łukasz Holeczek. Code released under [the MIT license](https://github.com/coreui/coreui-free-angular-admin-template/blob/master/LICENSE).
-There is only one limitation you can't re-distribute the CoreUI as stock. You can’t do this if you modify the CoreUI. In past we faced some problems with persons who tried to sell CoreUI based templates.
-
-## Support CoreUI Development
-
-CoreUI is an MIT licensed open source project and completely free to use. However, the amount of effort needed to maintain and develop new features for the project is not sustainable without proper financial backing. You can support development by donating on [PayPal](https://www.paypal.me/holeczek), buying [CoreUI Pro Version](https://coreui.io/pro) or buying one of our [premium admin templates](https://genesisui.com/?support=1).
-
-As of now I am exploring the possibility of working on CoreUI fulltime - if you are a business that is building core products using CoreUI, I am also open to conversations regarding custom sponsorship / consulting arrangements. Get in touch on [Twitter](https://twitter.com/lukaszholeczek).
+TODO

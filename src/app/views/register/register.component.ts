@@ -147,7 +147,7 @@ export class RegisterComponent implements OnInit {
 
       let headers = new HttpHeaders().set("Content-Type", "application/json");        
 
-      this.http.post<RegisteredUser>(this.userdata.mainUrl + this.userdata.mainPort + "/users/signup" + queryString, postParams, {headers}) 
+      this.http.post<RegisteredUser>(environment.apiUrl + environment.apiPort + "/users/signup" + queryString, postParams, {headers}) 
       .subscribe(data => {
         if (data.idUser) {
           this.signOnCompleted = true;

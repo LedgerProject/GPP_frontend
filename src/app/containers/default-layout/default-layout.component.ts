@@ -64,7 +64,7 @@ export class DefaultLayoutComponent implements OnInit {
     if (this.token) {
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-      this.http.get<UserMe>(this.userdata.mainUrl + this.userdata.mainPort + "/users/me", {headers})
+      this.http.get<UserMe>(environment.apiUrl + environment.apiPort + "/users/me", {headers})
       .subscribe(data => {
         if (data.idUser) {
           this.userMe = data;
@@ -96,7 +96,7 @@ export class DefaultLayoutComponent implements OnInit {
   async getOrganizations() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get<Array<OrganizationUser>>(this.userdata.mainUrl + this.userdata.mainPort + "/users/my-organizations", {headers})
+    this.http.get<Array<OrganizationUser>>(environment.apiUrl + environment.apiPort + "/users/my-organizations", {headers})
     .subscribe(dataOrg => {
       localStorage.setItem('organizations', JSON.stringify(dataOrg));
       if (dataOrg) {
@@ -120,7 +120,7 @@ export class DefaultLayoutComponent implements OnInit {
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " + token);
 
-    this.http.get<ChangeToken>(this.userdata.mainUrl + this.userdata.mainPort + "/users/change-organization/" + idOrganization, {headers})
+    this.http.get<ChangeToken>(environment.apiUrl + environment.apiPort + "/users/change-organization/" + idOrganization, {headers})
     .subscribe(data => {
       if (data.token) {
         localStorage.setItem('token', data.token);

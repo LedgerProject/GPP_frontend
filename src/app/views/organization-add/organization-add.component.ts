@@ -59,7 +59,7 @@ export class OrganizationAddComponent implements OnInit {
     
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-      this.http.post<Organization>(this.userdata.mainUrl + this.userdata.mainPort + "/organizations", postParams, {headers} ) 
+      this.http.post<Organization>(environment.apiUrl + environment.apiPort + "/organizations", postParams, {headers} ) 
       .subscribe(data => {
         if (data.idOrganization) {
           this.signInOrganization(data.idOrganization);
@@ -93,7 +93,7 @@ export class OrganizationAddComponent implements OnInit {
   async signInOrganization(idOrganization) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get<TokenCredential>(this.userdata.mainUrl + this.userdata.mainPort + "/users/change-organization/" + idOrganization, {headers}) 
+    this.http.get<TokenCredential>(environment.apiUrl + environment.apiPort + "/users/change-organization/" + idOrganization, {headers}) 
     .subscribe(data => {
       if (data.token) {
         localStorage.setItem('token', data.token);

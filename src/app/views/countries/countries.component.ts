@@ -60,7 +60,7 @@ export class CountriesComponent implements OnInit {
       }';
 
     // HTTP Request
-    this.http.get<Array<Country>>(this.userdata.mainUrl + this.userdata.mainPort + "/countries?filter=" + filter, {headers})
+    this.http.get<Array<Country>>(environment.apiUrl + environment.apiPort + "/countries?filter=" + filter, {headers})
     .subscribe(data => {
       this.allCountries = data;
       this.filteredCountries = data;

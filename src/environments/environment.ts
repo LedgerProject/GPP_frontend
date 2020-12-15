@@ -5,6 +5,9 @@
 
 export const environment = {
   production: false,
+  apiUrl: 'https://www.globalpassportproject.org/gpp-backend',
+  apiPort: '',
+  imagesUrl: 'https://www.globalpassportproject.org/gpp-backend',
   languages: [
     { 
       'name': 'English', 

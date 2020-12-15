@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SlugifyPipe } from '../../pipes/slugify.pipe';
+import { SlugifyPipe } from '../../services/slugify.pipe';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Language, MessageException, MessageError, Country, CountryLanguage } from '../../services/models';
 import { environment } from '../../../environments/environment';
@@ -67,7 +67,7 @@ export class CountryDetailComponent implements OnInit {
   async getCountry() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get<Country>(this.userdata.mainUrl + this.userdata.mainPort + "/countries/" + this.uuid, {headers} )
+    this.http.get<Country>(environment.apiUrl + environment.apiPort + "/countries/" + this.uuid, {headers} )
     .subscribe(dataCountry=> {
       this.country = dataCountry;
 
@@ -91,7 +91,7 @@ export class CountryDetailComponent implements OnInit {
   async getCountryLanguages() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get<Array<CountryLanguage>>(this.userdata.mainUrl + this.userdata.mainPort + "/countries/" + this.uuid + "/countries-languages", {headers} )
+    this.http.get<Array<CountryLanguage>>(environment.apiUrl + environment.apiPort + "/countries/" + this.uuid + "/countries-languages", {headers} )
     .subscribe(dataLangs=> {
       dataLangs.forEach(elementLang => {
         this.formData.title[elementLang.language] = elementLang.country;
@@ -147,7 +147,7 @@ export class CountryDetailComponent implements OnInit {
       //Check if update or insert
       if (this.uuid) {
         //Update the country
-        this.http.patch(this.userdata.mainUrl + this.userdata.mainPort + "/countries/" + this.uuid, postParams, {headers} )
+        this.http.patch(environment.apiUrl + environment.apiPort + "/countries/" + this.uuid, postParams, {headers} )
         .subscribe(async data => {
           await this.saveCountryLanguages();
 
@@ -157,7 +157,7 @@ export class CountryDetailComponent implements OnInit {
         });
       } else {
         //Insert the country
-        this.http.post<Country>(this.userdata.mainUrl + this.userdata.mainPort + "/countries/", postParams, {headers} )
+        this.http.post<Country>(environment.apiUrl + environment.apiPort + "/countries/", postParams, {headers} )
         .subscribe(async data => {
           this.uuid = data.idCountry;
           await this.saveCountryLanguages();
@@ -189,7 +189,7 @@ export class CountryDetailComponent implements OnInit {
         country: this.formData.title[element.value]
       };
 
-      this.http.post(this.userdata.mainUrl + this.userdata.mainPort + "/countries-languages", postParams, {headers} )
+      this.http.post(environment.apiUrl + environment.apiPort + "/countries-languages", postParams, {headers} )
       .subscribe(dataLang => {
       }, error => {
         this.showExceptionMessage(error);
@@ -206,7 +206,7 @@ export class CountryDetailComponent implements OnInit {
   deleteCountry(idCountry) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.delete(this.userdata.mainUrl + this.userdata.mainPort + "/countries/" + idCountry, {headers} )
+    this.http.delete(environment.apiUrl + environment.apiPort + "/countries/" + idCountry, {headers} )
     .subscribe(data => {
       this.router.navigateByUrl('/countries');
     }, error => {

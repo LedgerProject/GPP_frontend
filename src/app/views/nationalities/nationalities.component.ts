@@ -59,7 +59,7 @@ export class NationalitiesComponent implements OnInit {
       }';
 
     // HTTP Request
-    this.http.get<Array<Nationality>>(this.userdata.mainUrl + this.userdata.mainPort + "/nationalities?filter=" + filter, {headers} )
+    this.http.get<Array<Nationality>>(environment.apiUrl + environment.apiPort + "/nationalities?filter=" + filter, {headers} )
     .subscribe(data => {
       this.allNationalities = data;
       this.filteredNationalities = data;
