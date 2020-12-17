@@ -51,7 +51,7 @@ streamlined use of the resources.
 
 ## Built with
 
-* [Angular 10](https://angular.io/)
+* [Angular 9](https://angular.io/)
 * [Typescript](https://www.typescriptlang.org)
 * [CoreUI](https://coreui.io)
 
@@ -250,6 +250,6 @@ To run the project run:
 npm start
 ```
 
-## How the backend works
+## How the frontend works
 
 TODO
