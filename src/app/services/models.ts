@@ -21,6 +21,11 @@ export interface QuickSearch {
   search: string;
 }
 
+export interface FilterSearch {
+  city: string;
+  phonePrefix: string;
+}
+
 export interface Category {
   idCategory: string;
   identifier: string;

@@ -23,12 +23,12 @@ export class DefaultLayoutComponent implements OnInit {
   organizations: Array<OrganizationUser>;
   @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
-  
+
   public isMenuCollapsed = true;
   navbarOpen = false;
 
   constructor (
-    private router: Router, 
+    private router: Router,
     private http:HttpClient,
     public translate: TranslateService,
     public userdata: UserdataService
@@ -74,11 +74,11 @@ export class DefaultLayoutComponent implements OnInit {
           } else {
             localStorage.setItem('idOrganization', '');
           }
-
+          localStorage.setItem('idUser', this.userMe.idUser);
           localStorage.setItem('name', this.userMe.name);
           localStorage.setItem('email', this.userMe.email);
           localStorage.setItem('permissions', JSON.stringify(this.userMe.permissions));
-
+          localStorage.setItem('userType',this.userMe.userType);
           //Get the user organizations
           this.getOrganizations();
         } else {

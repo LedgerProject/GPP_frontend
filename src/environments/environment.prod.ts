@@ -1,13 +1,13 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://www.myawesomeapidomain.org',
+  apiUrl: 'https://www.globalpassportproject.org/gpp-backend',
   apiPort: '',
-  imagesUrl: 'https://www.myawesomeimagesdomain.org',
+  imagesUrl: 'https://www.globalpassportproject.org/gpp-backend',
   languages: [
-    { 
-      'name': 'English', 
+    {
+      'name': 'English',
       'value':'en'
-    }, { 
+    }, {
       'name': 'Français',
       'value': 'fr'
     }],
@@ -19,6 +19,6 @@ export const environment = {
   },
   messageErrorInit: {
     title : '',
-    description : '' 
+    description : ''
   }
 };

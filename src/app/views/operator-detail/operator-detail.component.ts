@@ -24,7 +24,7 @@ export class OperatorDetailComponent implements OnInit {
   constructor(
     private _Activatedroute: ActivatedRoute,
     private http:HttpClient
-  ) { 
+  ) {
     this.token = localStorage.getItem('token');
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
     this.operator = {
@@ -51,12 +51,12 @@ export class OperatorDetailComponent implements OnInit {
 
   // Get operator details
   async getOperator() {
-    this.http.get("assets/api/operators.json") 
+    this.http.get("assets/api/operators.json")
     .subscribe(data => {
     }, error => {
       this.showExceptionMessage(error);
     });
-  }  
+  }
 
   // Save operator permissions
   async saveOperatorPermissions() {

@@ -8,8 +8,21 @@
           <p>{{ 'In this section you can manage the structures to be displayed in the application.' | translate }}</p>
           <p>{{ 'Select \'Add Structure\' to add a new structure, or select one from the list to edit it.' | translate }}</p>
 
+          <form #form="ngForm" (ngSubmit)="onSubmit(form)">
+            <div class="input-group mb-3">
+              <select name="phonePrefix" [(ngModel)]="formFilter.phonePrefix" id="phonePrefix" class="form-control select-max-210">
+                <option value="">{{ 'Select a country\'s prefix' | translate }}</option>
+                <option *ngFor="let prefix of prefixes" value="{{prefix}}">{{prefix}}</option>
+              </select>
+                <input type="text" class="form-control" name="city" [(ngModel)]="formFilter.city"  placeholder="{{ 'Enter a city name' | translate }}">
+                <div class="input-group-append">
+                  <button class="btn btn-primary rounded-0" type="submit">{{ 'Filter' | translate }}</button>
+                </div>
+            </div>
+          </form>
+
           <!-- Search form -->
-          <form #form="ngForm">
+          <form #Searchform="ngForm">
             <div class="input-group mb-3">
                 <input type="text" (keyup)="filterStructures()" class="form-control" name="search" [(ngModel)]="formSearch.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
                 <div class="input-group-append">

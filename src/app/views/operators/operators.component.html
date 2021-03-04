@@ -10,7 +10,7 @@
 
           <p *ngIf="this.permissions.includes('GeneralUsersManagement')">{{ 'In this section it is possible to manager the operators registered through the portal.' | translate }}</p>
           <p *ngIf="this.permissions.includes('GeneralUsersManagement')">{{ 'Click on \'Invite Operator\' to invite an operator of the Global Passport Project team, or select the operator from the list to remove him/her.' | translate }}</p>
-          
+
           <!-- Search form -->
           <form #form="ngForm">
             <div class="input-group mb-3">
@@ -18,26 +18,26 @@
                 <div class="input-group-append">
                   <button class="btn btn-primary" type="submit">{{ 'Search' | translate }}</button>
                 </div>
-                <button class="btn btn-primary rounded-0 ml-3" type="button" [routerLink]="['/operator-invite']">{{ 'Invite Operator' | translate }}</button>            
-            </div>       
+                <button class="btn btn-primary rounded-0 ml-3" type="button" [routerLink]="['/operator-invite']">{{ 'Invite Operator' | translate }}</button>
+            </div>
           </form>
 
           <!-- Operators list -->
           <div class="table-responsive">
             <table class="table table-hover" *ngIf='filteredOperators.length'>
               <thead>
-                <th>{{ 'First name' | translate }}</th>
                 <th>{{ 'Last name' | translate }}</th>
+                <th>{{ 'First name' | translate }}</th>
                 <th>{{ 'Email' | translate }}</th>
-                <th>{{ 'Access level' | translate }}</th>
+                <th *ngIf="userType != 'gppOperator'">{{ 'Access level' | translate }}</th>
               </thead>
               <tbody>
-                <tr class="pointer" *ngFor="let operator of filteredOperators" (click)="operatorDetails(operator.idOperator)">
-                  <td>{{operator.firstName}}</td>
+                <tr class="pointer" *ngFor="let operator of filteredOperators" (click)="operatorDetails(operator.idUser)">
                   <td>{{operator.lastName}}</td>
+                  <td>{{operator.firstName}}</td>
                   <td>{{operator.email}}</td>
-                  <td>
-                    Roles<span *ngFor="let level of operator.levels; index as i"><span *ngIf="i > 0"> + </span>Role</span>
+                  <td *ngIf="userType != 'gppOperator'">
+                    <span *ngFor="let level of operator.organizationUser; index as i"><span *ngIf="i > 0"> + </span>{{levels[level.permissions]}}</span>
                   </td>
                 </tr>
               </tbody>
@@ -51,11 +51,11 @@
         </div>
 
         <!-- Under costruction alert -->
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <!--<div class="alert alert-warning alert-dismissible fade show" role="alert">
           <strong>{{ 'Attention! This section is under construction, hence is not working.' | translate }}</strong>
-        </div>
+        </div>-->
       </div>
-    </div>      
+    </div>
   </div>
 </div>
 
