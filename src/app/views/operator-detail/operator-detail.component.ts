@@ -13,7 +13,7 @@ import { environment } from '../../../environments/environment';
 
 export class OperatorDetailComponent implements OnInit {
   token: string;
-  @Input() uuid: string;
+  @Input() idUser: string;
   @ViewChild('modalDelete') public modalDelete: ModalDirective;
   @ViewChild('modalError') public modalError: ModalDirective;
   messageError: MessageError;
@@ -26,13 +26,13 @@ export class OperatorDetailComponent implements OnInit {
     private http:HttpClient
   ) {
     this.token = localStorage.getItem('token');
-    this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
+    this.idUser = this._Activatedroute.snapshot.paramMap.get('uuid');
     this.operator = {
-      idUser: 'uuid',
-      userType: 'operator',
-      firstName: 'John',
-      lastName: 'Brown',
-      email: 'johnbrown@gmail.com',
+      idUser: '',
+      userType: '',
+      firstName: '',
+      lastName: '',
+      email: '',
       emailConfirmed: false,
       permissions: [],
       idNationality: '',
@@ -51,11 +51,53 @@ export class OperatorDetailComponent implements OnInit {
 
   // Get operator details
   async getOperator() {
-    this.http.get("assets/api/operators.json")
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
+    let idUserQuery = '"idUser": "' + this.idUser + '" ';
+    let where = '"where": { \ ' +
+    idUserQuery +
+    '},';
+    // Filters
+    let filter = ' \
+      { \
+        "fields" : { \
+          "idUser": true, \
+          "userType": false, \
+          "firstName": true, \
+          "lastName": true, \
+          "email": true, \
+          "emailConfirmed": false, \
+          "password": false, \
+          "passwordRecoveryToken": false, \
+          "passwordRecoveryDate": false, \
+          "idNationality": false, \
+          "gender": false, \
+          "birthday": false \
+        }, \
+        "include": [ \
+          {"relation": "organizationUser"} \
+        ], \ '
+        + where +
+        '"offset": 0, \
+        "skip": 0, \
+        "order": ["lastName"] \
+      }';
+
+    // HTTP Request
+    this.http.get<Array<User>>(environment.apiUrl + environment.apiPort + "/users?filter=" + filter, {headers})
     .subscribe(data => {
+      if (data && data[0]) {
+        this.operator = data[0];
+      }
     }, error => {
       this.showExceptionMessage(error);
     });
+    /*this.http.get("assets/api/operators.json")
+    .subscribe(data => {
+    }, error => {
+      this.showExceptionMessage(error);
+    });*/
   }
 
   // Save operator permissions

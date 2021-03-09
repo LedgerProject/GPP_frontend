@@ -1,0 +1,21 @@
+#searchFormContainer { position:relative; }
+.results {
+  position: absolute;
+  top:35px;
+  left:0;
+  background-color: #EFEFEF;
+  min-width: 360px;
+  z-index: 1;
+}
+.results ul {
+  padding: 0; margin: 0;
+}
+.results li {
+  list-style: none; cursor: pointer;
+  padding:7px;
+  padding-left: 15px;
+}
+.results li:hover {
+  background-color: #DDD;
+}
+

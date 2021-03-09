@@ -62,11 +62,11 @@ export class StructuresComponent implements OnInit {
     let prefixQuery = '';
     let preString = '';
     if (city) {
-      prefixQuery = '"city": { "like" : "' + city + '" }';
+      prefixQuery = '"city": { "ilike" : "%25' + city + '%25" }';
       preString = ',';
     }
     if (prefix) {
-      prefixQuery = preString + '"phoneNumberPrefix": "' + prefix + '" '
+      prefixQuery = prefixQuery + preString + '"phoneNumberPrefix": "' + prefix + '" '
     }
     let where = '"where": { \ ' +
     cityQuery +

@@ -9,21 +9,32 @@
           <!-- Information -->
           <h1 class="mt-4">{{ 'Operators - Invite Operator' | translate }}</h1>
           <p>{{ 'In this section it is possible to invite an operator to join the organization. Select the operation, indicate the authorizations and write invitation message.' | translate }}</p>
-
-          <!-- Form -->
-          <form  #form="ngForm" (ngSubmit)="inviteOperator()">
+          <form #Searchform="ngForm">
             <!-- Select operator -->
             <div class="form-group mt-3">
               <label>{{ 'Search the operator to invite' | translate }}</label>
-              <div class="input-group mb-3">  
-                <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Search the operator to invite' | translate }}" required>
+              <div class="input-group mb-3" id="searchFormContainer">
+                <input type="text" autocomplete="off" name="findOperator" (keyup)="searchOperator()" [(ngModel)]="formSearch.findOperator" id="findOperator" class="form-control" placeholder="{{'Search the operator to invite' | translate }}" required>
+                <div class="results" *ngIf="results.length">
+                  <ul>
+                    <li class="search-result" *ngFor="let result of results"><{{result.email}}> {{result.lastName+' '+result.firstName}}</li>
+                  </ul>
+                </div>
               </div>
             </div>
+            <!--<div class="row" *ngIf="isSearching">
+              <div class="col-12 text-center">
+                <h4>Searching ... </h4>
+              </div>
+            </div>-->
+          </form>
 
+          <!-- Form -->
+          <form  #form="ngForm" (ngSubmit)="inviteOperator()">
             <!-- Invitation text -->
             <div class="form-group">
               <label>{{ 'Enter the invitation text' | translate }}</label>
-              <div class="input-group mb-3">  
+              <div class="input-group mb-3">
                 <textarea name="text" [(ngModel)]="formData.textInvitation" id="text" class="form-control" placeholder="{{'Enter the invitation text' | translate }}" rows="3" required></textarea>
               </div>
             </div>
@@ -44,12 +55,12 @@
                 <input type="checkbox" name="check_operators" value="operators">
                 {{ 'Operators (can manage operators)' | translate }}
               </label>
-              <br />   
+              <br />
               <label>
                 <input type="checkbox" name="check_structures" value="structures">
                 {{ 'Structures (can manage structures)' | translate }}
-              </label>                    
-            </div>  
+              </label>
+            </div>
 
             <!-- Invite button -->
             <div class="row">
@@ -57,15 +68,15 @@
                 <button type="submit" class="btn btn-primary rounded-0">{{ 'Invite' | translate}}</button>
               </div>
             </div>
-          </form>           
+          </form>
         </div>
-        
+
         <!-- Under costruction alert -->
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
           <strong>{{ 'Attention! This section is under construction, hence is not working.' | translate }}</strong>
         </div>
       </div>
-    </div>      
+    </div>
   </div>
-</div> 
+</div>
 
