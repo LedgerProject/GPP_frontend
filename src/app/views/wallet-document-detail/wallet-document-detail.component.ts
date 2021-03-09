@@ -14,7 +14,7 @@ export class WalletDocumentDetailComponent implements OnInit {
   token: string;
   @Input() uuid: string;
   document: any;
-  
+
   wallet: any;
   http_response:any;
   blob: any;
@@ -48,7 +48,7 @@ export class WalletDocumentDetailComponent implements OnInit {
       });
     }
     this.token = localStorage.getItem('token');
-    this.wallet = localStorage.getItem('wallet');
+    this.wallet = localStorage.getItem('tokenWallet');
     this.http_response = null;
     this.blob = null;
   }

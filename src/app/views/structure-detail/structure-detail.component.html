@@ -89,7 +89,7 @@
                   </ul>
                 </small>
               </div>
-            
+
               <!-- Description -->
               <div class="form-group">
                 <div *ngFor="let language of languages; let i = index">
@@ -161,7 +161,7 @@
               <h4>{{ 'Gallery' | translate}}</h4>
               <div class="gallery-container">
                 <div *ngIf="structureImageSrc" class="gallery-image p-1" [ngStyle]="{'background': 'url(' + _d.bypassSecurityTrustUrl(structureImageSrc) + ') no-repeat 0 0 / cover'}"></div>
-                <div *ngFor="let image of structureImages" class="gallery-image p-1" [ngStyle]="{'background': 'url(\'' + userdata.mainUrlImages + '/galleries/structures/' + image.folder + '/'+image.filename+ '\') no-repeat 0 0 / cover'}">
+                <div *ngFor="let image of structureImages" class="gallery-image p-1" [ngStyle]="{'background': 'url(\'' + imagesPath + '/galleries/structures/' + image.folder + '/'+image.filename+ '\') no-repeat 0 0 / cover'}">
                   <i class="fa fa-close pointer text-white" (click)="structureImageAskDelete(image.idStructureImage)"></i>
                 </div>
               </div>

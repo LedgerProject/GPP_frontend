@@ -65,6 +65,6 @@ export class WalletDocumentsComponent implements OnInit {
 
   // Open document details
   async openDocument(uuid) {
-    this.router.navigateByUrl('document-details/' + uuid);
+    this.router.navigateByUrl('wallet-document-details/' + uuid);
   }
 }

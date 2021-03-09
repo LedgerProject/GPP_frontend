@@ -64,7 +64,7 @@ export class StructureDetailComponent implements OnInit {
   idStructureImageDelete: string;
   loadingCoordinates: boolean;
   structureImageSrc: string;
-
+  imagesPath: string;
   constructor (
     private router: Router,
     private _Activatedroute:ActivatedRoute,
@@ -103,6 +103,7 @@ export class StructureDetailComponent implements OnInit {
     this.structureCategories = [];
     this.structureImages = [];
     this.idStructureImageDelete = '';
+    this.imagesPath = environment.imagesUrl;
   }
 
   // Page init
@@ -256,7 +257,7 @@ export class StructureDetailComponent implements OnInit {
     .subscribe(dataImage=> {
       this.structureImages = dataImage;
       let x = 0;
-      
+
       this.structureImages.forEach(element => {
         this.structureImages[x].filename = encodeURIComponent(this.structureImages[x].filename);
         x++;
@@ -268,32 +269,32 @@ export class StructureDetailComponent implements OnInit {
 
   async saveStructure() {
     this.errorsDescriptions = [];
-  
+
     //Check if entered the name
     if (!this.formData.name) {
       this.errorsDescriptions.push(this.translate.instant('Please enter the structure name'));
     }
-  
+
     //Check if entered the address
     if (!this.formData.address) {
       this.errorsDescriptions.push(this.translate.instant('Please enter the structure address'));
     }
-  
+
     //Check if entered the city
     if (!this.formData.address) {
       this.errorsDescriptions.push(this.translate.instant('Please enter the structure city'));
     }
-  
+
     //Check if selected the map position
     if (!this.formData.latitude || !this.formData.longitude) {
       this.errorsDescriptions.push(this.translate.instant('Please set the structure location on the map'));
     }
-  
+
     //Check if entered the icon
     if (!this.formData.icon) {
       this.errorsDescriptions.push(this.translate.instant('Please select the structure icon'));
     }
-  
+
     //Check if there are no errors
     if (this.errorsDescriptions.length === 0) {
       //Data save
@@ -303,7 +304,7 @@ export class StructureDetailComponent implements OnInit {
       if (!this.formData.longitude) {
         this.formData.longitude = 0;
       }
-  
+
       let postParams = {
         idOrganization: this.idOrganization,
         alias: this.slugifyPipe.transform(this.formData.name),
@@ -318,14 +319,14 @@ export class StructureDetailComponent implements OnInit {
         idIcon: this.formData.icon,
         website: this.formData.website,
       };
-  
+
       // If authenticated as gppOperator (that have no organizations)
       if (!this.idOrganization) {
         delete postParams.idOrganization;
       }
-  
+
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
-  
+
       //Check if update or insert
       if (this.uuid) {
         //Update the structure
@@ -342,9 +343,9 @@ export class StructureDetailComponent implements OnInit {
         this.http.post<Structure>(environment.apiUrl + environment.apiPort + "/structures", postParams, {headers} )
         .subscribe(async data => {
           this.uuid = data.idStructure;
-  
+
           await this.saveStructureLanguages();
-  
+
           this.router.navigateByUrl('structure-details/' + this.uuid);
         }, error => {
           this.showExceptionMessage(error);
@@ -358,11 +359,11 @@ export class StructureDetailComponent implements OnInit {
       );
     }
   }
-  
+
   // Save structure languages
   async saveStructureLanguages() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
-  
+
     //Update the structure languages
     this.languages.forEach(element => {
       let postParams = {
@@ -370,7 +371,7 @@ export class StructureDetailComponent implements OnInit {
         language: element.value,
         description: this.formData.text[element.value]
       };
-  
+
       this.http.post(environment.apiUrl + environment.apiPort + "/structures-languages", postParams, {headers} )
       .subscribe(subdata=> {
       }, error => {
@@ -395,7 +396,7 @@ export class StructureDetailComponent implements OnInit {
       this.showExceptionMessage(error);
     });
   }
-  
+
   // Set the structure category association
   setStructureCategoryStatus(idCategory, value, idStructureCategory) {
     let x = 0;
@@ -415,16 +416,16 @@ export class StructureDetailComponent implements OnInit {
       x++;
     });
   }
-  
+
   // Save the structure category association
   saveStructureCategory(idCategory) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
-  
+
     let postParams = {
       idCategory: idCategory,
       idStructure: this.uuid
     };
-    
+
     this.http.post<StructureCategory>(environment.apiUrl + environment.apiPort + "/structures-categories", postParams, {headers} )
     .subscribe(data => {
       if (data.idStructureCategory) {
@@ -442,18 +443,18 @@ export class StructureDetailComponent implements OnInit {
       this.showExceptionMessage(error);
     });
   }
-  
+
   // Delete the structure category association
   deleteStructureCategory(idStructureCategory) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
-  
+
     this.http.delete(environment.apiUrl + environment.apiPort + "/structures-categories/" + idStructureCategory, {headers} )
     .subscribe(data => {
     }, error => {
       this.showExceptionMessage(error);
     });
   }
-  
+
   // Structure image select
   structureImageSelect(event) {
     const file = event.srcElement.files[0];
@@ -473,7 +474,7 @@ export class StructureDetailComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('file', this.uploadForm.get('profile').value);
-    
+
     this.http.post(environment.apiUrl + environment.apiPort + "/structures-images/" + this.uuid, formData, {headers})
     .subscribe(res => {
       this.structureImageSrc = '';
@@ -545,9 +546,9 @@ export class StructureDetailComponent implements OnInit {
         this.formData.latitude = location.lat;
         this.formData.longitude = location.lng;
         this.loadingCoordinates = false;
-        this.ref.detectChanges();  
-      }      
-    );     
+        this.ref.detectChanges();
+      }
+    );
   }
 
   //Error message
