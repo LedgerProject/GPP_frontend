@@ -17,6 +17,7 @@
             </div>
 
             <!-- Form -->
+            <form *ngIf="userType != 'gppOperator'">
             <div class="form-group">
               <!-- Permissions -->
               <label>
@@ -24,11 +25,11 @@
                 {{ 'Administrator (can manage structures, operators and document wallet)' | translate }}
               </label>
               <br />
-              <label>
+              <!--<label>
                 <input type="checkbox" name="check_wallet" value="wallet">
                 {{ 'Wallet (can manage document wallet)' | translate }}
               </label>
-              <br>
+              <br>-->
               <label>
                 <input type="checkbox" name="check_operators" value="operators">
                 {{ 'Operators (can manage operators)' | translate }}
@@ -49,7 +50,29 @@
                 <button type="button" class="btn btn-danger rounded-0" (click)="removeOperatorFromTeam()">{{ 'Remove from Team' | translate}}</button>
               </div>
             </div>
+          </form>
+          <form *ngIf="userType == 'gppOperator'">
+            <div class="form-group">
+              <!-- Permissions -->
+              <label>
+                <input type="checkbox" name="check_gpp" value="gpp_staff">
+                {{ 'Add to GPP Staff' | translate }}
+              </label>
+              <br />
+            </div>
+
+            <!-- Save and remove buttons-->
+            <div class="row">
+              <div class="col-6 text-left">
+                <button type="button" class="btn btn-primary rounded-0" (click)="saveOperatorPermissions()">{{ 'Save' | translate}}</button>
+              </div>
+              <div class="col-6 text-right">
+                <button type="button" class="btn btn-danger rounded-0" (click)="removeOperatorFromTeam()">{{ 'Remove all related data' | translate}}</button>
+              </div>
+            </div>
+          </form>
           </div>
+
 
           <!-- Under costruction alert -->
           <div class="alert alert-warning alert-dismissible fade show" role="alert">

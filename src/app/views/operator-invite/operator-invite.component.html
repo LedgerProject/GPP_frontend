@@ -14,10 +14,10 @@
             <div class="form-group mt-3">
               <label>{{ 'Search the operator to invite' | translate }}</label>
               <div class="input-group mb-3" id="searchFormContainer">
-                <input type="text" autocomplete="off" name="findOperator" (keyup)="searchOperator()" [(ngModel)]="formSearch.findOperator" id="findOperator" class="form-control" placeholder="{{'Search the operator to invite' | translate }}" required>
+                <input type="text" autocomplete="off" name="findOperator" (keyup)="searchOperator($event)" [(ngModel)]="formSearch.findOperator" id="findOperator" class="form-control" placeholder="{{'Search the operator to invite' | translate }}" required>
                 <div class="results" *ngIf="results.length">
                   <ul>
-                    <li class="search-result" *ngFor="let result of results"><{{result.email}}> {{result.lastName+' '+result.firstName}}</li>
+                    <li class="search-result" *ngFor="let result of results" (click)="selectOperator('<' + result.email + '> ' + result.lastName + ' ' + result.firstName)"><{{result.email}}> {{result.lastName+' '+result.firstName}}</li>
                   </ul>
                 </div>
               </div>
@@ -27,6 +27,9 @@
                 <h4>Searching ... </h4>
               </div>
             </div>-->
+          <!--<div>Match: {{string_match}}</div>
+          <div>idUser: {{idUser}}</div>
+          <div>permissions: {{permissions}}</div>-->
           </form>
 
           <!-- Form -->
@@ -42,22 +45,22 @@
             <!-- Permissions -->
             <div class="form-group">
               <label>
-                <input type="checkbox" name="check_admin" value="admin">
+                <input type="checkbox" name="check_admin" [(ngModel)]="permission_OrganizationAdministrator" value="OrganizationAdministrator" [checked]="permission_OrganizationAdministrator" (change)="setValue('OrganizationAdministrator')">
                 {{ 'Administrator (can manage structures, operators and document wallet)' | translate }}
               </label>
               <br />
-              <label>
+              <!--<label>
                 <input type="checkbox" name="check_wallet" value="wallet">
                 {{ 'Wallet (can manage document wallet)' | translate }}
               </label>
-              <br />
+              <br />-->
               <label>
-                <input type="checkbox" name="check_operators" value="operators">
+                <input type="checkbox" name="check_operators" [(ngModel)]="permission_OrganizationUsersManagement" value="OrganizationUsersManagement" [checked]="permission_OrganizationUsersManagement" (change)="setValue('OrganizationUsersManagement')">
                 {{ 'Operators (can manage operators)' | translate }}
               </label>
               <br />
               <label>
-                <input type="checkbox" name="check_structures" value="structures">
+                <input type="checkbox" name="check_structures" [(ngModel)]="permission_OrganizationStructuresManagement"  value="OrganizationStructuresManagement" [checked]="permission_OrganizationStructuresManagement" (change)="setValue('OrganizationStructuresManagement')">
                 {{ 'Structures (can manage structures)' | translate }}
               </label>
             </div>
@@ -72,11 +75,71 @@
         </div>
 
         <!-- Under costruction alert -->
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <!--<div class="alert alert-warning alert-dismissible fade show" role="alert">
           <strong>{{ 'Attention! This section is under construction, hence is not working.' | translate }}</strong>
-        </div>
+        </div>-->
       </div>
     </div>
   </div>
 </div>
 
+<!-- Modal info message -->
+<div bsModal #modalInfo="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInfoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Structure saved' | translate }}</h4>
+        <button type="button" class="close" (click)="modalInfo.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ 'The information has been saved.' | translate }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modalInfo.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal entering data error -->
+<div bsModal #modalError="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalErrorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">{{ messageError.title }}</h4>
+              <button type="button" class="close" (click)="modalError.hide()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <p>{{ messageError.description }}</p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modalError.hide()">{{ 'Close' | translate }}</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal exception error -->
+<div bsModal #modalException="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExceptionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageException.name }}</h4>
+        <button type="button" class="close" (click)="modalException.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><b>Status: </b>{{ messageException.statusText }} ({{ messageException.status }})</p>
+        <p><b>Description: </b>{{ messageException.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>

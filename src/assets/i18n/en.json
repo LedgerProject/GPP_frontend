@@ -101,7 +101,7 @@
     "***CHANGE PASSWORD***": "***CHANGE PASSWORD***",
     "In this section you can modify the authentication password.": "In this section you can modify the authentication password.",
     "Enter the current password, the new password and confirm the new password.": "Enter the current password, the new password and confirm the new password.",
-    
+
     "Current password": "Current password",
     "Insert your current password":"Insert your current password",
     "New password": "New password",
@@ -279,11 +279,11 @@
     "Check":"Check",
     "Invalid token": "Invalid token",
     "The token entered is not valid or expired.": "The token entered is not valid or expired.",
-    
+
     "***DOCUMENTS WALLET LIST***": "***DOCUMENTS WALLET LIST***",
     "Back to insert token": "Back to insert token",
     "Document Wallet - List": "Document Wallet - List",
-    
+
     "***DOCUMENT WALLET DETAILS***": "***DOCUMENT WALLET DETAILS***",
     "Back to the documents list": "Back to the documents list",
     "Document Wallet - Document Detail": "Document Wallet - Document Detail",
@@ -295,6 +295,8 @@
     "In this section it is possible to manager the operators registered through the portal.": "In this section it is possible to manager the operators registered through the portal.",
     "Click on 'Invite Operator' to invite an operator in the current organization, or select the operator from the list to modify the authorizations.": "Click on 'Invite Operator' to invite an operator in the current organization, or select the operator from the list to modify the authorizations.",
     "Click on 'Invite Operator' to invite an operator of the Global Passport Project team, or select the operator from the list to remove him/her.": "Click on 'Invite Operator' to invite an operator of the Global Passport Project team, or select the operator from the list to remove him/her.",
+    "Select the operator from the list to modify the authorizations.": "Select the operator from the list to modify the authorizations.",
+    "Select the operator from the list to remove him/her.": "Select the operator from the list to remove him/her.",
     "Invite Operator":"Invite Operator",
     "Access level": "Access level",
     "Back to the operators list":"Back to the operators list",
@@ -309,5 +311,16 @@
     "In this section it is possible to invite an operator to join the organization. Select the operation, indicate the authorizations and write invitation message.": "In this section it is possible to invite an operator to join the organization. Select the operation, indicate the authorizations and write invitation message.",
     "Search the operator to invite":"Search the operator to invite",
     "Enter the invitation text":"Enter the invitation text",
-    "Invite":"Invite"
+    "Invite":"Invite",
+    "Remove all related data": "Remove all related data",
+    "Add to GPP Staff": "Add to GPP Staff",
+    "Missing Invitation text": "Missing Invitation text",
+    "Invitation text is empty.": "Invitation text is empty.",
+    "Missing Operator": "Missing Operator",
+    "Please Select an Operator": "Please Select an Operator",
+    "Missing Permissions": "Missing Permissions",
+    "Please Check Permissions": "Please Check Permissions",
+    "Forbidden": "Forbidden",
+    "You need to confirm registration email before Login.": "You need to confirm registration email before Login."
+
 }

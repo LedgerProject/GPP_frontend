@@ -21,11 +21,19 @@ export class OperatorDetailComponent implements OnInit {
   @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
   operator: User;
+  idOrganization: string;
+  permissions: string;
+  userType: string;
+  myIdUser: string;
+
   constructor(
     private _Activatedroute: ActivatedRoute,
     private http:HttpClient
   ) {
     this.token = localStorage.getItem('token');
+    this.userType = localStorage.getItem('userType');
+    this.myIdUser = localStorage.getItem('idUser');
+
     this.idUser = this._Activatedroute.snapshot.paramMap.get('uuid');
     this.operator = {
       idUser: '',
