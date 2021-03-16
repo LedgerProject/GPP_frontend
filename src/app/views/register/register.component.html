@@ -7,7 +7,7 @@
             <div class="card p-4">
               <div class="card-body text-center">
                 <!-- Information -->
-                <img src="../../../assets/img/logo.png" />
+                <a [routerLink]="['/']"><img src="../../../assets/img/logo.png" /></a>
                 <h1>{{'Registration' | translate }}</h1>
                 <p class="text-muted">{{ 'Please, register to use the services offered by Global Passport Project.' | translate }}</p>
 
@@ -16,7 +16,7 @@
                   <!-- First name -->
                   <div class="form-group mb-3 text-left">
                     <label>{{ 'First name' | translate }}</label>
-                    <input type="text" name="firstName" [(ngModel)]="formData.firstName" id="firstName" class="form-control" placeholder="{{ 'First name' | translate }}" required>
+                    <input type="text" name="firstName" [(ngModel)]="formData.firstName" id="firstName" class="form-control" placeholder="{{ 'First name' | translate }}" required [disabled]="signOnCompleted">
                   </div>
 
                   <!-- First name alert -->
@@ -27,7 +27,7 @@
                   <!-- Last name -->
                   <div class="form-group mb-3 text-left">
                     <label>{{ 'Last name' | translate }}</label>
-                    <input type="text" name="lastName" [(ngModel)]="formData.lastName" id="lastName" class="form-control" placeholder="{{ 'Last name' | translate }}" required>
+                    <input type="text" name="lastName" [(ngModel)]="formData.lastName" id="lastName" class="form-control" placeholder="{{ 'Last name' | translate }}" required [disabled]="signOnCompleted">
                   </div>
 
                   <!-- Last name alert -->
@@ -38,7 +38,7 @@
                   <!-- E-Mail -->
                   <div class="form-group mb-3 text-left">
                     <label>{{ 'Email' | translate }}</label>
-                    <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{ 'Email' | translate }}" autocomplete="email" required>
+                    <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{ 'Email' | translate }}" autocomplete="email" required  [disabled]="signOnCompleted">
                   </div>
 
                   <!-- E-mail alert -->
@@ -49,13 +49,13 @@
                   <!-- Confirm e-mail -->
                   <div class="form-group mb-3 text-left">
                     <label>{{ 'Confirm e-mail' | translate }}</label>
-                    <input type="email" name="emailConfirm" [(ngModel)]="formData.emailConfirm" id="email_confirm" class="form-control" placeholder="{{ 'Confirm e-mail' | translate }}" required>
+                    <input type="email" name="emailConfirm" [(ngModel)]="formData.emailConfirm" id="email_confirm" class="form-control" placeholder="{{ 'Confirm e-mail' | translate }}" required  [disabled]="signOnCompleted">
                   </div>
-                  
+
                   <!-- Password -->
                   <div class="form-group mb-3 text-left">
                     <label>{{ 'Password' | translate }}</label>
-                    <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{ 'Password' | translate }}" autocomplete="password" required>
+                    <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{ 'Password' | translate }}" autocomplete="password" required  [disabled]="signOnCompleted">
                   </div>
 
                   <!-- Password alert -->
@@ -66,24 +66,24 @@
                   <!-- Confirm password -->
                   <div class="form-group mb-3 text-left">
                     <label>{{ 'Confirm password' | translate }}</label>
-                    <input type="password" name="passwordConfirm" id="passwordConfirm" [(ngModel)]="formData.passwordConfirm" class="form-control" placeholder="{{ 'Confirm password' | translate }}" required>
-                  </div>     
+                    <input type="password" name="passwordConfirm" id="passwordConfirm" [(ngModel)]="formData.passwordConfirm" class="form-control" placeholder="{{ 'Confirm password' | translate }}" required  [disabled]="signOnCompleted">
+                  </div>
 
                   <!-- Secret key -->
                   <div class="form-group mb-3 text-left">
                     <label>{{ 'Secret key' | translate }}</label>
-                    <input type="password" name="secretKey" id="secretKey" [(ngModel)]="formData.secretKey" class="form-control" placeholder="{{ 'Secret key' | translate }}">
+                    <input type="password" name="secretKey" id="secretKey" [(ngModel)]="formData.secretKey" class="form-control" placeholder="{{ 'Secret key' | translate }}" [disabled]="signOnCompleted">
                   </div>
 
                   <!-- Secret key alert -->
                   <div *ngIf='this.messageException.status===101' class="alert alert-warning alert-dismissible fade show" role="alert">
                     <strong>{{this.messageException.message | translate }}</strong>
                   </div>
-                  
+
                   <!-- Sign on button -->
                   <div class="row">
                     <div class="col-12">
-                      <button type="submit" [disabled]="form.invalid" class="btn btn-primary rounded-0 px-4">{{ 'Sign On' | translate }}</button>
+                      <button type="submit" [disabled]="form.invalid || signOnCompleted" class="btn btn-primary rounded-0 px-4">{{ 'Sign On' | translate }}</button>
                     </div>
                   </div>
 
@@ -98,13 +98,13 @@
                   </div>
 
                   <!-- Forgot password and login links -->
-                  <div class="row">  
+                  <div class="row">
                     <div class="col-6 text-left">
                       <button type="button" class="btn btn-link px-0" [routerLink]="['/forgot-password']">{{ 'Forgot Password?' | translate }}</button>
                     </div>
                     <div class="col-6 text-right">
                       <button type="button" class="btn btn-link px-0" [routerLink]="['/sign-in']">{{ 'Yet a member?' | translate }}</button>
-                    </div>                    
+                    </div>
                   </div>
                 </form>
                 <app-langswitch></app-langswitch>

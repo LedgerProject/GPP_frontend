@@ -5,7 +5,7 @@
         <div class="card-body">
           <!-- Information -->
           <h1 class="mt-4">{{ 'My Profile' | translate }}</h1>
-          <p>{{ 'In questa sezione è possibile modificare le informazioni personali.' | translate }}</p> 
+          <p>{{ 'In questa sezione è possibile modificare le informazioni personali.' | translate }}</p>
 
           <!-- Form -->
           <form #form="ngForm" (ngSubmit)="saveProfile()">
@@ -24,7 +24,37 @@
                 <input type="text" name="lastName" [(ngModel)]="formData.lastName" id="lastName" class="form-control" required>
               </div>
             </div>
-            
+
+            <div class="form-group">
+              <label>{{ 'Birth Date' | translate }}</label>
+              <div class="input-group mb-3 small-field">
+                <input type="date" name="birthday" [(ngModel)]="formData.birthday" id="birthday" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>{{ 'Gender' | translate }}</label>
+              <div class="input-group mb-3 small-field">
+                <select name="gender" [(ngModel)]="formData.gender" id="gender" class="form-control">
+                  <option [ngValue]="null">{{ 'Select Gender' | translate }}</option>
+                  <option value="Male">{{ 'Male' | translate }}</option>
+                  <option value="Female">{{ 'Female' | translate }}</option>
+                  <option value="Not Specified">{{ 'Not Specified' | translate }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>{{ 'Nationality' | translate }}</label>
+              <div class="input-group mb-3 small-field">
+                <select name="idNationality" [(ngModel)]="formData.idNationality" id="idNationality" class="form-control">
+                  <option [ngValue]="null">{{ 'Select Nationality' | translate }}</option>
+                  <option *ngFor="let n of nationality_options" [value]="n.idNationality">{{n.identifier}}</option>
+                </select>
+              </div>
+            </div>
+
+
             <!-- Save button -->
             <div class="row">
               <div class="col-12 text-right">
@@ -35,20 +65,82 @@
             <!-- Remove from current team and delete all my data buttons -->
             <div class="row mt-3">
               <div class="col-6 text-left">
-                <button type="button" class="btn btn-danger rounded-0">{{ 'REMOVE FROM CURRENT TEAM' | translate}}</button>
+                <button type="button" class="btn btn-danger rounded-0" (click)="removeOperatorFromTeam()">{{ 'REMOVE FROM CURRENT TEAM' | translate}}</button>
               </div>
               <div class="col-6 text-right">
-                <button type="button" class="btn btn-danger rounded-0">{{ 'DELETE ALL MY DATA' | translate}}</button>
+                <button type="button" class="btn btn-danger rounded-0" (click)="removeAllData()">{{ 'DELETE ALL MY DATA' | translate}}</button>
               </div>
             </div>
-          </form>           
+          </form>
         </div>
-        
-        <!-- Under costruction alert -->
+
+        <!-- Under costruction alert
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
           <strong>{{ 'Attention! This section is under construction, hence is not working.' | translate }}</strong>
         </div>
+        -->
       </div>
-    </div>      
+    </div>
   </div>
-</div> 
+</div>
+
+<!-- Modal info message -->
+<div bsModal #modalInfo="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInfoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Congratulations!' | translate }}</h4>
+        <button type="button" class="close" (click)="modalInfo.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ 'Profile updated successfully' | translate }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modalInfo.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal entering data error -->
+<div bsModal #modalError="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalErrorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">{{ messageError.title }}</h4>
+              <button type="button" class="close" (click)="modalError.hide()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <p>{{ messageError.description }}</p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modalError.hide()">{{ 'Close' | translate }}</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal exception error -->
+<div bsModal #modalException="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExceptionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageException.name }}</h4>
+        <button type="button" class="close" (click)="modalException.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><b>Status: </b>{{ messageException.statusText }} ({{ messageException.status }})</p>
+        <p><b>Description: </b>{{ messageException.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>

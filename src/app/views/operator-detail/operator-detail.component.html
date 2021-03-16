@@ -8,7 +8,8 @@
 
             <!-- Information -->
             <h1 class="mt-4">{{ 'Operators - Edit Operator' | translate }}</h1>
-            <p>{{ 'In this section it is possible to modify the authorizations of the operation, or remove the operation from the organization clicking on \'Remove from Team\'.' | translate }}</p>
+            <p *ngIf="userType != 'gppOperator'">{{ 'In this section it is possible to modify the authorizations of the operation, or remove the operation from the organization clicking on \'Remove from Team\'.' | translate }}</p>
+            <p *ngIf="userType == 'gppOperator'">{{ 'In this section it is possible to add or remove an Operator from GPP Staff, or delete all related data clicking on \'Remove all related data\'.' | translate }}</p>
 
             <!-- Operator information -->
             <div class="operator-detail my-3">
@@ -18,28 +19,27 @@
 
             <!-- Form -->
             <form *ngIf="userType != 'gppOperator'">
-            <div class="form-group">
-              <!-- Permissions -->
-              <label>
-                <input type="checkbox" name="check_admin" value="admin">
-                {{ 'Administrator (can manage structures, operators and document wallet)' | translate }}
-              </label>
-              <br />
-              <!--<label>
-                <input type="checkbox" name="check_wallet" value="wallet">
-                {{ 'Wallet (can manage document wallet)' | translate }}
-              </label>
-              <br>-->
-              <label>
-                <input type="checkbox" name="check_operators" value="operators">
-                {{ 'Operators (can manage operators)' | translate }}
-              </label>
-              <br>
-              <label>
-                <input type="checkbox" name="check_structures" value="structures">
-                {{ 'Structures (can manage structures)' | translate }}
-              </label>
-            </div>
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" name="check_admin" [(ngModel)]="permission_OrganizationAdministrator" value="OrganizationAdministrator" [checked]="permission_OrganizationAdministrator" (change)="setValue('OrganizationAdministrator')">
+                  {{ 'Administrator (can manage structures, operators and document wallet)' | translate }}
+                </label>
+                <br />
+                <!--<label>
+                  <input type="checkbox" name="check_wallet" value="wallet">
+                  {{ 'Wallet (can manage document wallet)' | translate }}
+                </label>
+                <br />-->
+                <label>
+                  <input type="checkbox" name="check_operators" [(ngModel)]="permission_OrganizationUsersManagement" value="OrganizationUsersManagement" [checked]="permission_OrganizationUsersManagement" (change)="setValue('OrganizationUsersManagement')">
+                  {{ 'Operators (can manage operators)' | translate }}
+                </label>
+                <br />
+                <label>
+                  <input type="checkbox" name="check_structures" [(ngModel)]="permission_OrganizationStructuresManagement"  value="OrganizationStructuresManagement" [checked]="permission_OrganizationStructuresManagement" (change)="setValue('OrganizationStructuresManagement')">
+                  {{ 'Structures (can manage structures)' | translate }}
+                </label>
+              </div>
 
             <!-- Save and remove buttons-->
             <div class="row">
@@ -55,7 +55,7 @@
             <div class="form-group">
               <!-- Permissions -->
               <label>
-                <input type="checkbox" name="check_gpp" value="gpp_staff">
+                <input type="checkbox" name="check_admin" [(ngModel)]="permission_Admin"  value="1" [checked]="permission_Admin">
                 {{ 'Add to GPP Staff' | translate }}
               </label>
               <br />
@@ -64,21 +64,83 @@
             <!-- Save and remove buttons-->
             <div class="row">
               <div class="col-6 text-left">
-                <button type="button" class="btn btn-primary rounded-0" (click)="saveOperatorPermissions()">{{ 'Save' | translate}}</button>
+                <button type="button" class="btn btn-primary rounded-0" (click)="saveAdmin()">{{ 'Save' | translate}}</button>
               </div>
               <div class="col-6 text-right">
-                <button type="button" class="btn btn-danger rounded-0" (click)="removeOperatorFromTeam()">{{ 'Remove all related data' | translate}}</button>
+                <button type="button" class="btn btn-danger rounded-0" (click)="removeAllData()">{{ 'Remove all related data' | translate}}</button>
               </div>
             </div>
           </form>
           </div>
 
 
-          <!-- Under costruction alert -->
+          <!-- Under costruction alert
           <div class="alert alert-warning alert-dismissible fade show" role="alert">
             <strong>{{ 'Attention! This section is under construction, hence is not working.' | translate }}</strong>
           </div>
+          -->
         </div>
       </div>
     </div>
+</div>
+
+<!-- Modal info message -->
+<div bsModal #modalInfo="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInfoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Congratulations!' | translate }}</h4>
+        <button type="button" class="close" (click)="modalInfo.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ 'Permissions have been updated successfully' | translate }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modalInfo.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal entering data error -->
+<div bsModal #modalError="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalErrorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">{{ messageError.title }}</h4>
+              <button type="button" class="close" (click)="modalError.hide()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <p>{{ messageError.description }}</p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modalError.hide()">{{ 'Close' | translate }}</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal exception error -->
+<div bsModal #modalException="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExceptionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageException.name }}</h4>
+        <button type="button" class="close" (click)="modalException.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><b>Status: </b>{{ messageException.statusText }} ({{ messageException.status }})</p>
+        <p><b>Description: </b>{{ messageException.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
 </div>

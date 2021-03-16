@@ -33,6 +33,7 @@ export class OperatorInviteComponent implements OnInit {
   permission_OrganizationAdministrator: boolean;
   permission_OrganizationUsersManagement: boolean;
   permission_OrganizationStructuresManagement: boolean;
+  permission_Admin: boolean;
   string_match: string;
   myIdUser : string;
 
@@ -61,6 +62,7 @@ export class OperatorInviteComponent implements OnInit {
     this.permission_OrganizationAdministrator = false;
     this.permission_OrganizationUsersManagement = false;
     this.permission_OrganizationStructuresManagement = false;
+    this.permission_Admin = false;
     this.permissions = '';
     this.string_match = '';
     this.invitation_text = '';
@@ -102,6 +104,18 @@ export class OperatorInviteComponent implements OnInit {
       this.http.post(environment.apiUrl + environment.apiPort + "/user/invite-organization",postParams, {headers})
       .subscribe(data => {
         this.modalInfo.show();
+        //reset forms
+        this.formData.textInvitation = '';
+        this.string_match = '';
+        this.idUser = '';
+        this.permissions = '';
+        this.permission_OrganizationUsersManagement = false;
+        this.permission_OrganizationStructuresManagement = false;
+        this.permission_OrganizationAdministrator = false;
+        this.formSearch.findOperator = '';
+        this.isSearching = false;
+        this.results = [];
+
       }, error => {
         this.showExceptionMessage(error);
       });
@@ -121,37 +135,6 @@ export class OperatorInviteComponent implements OnInit {
       this.isSearching = true;
 
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
-      /*let operatorQuery = '"email": { "ilike" : "%25' + findOperator + '%25" }';
-      // let userTypeQuery = ', "userType": "operator" ';
-      let where = '"where": { \ ' +
-      operatorQuery +
-      // userTypeQuery +
-      '},';
-      let filter = ' \
-      { \
-        "fields" : { \
-          "idUser": true, \
-          "userType": false, \
-          "firstName": true, \
-          "lastName": true, \
-          "email": true, \
-          "emailConfirmed": false, \
-          "password": false, \
-          "passwordRecoveryToken": false, \
-          "passwordRecoveryDate": false, \
-          "idNationality": false, \
-          "gender": false, \
-          "birthday": false \
-        }, \
-        "include": [ \
-          {"relation": "organizationUser"} \
-        ], \ '
-        + where +
-        '"offset": 0, \
-        "limit": 10, \
-        "skip": 0, \
-        "order": ["lastName"] \
-      }';*/
       // HTTP Request
       this.http.get<Array<User>>(environment.apiUrl + environment.apiPort + "/users/invite/" + findOperator + "/10", {headers})
       .subscribe(data => {

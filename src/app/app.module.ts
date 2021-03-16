@@ -76,6 +76,9 @@ import { NationalitiesComponent } from './views/nationalities/nationalities.comp
 import { NationalityDetailComponent } from './views/nationality-detail/nationality-detail.component';
 import { IconDetailComponent } from './views/icon-detail/icon-detail.component';
 import { IconComponent } from './views/icon/icon.component';
+import { ConfirmAccountComponent } from './views/confirm-account/confirm-account.component';
+import { ConfirmInvitationComponent } from './views/confirm-invitation/confirm-invitation.component';
+import { ResetPasswordComponent } from './views/reset-password/reset-password.component';
 
 //import { AuthGuardService } from './auth/auth-guard.service';
 
@@ -141,7 +144,10 @@ import { IconComponent } from './views/icon/icon.component';
     NationalitiesComponent,
     NationalityDetailComponent,
     IconDetailComponent,
-    IconComponent
+    IconComponent,
+    ConfirmAccountComponent,
+    ConfirmInvitationComponent,
+    ResetPasswordComponent
   ],
   providers: [{
     provide: LocationStrategy,

@@ -33,6 +33,9 @@ import { MyProfileComponent } from './views/my-profile/my-profile.component';
 import { ChangePasswordComponent } from './views/change-password/change-password.component';
 import { LogoutComponent } from './views/logout/logout.component';
 import { OrganizationAddComponent } from './views/organization-add/organization-add.component';
+import { ConfirmAccountComponent } from './views/confirm-account/confirm-account.component';
+import { ConfirmInvitationComponent } from './views/confirm-invitation/confirm-invitation.component';
+import { ResetPasswordComponent } from './views/reset-password/reset-password.component';
 
 //import { AuthGuardService as AuthGuard } from './auth/auth-guard.service';
 
@@ -75,6 +78,27 @@ export const routes: Routes = [
     component: ForgotpasswordComponent,
     data: {
       title: 'Forgot Password Page'
+    }
+  },
+  {
+    path: 'confirm-account',
+    component: ConfirmAccountComponent,
+    data: {
+      title: 'Confirm Account'
+    }
+  },
+  {
+    path: 'confirm-invitation',
+    component: ConfirmInvitationComponent,
+    data: {
+      title: 'Confirm Invitation'
+    }
+  },
+  {
+    path: 'reset-password',
+    component: ResetPasswordComponent,
+    data: {
+      title: 'Reset Password'
     }
   },
   {

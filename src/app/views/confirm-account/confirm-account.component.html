@@ -1,0 +1,38 @@
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card-group">
+            <div class="card p-4">
+              <div class="card-body text-center">
+                <!-- Information -->
+                <a [routerLink]="['/']"><img src="../../../assets/img/logo.png" /></a>
+                <h1>{{'Confirm Account' | translate }}</h1>
+                <p class="text-muted"></p>
+                  <h3 *ngIf='this.messageException.status!==0'>{{this.messageException.statusText}}</h3>
+                  <div *ngIf='this.alert_class == "warning"'>
+                    <p><strong>{{'The following error occurred' | translate }}:</strong></p>
+                  </div>
+                  <!-- alert -->
+                  <div *ngIf='this.messageException.status!==0' [class]="'alert alert-'+ alert_class + ' fade show'" role="alert">
+                    <strong>{{this.messageException.message}}</strong>
+                  </div>
+
+                  <!-- Sign in button -->
+                  <div class="row" *ngIf='this.messageException.status==204'>
+                    <div class="col-12">
+                      <p></p>
+                      <button type="button" class="btn btn-primary rounded-0 px-4" [routerLink]="['/sign-in']">{{ 'Sign in' | translate}}</button>
+                    </div>
+                  </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
