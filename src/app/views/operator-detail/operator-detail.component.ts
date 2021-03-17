@@ -78,6 +78,32 @@ export class OperatorDetailComponent implements OnInit {
     this.http.get<Array<User>>(environment.apiUrl + environment.apiPort + "/users/" + this.idUser, {headers})
     .subscribe(data => {
       this.operator = data;
+      if (this.userType == 'gppOperator') {
+        if (this.operator.userType == 'gppOperator') {
+          this.permission_Admin = true;
+        } else {
+          this.permission_Admin = false;
+        }
+      } else {
+        if (this.operator.organizationUser) {
+          if (this.operator.organizationUser[0]) {
+            const user_permissions: [] = this.operator.organizationUser[0].permissions;
+            user_permissions.forEach(element => {
+              switch (element) {
+                case 'OrganizationAdministrator':
+                this.permission_OrganizationAdministrator = true;
+                break;
+                case 'OrganizationUsersManagement':
+                this.permission_OrganizationUsersManagement = true;
+                break;
+                case 'OrganizationStructuresManagement':
+                this.permission_OrganizationStructuresManagement = true;
+                break;
+              }
+            });
+          }
+        }
+      }
     }, error => {
       console.log(error);
       this.showExceptionMessage(error);
