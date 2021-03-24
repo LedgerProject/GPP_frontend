@@ -4,10 +4,11 @@
         <div class="card mt-4">
           <div class="card-body">
             <!-- Back link -->
-            <a [routerLink]="['/wallet']"><i class="fa fa-chevron-left"></i> {{ 'Back to insert token' | translate }}</a>
+            <a *ngIf="userType != 'user'" [routerLink]="['/wallet']"><i class="fa fa-chevron-left"></i> {{ 'Back to insert token' | translate }}</a>
 
             <!-- Information -->
-            <h1 class="mt-4">{{ 'Document Wallet - List' | translate }}</h1>
+            <h1 *ngIf="userType != 'user'" class="mt-4">{{ 'Document Wallet - List' | translate }}</h1>
+            <h1 *ngIf="userType == 'user'" class="mt-4">{{ 'My Documents - List' | translate }}</h1>
 
             <!-- Search form -->
             <form #form="ngForm" (ngSubmit)="filterDocuments()">

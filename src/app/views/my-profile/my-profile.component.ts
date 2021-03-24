@@ -16,6 +16,7 @@ export class MyProfileComponent implements OnInit {
   formData: any;
   token: string;
   lang: string;
+  userType: string;
   nationality_options: any;
   @Input() idUser: string;
   @ViewChild('modalInfo') public modalInfo: ModalDirective;
@@ -33,6 +34,7 @@ export class MyProfileComponent implements OnInit {
     this.token = localStorage.getItem('token');
     this.lang = localStorage.getItem('current_lang');
     this.idUser = localStorage.getItem('idUser');
+    this.userType = localStorage.getItem('userType');
     this.formData = {
       idUser: this.idUser,
       userType: '',

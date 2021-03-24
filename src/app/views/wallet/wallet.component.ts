@@ -16,12 +16,15 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 export class WalletComponent implements OnInit {
   token: string;
   formData: TokenCredential;
+  userType: string;
+  @ViewChild('modalInfo') public modalInfo: ModalDirective;
   @ViewChild('modalError') public modalError: ModalDirective;
   messageError: MessageError;
   errorsDescriptions: string[];
   @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
-  
+  generated_token: string;
+
   constructor (
     private router: Router,
     public translate: TranslateService,
@@ -29,12 +32,14 @@ export class WalletComponent implements OnInit {
     public userdata: UserdataService
   ) {
     this.token = localStorage.getItem('token');
+    this.userType = localStorage.getItem('userType');
     this.messageException = environment.messageExceptionInit;
     this.messageError = environment.messageErrorInit;
     this.errorsDescriptions = [];
     this.formData = {
       token: ''
     };
+    this.generated_token = '';
   }
 
   // Page init
@@ -43,17 +48,17 @@ export class WalletComponent implements OnInit {
   // Check token inserted
   async checkToken() {
     this.errorsDescriptions = [];
-  
+
     //Check if entered the token
     if (!this.formData.token) {
       this.errorsDescriptions.push(this.translate.instant('Specificare il token'));
     }
-  
+
     //Check if entered the address
     if (this.formData.token && this.formData.token.length < 6) {
       this.errorsDescriptions.push(this.translate.instant('Specificare un token di almeno 8 caratteri'));
     }
-  
+
     //Check if there are no errors
     if (this.errorsDescriptions.length === 0) {
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
@@ -101,4 +106,19 @@ export class WalletComponent implements OnInit {
     this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
     this.modalException.show();
   }
+
+  generateToken() {
+    //Check if there are no errors
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
+      this.http.post(environment.apiUrl + environment.apiPort + "/users-token",{}, {headers} )
+      .subscribe(data => {
+        let token_data: any = data;
+        this.generated_token = token_data.token;
+        this.modalInfo.show();
+      }, error => {
+        console.log(error);
+        this.showExceptionMessage(error);
+      });
+    }
 }

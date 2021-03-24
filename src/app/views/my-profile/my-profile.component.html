@@ -65,7 +65,7 @@
             <!-- Remove from current team and delete all my data buttons -->
             <div class="row mt-3">
               <div class="col-6 text-left">
-                <button type="button" class="btn btn-danger rounded-0" (click)="removeOperatorFromTeam()">{{ 'REMOVE FROM CURRENT TEAM' | translate}}</button>
+                <button *ngIf="userType != 'user'" type="button" class="btn btn-danger rounded-0" (click)="removeOperatorFromTeam()">{{ 'REMOVE FROM CURRENT TEAM' | translate}}</button>
               </div>
               <div class="col-6 text-right">
                 <button type="button" class="btn btn-danger rounded-0" (click)="removeAllData()">{{ 'DELETE ALL MY DATA' | translate}}</button>

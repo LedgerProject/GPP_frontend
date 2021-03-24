@@ -3,14 +3,14 @@
       <div class="col-md-12 col-lg-8 mx-auto">
         <div class="card mt-4">
           <div class="card-body">
+            <!-- Operator or GPP Operator -->
             <!-- Information -->
-            <h1 class="mt-4">{{'Document Wallet - Insert Token' | translate }}</h1>
-            <p>{{ 'Enter the token you obtained from the user to view the documentation.' | translate }}</p>
-            <p>{{ 'The token lasts 30 minutes. Once it expires, it is necessary to ask the user for another token.' | translate }}</p>
-            <h4 class="text-uppercase">{{ 'Please insert the token to check the documents wallet' | translate }}</h4>
-
+            <h1 class="mt-4" *ngIf="userType != 'user'">{{'Document Wallet - Insert Token' | translate }}</h1>
+            <p *ngIf="userType != 'user'">{{ 'Enter the token you obtained from the user to view the documentation.' | translate }}</p>
+            <p *ngIf="userType != 'user'">{{ 'The token lasts 30 minutes. Once it expires, it is necessary to ask the user for another token.' | translate }}</p>
+            <h4 class="text-uppercase" *ngIf="userType != 'user'">{{ 'Please insert the token to check the documents wallet' | translate }}</h4>
             <!-- Form -->
-            <form #form="ngForm" (ngSubmit)="checkToken()">
+            <form #form="ngForm" (ngSubmit)="checkToken()" *ngIf="userType != 'user'">
               <!-- Token -->
               <div class="input-group mb-3">
                 <input type="text" class="form-control" name="token" [(ngModel)]="formData.token"  placeholder="{{ 'Insert the token' | translate }}" required>
@@ -21,10 +21,38 @@
                 </div>
               </div>
             </form>
+            <!-- User -->
+            <h1 class="mt-4" *ngIf="userType == 'user'">{{'Document Wallet - Generate Token' | translate }}</h1>
+            <p *ngIf="userType == 'user'">{{ 'The token lasts 30 minutes. Once it expires, it is necessary to generate another token.' | translate }}</p>
+            <form #form="ngForm" (ngSubmit)="generateToken()" *ngIf="userType == 'user'">
+              <button class="btn btn-primary rounded-0" type="submit">{{ 'Generate Token' | translate }}</button>
+            </form>
           </div>
         </div>
       </div>
     </div>
+</div>
+
+<!-- Modal info message -->
+<div bsModal #modalInfo="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInfoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ '30-Minutes Token Generated' | translate }}</h4>
+        <button type="button" class="close" (click)="modalInfo.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-center">{{ 'Your Token has been generated successfully' | translate }}</p>
+        <h3 class="text-center">{{ 'Token' | translate }}: <strong>{{generated_token}}</strong></h3>
+        <p class="text-center">{{ 'Communicate this token only to trusted people.' | translate }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modalInfo.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Modal entering data error -->

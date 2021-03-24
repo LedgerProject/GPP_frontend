@@ -377,7 +377,10 @@
     "Insert and confirm New Password": "Insert and confirm New Password",
     "Reset Password token not exists": "Reset Password token not exists",
     "Reset Password token is empty": "Reset Password token is empty",
-    "Password updated successfully": "Password updated successfully"
-
-
+    "Password updated successfully": "Password updated successfully",
+    "Document Wallet - Generate Token": "Document Wallet - Generate Token",
+    "My Documents - List": "My Documents - List",
+    "The token lasts 30 minutes. Once it expires, it is necessary to generate another token.": "The token lasts 30 minutes. Once it expires, it is necessary to generate another token.",
+    "30-Minutes Token Generated": "30-Minutes Token Generated",
+    "Communicate this token only to trusted people.": "Communicate this token only to trusted people."
 }

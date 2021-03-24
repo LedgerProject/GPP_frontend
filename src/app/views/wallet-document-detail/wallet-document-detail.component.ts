@@ -19,6 +19,7 @@ export class WalletDocumentDetailComponent implements OnInit {
   http_response:any;
   blob: any;
   file_type: any;
+  userType: string;
 
   constructor(
     private _Activatedroute:ActivatedRoute,
@@ -27,7 +28,7 @@ export class WalletDocumentDetailComponent implements OnInit {
     private http: HttpClient,
     public userdata: UserdataService
   ) {
-    this.document = {'uuid':'','title':'','url':'','size':'','icon':''};
+    this.document = {'uuid':'','title':'','url':'','size':'','icon':'', 'mimeType':''};
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
     let documents = JSON.parse(localStorage.getItem('documents'));
     if (documents) {
@@ -49,19 +50,33 @@ export class WalletDocumentDetailComponent implements OnInit {
     }
     this.token = localStorage.getItem('token');
     this.wallet = localStorage.getItem('tokenWallet');
+    this.userType = localStorage.getItem('userType');
     this.http_response = null;
     this.blob = null;
   }
 
   ngOnInit(): void {
-    this.getFile();
+    if (this.userType == 'user') {
+      this.getPersonalFile();
+    } else {
+      this.getFile();
+    }
+  }
+
+  async getPersonalFile() {
+    let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
+    this.http.get(environment.apiUrl + environment.apiPort + "/documents/" + this.uuid, {headers, responseType: 'arraybuffer'} )
+    .subscribe(data=> {
+      this.blob = data;
+    }, error => {
+      console.log(error);
+      alert( this.translate.instant('Invalid Token') );
+    });
   }
 
   async getFile() {
 
-      let headers = new HttpHeaders()
-      .set("Authorization", "Bearer "+this.token)
-      ;
+      let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
 
       this.http.get(environment.apiUrl + environment.apiPort + "/documents/" + this.document.idDocument + "/operator/" + this.wallet, {headers, responseType: 'arraybuffer'} )
       .subscribe(data=> {

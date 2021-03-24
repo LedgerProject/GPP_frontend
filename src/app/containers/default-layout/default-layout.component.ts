@@ -80,7 +80,9 @@ export class DefaultLayoutComponent implements OnInit {
           localStorage.setItem('permissions', JSON.stringify(this.userMe.permissions));
           localStorage.setItem('userType',this.userMe.userType);
           //Get the user organizations
-          this.getOrganizations();
+          if (this.userMe.userType != 'user') {
+            this.getOrganizations();
+          }
         } else {
           this.router.navigateByUrl('sign-in');
         }

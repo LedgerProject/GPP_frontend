@@ -10,6 +10,14 @@
   <div class="collapse navbar-collapse" [ngClass]="{ 'show': navbarOpen }">
     <ul class="navbar-nav ml-auto">
       <!-- Wallet -->
+      <li class="nav-item" *ngIf="userMe.userType == 'user'">
+        <a class="nav-link" [routerLink]="['/wallet']" (click)="toggleNavbar()">{{ 'Generate Token' | translate }}</a>
+      </li>
+      <li class="nav-item" *ngIf="userMe.userType == 'user'">
+        <a class="nav-link" [routerLink]="['/wallet-documents']" (click)="toggleNavbar()">{{ 'My Documents' | translate }}</a>
+      </li>
+
+      <!-- Wallet -->
       <li class="nav-item" *ngIf="userMe.permissions.includes('CheckTokenDocWallet')">
         <a class="nav-link" [routerLink]="['/wallet']" (click)="toggleNavbar()">{{ 'Wallet' | translate }}</a>
       </li>
@@ -59,7 +67,7 @@
       </li>
 
       <!-- Create organization -->
-      <li class="nav-item mr-2" *ngIf="!organizations.length">
+      <li class="nav-item mr-2" *ngIf="!organizations.length && userMe.userType != 'user'">
         <a *ngIf="userMe.userType != 'gppOperator'" class="nav-link btn pointer" role="button" (click)="createOrganization()"><i class="fa fa-cog"></i> {{ 'Create Organization' | translate }}</a>
         <a *ngIf="userMe.userType == 'gppOperator'" class="nav-link btn" >{{ 'Global Passport Operator' | translate }}</a>
       </li>
