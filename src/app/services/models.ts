@@ -73,6 +73,7 @@ export interface Document {
   idUser: string;
   title: string;
   filename: string;
+  fileType: string;
   mimeType: string;
   size: number;
   widthPixel: number;

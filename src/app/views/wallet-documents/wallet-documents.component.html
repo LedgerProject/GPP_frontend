@@ -28,8 +28,8 @@
                 <th>{{ 'Size' | translate }}</th>
               </thead>
               <tbody>
-                <tr class="pointer" *ngFor="let document of filteredDocuments" (click)="openDocument(document.idDocument)">
-                  <td><i class='fa fa-file-{{document.mimeType}}-o'></i> {{document.title}}</td>
+                <tr class="pointer" *ngFor="let document of filteredDocuments" (click)="openDocument(document.idDocument, document.mimeType, document.title)">
+                  <td><i class='fa fa-file-{{document.fileType}}-o'></i> {{document.title}}</td>
                   <td>{{document.size}} MB</td>
                 </tr>
               </tbody>
