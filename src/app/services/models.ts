@@ -78,6 +78,7 @@ export interface Document {
   size: number;
   widthPixel: number;
   heightPixel: number;
+  isChecked: boolean;
 }
 
 export interface Icon {
@@ -188,3 +189,5 @@ export interface UserMe {
 export interface TokenCredential {
   token: string;
 }
+
+

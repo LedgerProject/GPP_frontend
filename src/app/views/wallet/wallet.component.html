@@ -24,9 +24,38 @@
             <!-- User -->
             <h1 class="mt-4" *ngIf="userType == 'user'">{{'Document Wallet - Generate Token' | translate }}</h1>
             <p *ngIf="userType == 'user'">{{ 'The token lasts 30 minutes. Once it expires, it is necessary to generate another token.' | translate }}</p>
-            <form #form="ngForm" (ngSubmit)="generateToken()" *ngIf="userType == 'user'">
-              <button class="btn btn-primary rounded-0" type="submit">{{ 'Generate Token' | translate }}</button>
+
+            <!-- Search form -->
+            <form #form="ngForm" (ngSubmit)="filterDocuments()" *ngIf="userType == 'user'">
+              <div class="input-group mb-3">
+                  <input type="text" (keyup)="filterDocuments()" class="form-control" name="search" [(ngModel)]="formSearch.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                  <div class="input-group-append">
+                    <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
+                  </div>
+              </div>
             </form>
+
+            <form #form="ngForm" (ngSubmit)="generateToken()" *ngIf="userType == 'user'">
+              <button class="btn btn-primary rounded-0 generate-token" type="submit">{{ 'Generate Token' | translate }}</button>
+            </form>
+            <!-- Table documents -->
+            <div class="table-responsive" *ngIf="userType == 'user'">
+            <table class="table table-hover" *ngIf='filteredDocuments.length'>
+              <thead>
+                <th>{{ 'Document' | translate }}</th>
+                <th>{{ 'Size' | translate }}</th>
+                <th></th>
+              </thead>
+              <tbody>
+                <tr class="pointer" *ngFor="let document of filteredDocuments">
+                  <td><label class="checkbox-container"><input type="checkbox" class="form-checkbox" [(ngModel)]="document.isChecked" (change)="changeSelection()"> <i class='fa fa-file-{{document.fileType}}-o'></i> {{document.title}}</label></td>
+                  <td>{{document.size}} MB</td>
+                  <td class="download-column"><button class="btn btn-secondary rounded-0" (click)="openDocument(document.idDocument, document.mimeType, document.title)">Download</button></td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+
           </div>
         </div>
       </div>

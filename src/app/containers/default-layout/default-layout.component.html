@@ -13,9 +13,6 @@
       <li class="nav-item" *ngIf="userMe.userType == 'user'">
         <a class="nav-link" [routerLink]="['/wallet']" (click)="toggleNavbar()">{{ 'Generate Token' | translate }}</a>
       </li>
-      <li class="nav-item" *ngIf="userMe.userType == 'user'">
-        <a class="nav-link" [routerLink]="['/wallet-documents']" (click)="toggleNavbar()">{{ 'My Documents' | translate }}</a>
-      </li>
 
       <!-- Wallet -->
       <li class="nav-item" *ngIf="userMe.permissions.includes('CheckTokenDocWallet')">

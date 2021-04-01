@@ -382,5 +382,7 @@
     "My Documents - List": "My Documents - List",
     "The token lasts 30 minutes. Once it expires, it is necessary to generate another token.": "The token lasts 30 minutes. Once it expires, it is necessary to generate another token.",
     "30-Minutes Token Generated": "30-Minutes Token Generated",
-    "Communicate this token only to trusted people.": "Communicate this token only to trusted people."
+    "Communicate this token only to trusted people.": "Communicate this token only to trusted people.",
+    "No Document Selected": "No Document Selected",
+    "Please select at least one Document": "Please select at least one Document"
 }
