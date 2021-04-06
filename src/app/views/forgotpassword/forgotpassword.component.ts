@@ -16,8 +16,10 @@ interface ForgotPassword {
 
 export class ForgotpasswordComponent implements OnInit {
   formData: ForgotPassword;
+  formDataUser: any;
   messageException: MessageException;
   alert_class: string;
+  user_type: string;
   constructor (
     private router: Router,
     private http:HttpClient,
@@ -26,8 +28,16 @@ export class ForgotpasswordComponent implements OnInit {
     this.formData = {
       email: ''
     }
+    this.formDataUser = {
+      answer1: '',
+      answer2: '',
+      answer3: '',
+      answer4: '',
+      answer5: ''
+    }
     this.messageException = environment.messageExceptionInit;
     this.alert_class = '';
+    this.user_type = '';
   }
 
   // Page init
@@ -46,6 +56,9 @@ export class ForgotpasswordComponent implements OnInit {
       };
     } else {
 
+      // this.user_type = 'user';
+
+      if (this.user_type != 'user') {
       let postParams = {
         email: email,
       }
@@ -121,7 +134,37 @@ export class ForgotpasswordComponent implements OnInit {
         this.messageException = error;
         this.alert_class = 'danger';
       });
+     }
     }
+  }
+
+  async requestChangePasswordUser() {
+    let email = this.formData.email;
+    let answer1 = this.formDataUser.answer1;
+    let answer2 = this.formDataUser.answer2;
+    let answer3 = this.formDataUser.answer3;
+    let answer4 = this.formDataUser.answer4;
+    let answer5 = this.formDataUser.answer5;
+
+    let postParams = {
+      email: email,
+      answer1: answer1,
+      answer2: answer2,
+      answer3: answer3,
+      answer4: answer4,
+      answer5: answer5
+    }
+    console.log(postParams);
+    /*let headers = new HttpHeaders().set("Content-Type", "application/json");
+
+    this.http.post(environment.apiUrl + environment.apiPort + "/user/reset-password", postParams, {headers})
+    .subscribe(data => {
+
+    }, error => {
+      this.messageException = error;
+      this.alert_class = 'danger';
+    });*/
+
   }
 
 }
