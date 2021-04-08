@@ -10,23 +10,23 @@
 
           <form #form="ngForm" (ngSubmit)="onSubmit(form)">
             <div class="input-group mb-3">
-              <select name="phonePrefix" [(ngModel)]="formFilter.phonePrefix" id="phonePrefix" class="form-control select-max-210">
+              <select name="phonePrefix" [(ngModel)]="formSearch.phonePrefix" id="phonePrefix" class="form-control select-max-210">
                 <option value="">{{ 'Select a country\'s prefix' | translate }}</option>
                 <option *ngFor="let prefix of prefixes" value="{{prefix}}">{{prefix}}</option>
               </select>
-                <input type="text" class="form-control" name="city" [(ngModel)]="formFilter.city"  placeholder="{{ 'Enter a city name' | translate }}">
+                <input type="text" class="form-control" name="city" [(ngModel)]="formSearch.city"  placeholder="{{ 'Enter a city name' | translate }}">
                 <div class="input-group-append">
-                  <button class="btn btn-primary rounded-0" type="submit">{{ 'Filter' | translate }}</button>
+                  <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
                 </div>
             </div>
           </form>
-
+          <hr>
           <!-- Search form -->
-          <form #Searchform="ngForm">
+          <form #Filterform="ngForm">
             <div class="input-group mb-3">
-                <input type="text" (keyup)="filterStructures()" class="form-control" name="search" [(ngModel)]="formSearch.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                <input type="text" (keyup)="filterStructures()" class="form-control" name="search" [(ngModel)]="formFilter.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
                 <div class="input-group-append">
-                  <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
+                  <button class="btn btn-primary rounded-0" type="submit">{{ 'Filter' | translate }}</button>
                 </div>
                 <button class="btn btn-primary ml-3 rounded-0" type="button" [routerLink]="['/structure-details']">{{ 'Add Structure' | translate }}</button>
             </div>

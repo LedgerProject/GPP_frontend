@@ -16,7 +16,8 @@ export class OperatorsComponent implements OnInit {
   token: string;
   idOrganization: string;
   permissions: string;
-  formSearch: QuickSearch;
+  formFilter: QuickSearch;
+  formSearch: any;
   userType: string;
   filteredOperators: Array<User>;
   allOperators: Array<User>;
@@ -38,7 +39,8 @@ export class OperatorsComponent implements OnInit {
     this.filteredOperators = [];
     this.allOperators = [];
     this.messageException = environment.messageExceptionInit;
-    this.formSearch = { search: '' };
+    this.formFilter = { search: '' };
+    this.formSearch = { firstName: '', lastName: '', email: ''};
     this.levels = {
       'OrganizationAdministrator': this.translate.instant('Administrator'),
       'OrganizationUsersManagement': this.translate.instant('User Management'),
@@ -49,12 +51,14 @@ export class OperatorsComponent implements OnInit {
   // Page init
   ngOnInit(): void {
     if (this.idOrganization || this.permissions.includes('GeneralUsersManagement')) {
-      this.loadOperators();
+      if (this.userType !== 'gppOperator') {
+        this.loadOperators();
+      }
     }
   }
 
   // Operators list
-  async loadOperators() {
+  async loadOperators(lastName = null, firstName = null, email = null) {
     /*this.http.get<Array<User>>("assets/api/operators.json")
     .subscribe(data => {
       this.allOperators = data;
@@ -66,6 +70,30 @@ export class OperatorsComponent implements OnInit {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     // Filters
+    let firstnameQuery = '';
+    let lastnameQuery = '';
+    let emailQuery = '';
+    let preString = '';
+    if (lastName) {
+      lastnameQuery = '"lastName": "' + lastName + '" ';
+      preString = ',';
+    }
+    if (firstName) {
+      firstnameQuery = firstnameQuery + preString + '"firstName": "' + firstName + '" ';
+      preString = ',';
+    }
+    if (email) {
+      emailQuery = emailQuery + preString + '"email": "' + email + '" ';
+    }
+    let where = '';
+    if (lastName || firstName || email) {
+    where = '"where": { \ ' +
+    lastnameQuery +
+    firstnameQuery +
+    emailQuery +
+    '},';
+    }
+
     let filter = ' \
       { \
         "fields" : { \
@@ -84,12 +112,12 @@ export class OperatorsComponent implements OnInit {
         }, \
         "include": [ \
           {"relation": "organizationUser"} \
-        ], \
-        "offset": 0, \
+        ], '
+        + where +
+        '"offset": 0, \
         "skip": 0, \
         "order": ["lastName"] \
       }';
-
     // HTTP Request
     this.http.get<Array<User>>(environment.apiUrl + environment.apiPort + "/users?filter=" + filter, {headers})
     .subscribe(data => {
@@ -109,7 +137,7 @@ export class OperatorsComponent implements OnInit {
 
   // Operators filter
   async filterOperators() {
-    let search = this.formSearch.search;
+    let search = this.formFilter.search;
 
     if (search) {
       this.filteredOperators = [];
@@ -138,5 +166,12 @@ export class OperatorsComponent implements OnInit {
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
     this.modalException.show();
+  }
+
+  onSubmit() {
+    const lastName = this.formSearch.lastName;
+    const firstName = this.formSearch.firstName;
+    const email = this.formSearch.email;
+    this.loadOperators(lastName,firstName,email);
   }
 }

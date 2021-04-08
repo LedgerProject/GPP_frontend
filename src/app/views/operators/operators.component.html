@@ -13,12 +13,24 @@
           <p *ngIf="this.permissions.includes('GeneralUsersManagement') && userType != 'gppOperator'">{{ 'Click on \'Invite Operator\' to invite an operator of the Global Passport Project team, or select the operator from the list to remove him/her.' | translate }}</p>
           <p *ngIf="this.permissions.includes('GeneralUsersManagement') && userType == 'gppOperator'">{{ 'Select the operator from the list to remove him/her.' | translate }}</p>
 
-          <!-- Search form -->
-          <form #form="ngForm">
+          <form #form="ngForm" (ngSubmit)="onSubmit()">
             <div class="input-group mb-3">
-                <input type="text" (keyup)="filterOperators()" class="form-control" name="search" [(ngModel)]="formSearch.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+              <input type="text" class="form-control" name="lastName" [(ngModel)]="formSearch.lastName"  placeholder="{{ 'Enter last name' | translate }}">
+              <input type="text" class="form-control" name="firstName" [(ngModel)]="formSearch.firstName"  placeholder="{{ 'Enter first name' | translate }}">
+              <input type="text" class="form-control" name="email" [(ngModel)]="formSearch.email"  placeholder="{{ 'Enter email address' | translate }}">
                 <div class="input-group-append">
-                  <button class="btn btn-primary" type="submit">{{ 'Search' | translate }}</button>
+                  <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
+                </div>
+            </div>
+          </form>
+          <hr>
+
+          <!-- Search form -->
+          <form #Filterform="ngForm">
+            <div class="input-group mb-3">
+                <input type="text" (keyup)="filterOperators()" class="form-control" name="search" [(ngModel)]="formFilter.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="submit">{{ 'Filter' | translate }}</button>
                 </div>
                 <button *ngIf="userType != 'gppOperator'" class="btn btn-primary rounded-0 ml-3" type="button" [routerLink]="['/operator-invite']">{{ 'Invite Operator' | translate }}</button>
             </div>
