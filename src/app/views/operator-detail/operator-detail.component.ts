@@ -100,6 +100,22 @@ export class OperatorDetailComponent implements OnInit {
                 this.permission_OrganizationStructuresManagement = true;
                 break;
               }
+
+              this.permissions = '';
+              if (this.permission_OrganizationAdministrator == true) {
+                this.permissions = 'OrganizationAdministrator';
+              } else {
+                if (this.permission_OrganizationUsersManagement == true) {
+                  this.permissions = 'OrganizationUsersManagement';
+                }
+                if (this.permission_OrganizationStructuresManagement == true) {
+                  if (this.permissions) {
+                    this.permissions = this.permissions + ',';
+                  }
+                  this.permissions = this.permissions + 'OrganizationStructuresManagement';
+                }
+              }
+
             });
           }
         }
@@ -112,7 +128,20 @@ export class OperatorDetailComponent implements OnInit {
 
   // Save operator permissions
   async saveOperatorPermissions() {
-    console.log('save permissions');
+
+    let postParams = {
+      permissions: this.permissions
+    };
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+    // HTTP Request
+    this.http.post(environment.apiUrl + environment.apiPort + "/user/" + this.idUser + "/change-permissions",postParams, {headers})
+    .subscribe(data => {
+      console.log(data);
+      // var response: any = data;
+      this.modalInfo.show();
+    }, error => {
+      this.showExceptionMessage(error);
+    });
   }
 
   // Remove operator from team
