@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MessageException, QuickSearch, Category } from '../../services/models';
 import { environment } from '../../../environments/environment';
-
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-categories',
   templateUrl: './categories.component.html',
@@ -25,7 +25,8 @@ export class CategoriesComponent implements OnInit {
     private router: Router,
     private http:HttpClient,
     public userdata: UserdataService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.token = localStorage.getItem('token');
     this.filteredCategories = [];
@@ -41,6 +42,7 @@ export class CategoriesComponent implements OnInit {
 
   // Categories list
   async loadCategories() {
+    this.SpinnerService.show();
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -63,9 +65,11 @@ export class CategoriesComponent implements OnInit {
     // HTTP Request
     this.http.get<Array<Category>>(environment.apiUrl + environment.apiPort + "/categories?filter=" + filter, {headers} )
     .subscribe(data => {
+      this.SpinnerService.hide();
       this.allCategories = data;
       this.filteredCategories = data;
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }

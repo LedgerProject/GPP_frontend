@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { UserdataService } from '../../services/userdata.service';
 import { environment } from '../../../environments/environment';
-
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-wallet-document-detail',
   templateUrl: './wallet-document-detail.component.html',
@@ -26,7 +26,8 @@ export class WalletDocumentDetailComponent implements OnInit {
     private router: Router,
     public translate: TranslateService,
     private http: HttpClient,
-    public userdata: UserdataService
+    public userdata: UserdataService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.document = {'uuid':'','title':'','url':'','size':'','icon':'', 'mimeType':''};
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
@@ -64,25 +65,30 @@ export class WalletDocumentDetailComponent implements OnInit {
   }
 
   async getPersonalFile() {
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
     this.http.get(environment.apiUrl + environment.apiPort + "/documents/" + this.uuid, {headers, responseType: 'arraybuffer'} )
     .subscribe(data=> {
+      this.SpinnerService.hide();
       this.blob = data;
     }, error => {
+      this.SpinnerService.hide();
       console.log(error);
       alert( this.translate.instant('Invalid Token') );
     });
   }
 
   async getFile() {
-
+      this.SpinnerService.show();
       let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
 
       this.http.get(environment.apiUrl + environment.apiPort + "/documents/" + this.document.idDocument + "/operator/" + this.wallet, {headers, responseType: 'arraybuffer'} )
       .subscribe(data=> {
+        this.SpinnerService.hide();
         //console.log(data);
         this.blob = data;
       }, error => {
+        this.SpinnerService.hide();
         console.log(error);
         alert( this.translate.instant('Invalid Token') );
       });

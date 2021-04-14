@@ -130,6 +130,7 @@ export interface Structure {
   phoneNumber: string;
   website: string;
   idIcon: string;
+  isChecked: boolean;
 }
 
 export interface StructureLanguage {

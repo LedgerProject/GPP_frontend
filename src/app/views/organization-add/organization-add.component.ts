@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MessageException, MessageError, Organization, TokenCredential } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-organization-add',
   templateUrl: './organization-add.component.html',
@@ -27,7 +27,8 @@ export class OrganizationAddComponent implements OnInit {
     private router: Router,
     private http: HttpClient,
     public userdata: UserdataService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.token = localStorage.getItem('token');
     this.messageError = environment.messageErrorInit;
@@ -43,11 +44,13 @@ export class OrganizationAddComponent implements OnInit {
 
   // Save organization
   async saveOrganization() {
+    this.SpinnerService.show();
     this.errorsDescriptions = [];
-  
+
     //Check if entered the name
     if (!this.formData.name) {
       this.errorsDescriptions.push(this.translate.instant('Please enter the organization name'));
+      this.SpinnerService.hide();
     }
 
     //Check if there are no errors
@@ -56,15 +59,17 @@ export class OrganizationAddComponent implements OnInit {
       let postParams = {
         name: this.formData.name
       };
-    
+
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-      this.http.post<Organization>(environment.apiUrl + environment.apiPort + "/organizations", postParams, {headers} ) 
+      this.http.post<Organization>(environment.apiUrl + environment.apiPort + "/organizations", postParams, {headers} )
       .subscribe(data => {
+        this.SpinnerService.hide();
         if (data.idOrganization) {
           this.signInOrganization(data.idOrganization);
         }
       }, error => {
+        this.SpinnerService.hide();
         let code = error.status;
 
         switch (code) {
@@ -81,6 +86,7 @@ export class OrganizationAddComponent implements OnInit {
         }
       });
     } else {
+      this.SpinnerService.hide();
       //Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
@@ -93,7 +99,7 @@ export class OrganizationAddComponent implements OnInit {
   async signInOrganization(idOrganization) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get<TokenCredential>(environment.apiUrl + environment.apiPort + "/users/change-organization/" + idOrganization, {headers}) 
+    this.http.get<TokenCredential>(environment.apiUrl + environment.apiPort + "/users/change-organization/" + idOrganization, {headers})
     .subscribe(data => {
       if (data.token) {
         localStorage.setItem('token', data.token);

@@ -11,7 +11,7 @@ import { GeocodeService } from '../../services/geocode.service';
 import { Location } from '../../services/location-model';
 import { Language, MessageException, MessageError, Structure, StructureLanguage, StructureCategory, StructureImage, Icon, Category } from '../../services/models';
 import { environment } from '../../../environments/environment';
-
+import { NgxSpinnerService } from "ngx-spinner";
 interface FormData {
   name: string;
   address: string;
@@ -75,7 +75,8 @@ export class StructureDetailComponent implements OnInit {
     public _d: DomSanitizer,
     private formBuilder: FormBuilder,
     private geocodeService: GeocodeService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.token = localStorage.getItem('token');
     this.idOrganization = localStorage.getItem('idOrganization');
@@ -120,6 +121,7 @@ export class StructureDetailComponent implements OnInit {
 
   // Get icons list
   async getIconsList() {
+    this.SpinnerService.show();
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -139,6 +141,7 @@ export class StructureDetailComponent implements OnInit {
 
     this.http.get<Array<Icon>>(environment.apiUrl + environment.apiPort + "/icons?filter=" + filter, {headers} )
     .subscribe(dataIcons => {
+      this.SpinnerService.hide();
       this.icons = dataIcons;
 
       //If updating structure, load its data
@@ -146,12 +149,14 @@ export class StructureDetailComponent implements OnInit {
         this.getStructure();
       }
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
 
   // Get structure details
   async getStructure() {
+    this.SpinnerService.show();
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -159,6 +164,7 @@ export class StructureDetailComponent implements OnInit {
     if (this.uuid) {
       this.http.get<Structure>(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid, {headers} )
       .subscribe(data => {
+        this.SpinnerService.hide();
         this.formData.name = data.name;
         this.formData.address = data.address;
         this.formData.city = data.city;
@@ -172,6 +178,7 @@ export class StructureDetailComponent implements OnInit {
 
         this.getStructureLanguages();
       }, error => {
+        this.SpinnerService.hide();
         this.showExceptionMessage(error);
       });
     }
@@ -197,6 +204,7 @@ export class StructureDetailComponent implements OnInit {
 
   // Get structure categories
   async getStructureCategories() {
+    this.SpinnerService.show();
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -244,12 +252,14 @@ export class StructureDetailComponent implements OnInit {
         this.showExceptionMessage(error);
       });
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
 
   // Get structure images
   async getStructureImages() {
+    this.SpinnerService.show();
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -262,37 +272,45 @@ export class StructureDetailComponent implements OnInit {
         this.structureImages[x].filename = encodeURIComponent(this.structureImages[x].filename);
         x++;
       });
+      this.SpinnerService.hide();
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
 
   async saveStructure() {
+    this.SpinnerService.show();
     this.errorsDescriptions = [];
 
     //Check if entered the name
     if (!this.formData.name) {
       this.errorsDescriptions.push(this.translate.instant('Please enter the structure name'));
+      this.SpinnerService.hide();
     }
 
     //Check if entered the address
     if (!this.formData.address) {
       this.errorsDescriptions.push(this.translate.instant('Please enter the structure address'));
+      this.SpinnerService.hide();
     }
 
     //Check if entered the city
     if (!this.formData.address) {
       this.errorsDescriptions.push(this.translate.instant('Please enter the structure city'));
+      this.SpinnerService.hide();
     }
 
     //Check if selected the map position
     if (!this.formData.latitude || !this.formData.longitude) {
       this.errorsDescriptions.push(this.translate.instant('Please set the structure location on the map'));
+      this.SpinnerService.hide();
     }
 
     //Check if entered the icon
     if (!this.formData.icon) {
       this.errorsDescriptions.push(this.translate.instant('Please select the structure icon'));
+      this.SpinnerService.hide();
     }
 
     //Check if there are no errors
@@ -333,9 +351,10 @@ export class StructureDetailComponent implements OnInit {
         this.http.patch(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid, postParams, {headers} )
         .subscribe(async data => {
           await this.saveStructureLanguages();
-
+          this.SpinnerService.hide();
           this.modalInfo.show();
         }, error => {
+          this.SpinnerService.hide();
           this.showExceptionMessage(error);
         });
       } else {
@@ -345,13 +364,15 @@ export class StructureDetailComponent implements OnInit {
           this.uuid = data.idStructure;
 
           await this.saveStructureLanguages();
-
+          this.SpinnerService.hide();
           this.router.navigateByUrl('structure-details/' + this.uuid);
         }, error => {
+          this.SpinnerService.hide();
           this.showExceptionMessage(error);
         });
       }
     } else {
+      this.SpinnerService.hide();
       //Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
@@ -387,12 +408,15 @@ export class StructureDetailComponent implements OnInit {
 
   // Delete structure
   deleteStructure(idStructure) {
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.delete(environment.apiUrl + environment.apiPort + "/structures/" + idStructure, {headers} )
     .subscribe(data=> {
+      this.SpinnerService.hide();
       this.router.navigateByUrl('/structures');
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
@@ -470,6 +494,7 @@ export class StructureDetailComponent implements OnInit {
 
   // Structure image submit
   structureImageSubmit() {
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     const formData = new FormData();
@@ -477,9 +502,11 @@ export class StructureDetailComponent implements OnInit {
 
     this.http.post(environment.apiUrl + environment.apiPort + "/structures-images/" + this.uuid, formData, {headers})
     .subscribe(res => {
+      this.SpinnerService.hide();
       this.structureImageSrc = '';
       this.getStructureImages();
     }, error => {
+      this.SpinnerService.hide();
       let code = error.status;
 
       switch (code) {
@@ -506,6 +533,7 @@ export class StructureDetailComponent implements OnInit {
 
   // Delete the structure image
   structureImageDelete(idStructureImage) {
+    this.SpinnerService.show();
     this.modalDeleteImage.hide();
     this.idStructureImageDelete = '';
 
@@ -513,8 +541,10 @@ export class StructureDetailComponent implements OnInit {
 
     this.http.delete(environment.apiUrl + environment.apiPort + "/structures-images/" + idStructureImage, {headers} )
     .subscribe(data=> {
+      this.SpinnerService.hide();
       this.getStructureImages();
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
@@ -540,15 +570,18 @@ export class StructureDetailComponent implements OnInit {
 
   // Geocoding: convert address to coordinates
   addressToCoordinates(address) {
+    this.SpinnerService.show();
     this.loadingCoordinates = true;
     this.geocodeService.geocodeAddress(address)
     .subscribe((location: Location) => {
+        this.SpinnerService.hide();
         this.formData.latitude = location.lat;
         this.formData.longitude = location.lng;
         this.loadingCoordinates = false;
         this.ref.detectChanges();
       }
     );
+    this.SpinnerService.hide();
   }
 
   //Error message

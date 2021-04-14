@@ -1,3 +1,4 @@
+<ngx-spinner size="default" type="ball-spin-clockwise"><p>{{ 'Please wait...' | translate }} </p></ngx-spinner>
 <div class="animated fadeIn">
   <div class="row">
     <div class="col-md-12 col-lg-8 mx-auto">
@@ -34,7 +35,7 @@
                   </ul>
                 </small>
               </div>
-                
+
               <!-- Name (language) -->
               <div *ngFor="let language of languages; let i = index">
                 <label [hidden]="currentLanguage != language.value">{{ 'Name' | translate }} ({{ language.name }})</label>
@@ -44,7 +45,7 @@
                 <small [hidden]="currentLanguage != language.value" class="form-text text-muted">{{ 'Enter the name of the country in the various languages (to change language select \'Change Language\').' | translate }}</small>
               </div>
             </div>
-            
+
             <!-- Completed -->
             <div class="form-group md-3">
               <label>{{ 'Completed' | translate }}</label>

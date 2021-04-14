@@ -5,7 +5,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MessageException, MessageError, User } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
-
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-operator-detail',
   templateUrl: './operator-detail.component.html',
@@ -36,7 +36,8 @@ export class OperatorDetailComponent implements OnInit {
   constructor(
     private _Activatedroute: ActivatedRoute,
     private http:HttpClient,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.token = localStorage.getItem('token');
     this.userType = localStorage.getItem('userType');
@@ -72,11 +73,13 @@ export class OperatorDetailComponent implements OnInit {
   // Get operator details
   async getOperator() {
 
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     // HTTP Request
     this.http.get<Array<User>>(environment.apiUrl + environment.apiPort + "/users/" + this.idUser, {headers})
     .subscribe(data => {
+      this.SpinnerService.hide();
       this.operator = data;
       if (this.userType == 'gppOperator') {
         if (this.operator.userType == 'gppOperator') {
@@ -121,14 +124,15 @@ export class OperatorDetailComponent implements OnInit {
         }
       }
     }, error => {
-      console.log(error);
+      this.SpinnerService.hide();
+      //console.log(error);
       this.showExceptionMessage(error);
     });
   }
 
   // Save operator permissions
   async saveOperatorPermissions() {
-
+    this.SpinnerService.show();
     let postParams = {
       permissions: this.permissions
     };
@@ -136,16 +140,19 @@ export class OperatorDetailComponent implements OnInit {
     // HTTP Request
     this.http.post(environment.apiUrl + environment.apiPort + "/user/" + this.idUser + "/change-permissions",postParams, {headers})
     .subscribe(data => {
-      console.log(data);
+      this.SpinnerService.hide();
+      //console.log(data);
       // var response: any = data;
       this.modalInfo.show();
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
 
   // Remove operator from team
   async removeOperatorFromTeam() {
+    this.SpinnerService.show();
     let postParams = {
       idUser: this.idUser
     };
@@ -153,7 +160,8 @@ export class OperatorDetailComponent implements OnInit {
     // HTTP Request
     this.http.post(environment.apiUrl + environment.apiPort + "/user/remove-organization",postParams, {headers})
     .subscribe(data => {
-      console.log(data);
+      this.SpinnerService.hide();
+      //console.log(data);
       var response: any = data;
 
       var response_code: number = parseInt(response.removeOrganizationUserOutcome.code);
@@ -200,12 +208,14 @@ export class OperatorDetailComponent implements OnInit {
           break;
       }
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
 
   // Save Admin
   async saveAdmin() {
+    this.SpinnerService.show();
     let postParams = {
       idUser: this.idUser
     };
@@ -219,6 +229,7 @@ export class OperatorDetailComponent implements OnInit {
     }
     this.http.post(environment.apiUrl + environment.apiPort + "/user/"+action,postParams, {headers})
     .subscribe(data => {
+      this.SpinnerService.hide();
       //console.log(data);
       var response: any = data;
 
@@ -274,13 +285,16 @@ export class OperatorDetailComponent implements OnInit {
           break;
       }
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
 
   // Remove All Data
   async removeAllData() {
+    this.SpinnerService.show();
     console.log('remove all data');
+    this.SpinnerService.hide();
   }
 
   //Error message

@@ -7,7 +7,7 @@ import { SlugifyPipe } from '../../services/slugify.pipe';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Language, MessageException, MessageError, Country, CountryLanguage } from '../../services/models';
 import { environment } from '../../../environments/environment';
-
+import { NgxSpinnerService } from "ngx-spinner";
 interface FormData {
   identifier: string;
   title: string[];
@@ -40,7 +40,8 @@ export class CountryDetailComponent implements OnInit {
     private http:HttpClient,
     public translate: TranslateService,
     public userdata: UserdataService,
-    private slugifyPipe: SlugifyPipe
+    private slugifyPipe: SlugifyPipe,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.token = localStorage.getItem('token');
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
@@ -65,6 +66,7 @@ export class CountryDetailComponent implements OnInit {
 
   // Get country details
   async getCountry() {
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.get<Country>(environment.apiUrl + environment.apiPort + "/countries/" + this.uuid, {headers} )
@@ -82,7 +84,9 @@ export class CountryDetailComponent implements OnInit {
       }
 
       this.getCountryLanguages();
+      this.SpinnerService.hide();
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
@@ -103,16 +107,19 @@ export class CountryDetailComponent implements OnInit {
 
   // Save country
   async saveCountry() {
+    this.SpinnerService.show();
     this.errorsDescriptions = [];
 
     //Check if entered the identifier
     if (!this.formData.identifier) {
       this.errorsDescriptions.push(this.translate.instant('Please, enter the country identifier'));
+      this.SpinnerService.hide();
     }
 
     //Check if entered the status
     if (!this.formData.completed) {
       this.errorsDescriptions.push(this.translate.instant('Please, select the status (completed or not completed)'));
+      this.SpinnerService.hide();
     }
 
     //Check if entered all the languages
@@ -125,6 +132,7 @@ export class CountryDetailComponent implements OnInit {
 
     if (validate === 0) {
       this.errorsDescriptions.push(this.translate.instant('Please, enter the country name in each language'));
+      this.SpinnerService.hide();
     }
 
     //Check if there are no errors
@@ -150,9 +158,10 @@ export class CountryDetailComponent implements OnInit {
         this.http.patch(environment.apiUrl + environment.apiPort + "/countries/" + this.uuid, postParams, {headers} )
         .subscribe(async data => {
           await this.saveCountryLanguages();
-
+          this.SpinnerService.hide();
           this.router.navigateByUrl('/countries');
         }, error => {
+          this.SpinnerService.hide();
           this.showExceptionMessage(error);
         });
       } else {
@@ -161,13 +170,15 @@ export class CountryDetailComponent implements OnInit {
         .subscribe(async data => {
           this.uuid = data.idCountry;
           await this.saveCountryLanguages();
-          
+          this.SpinnerService.hide();
           this.router.navigateByUrl('/countries');
         }, error => {
+          this.SpinnerService.hide();
           this.showExceptionMessage(error);
         });
       }
     } else {
+      this.SpinnerService.hide();
       //Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
@@ -204,12 +215,15 @@ export class CountryDetailComponent implements OnInit {
 
   // Delete country
   deleteCountry(idCountry) {
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.delete(environment.apiUrl + environment.apiPort + "/countries/" + idCountry, {headers} )
     .subscribe(data => {
+      this.SpinnerService.hide();
       this.router.navigateByUrl('/countries');
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }

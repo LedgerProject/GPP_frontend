@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MessageException, QuickSearch, Icon } from '../../services/models';
 import { environment } from '../../../environments/environment';
-
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-icon',
   templateUrl: './icon.component.html',
@@ -25,7 +25,8 @@ export class IconComponent implements OnInit {
     private router: Router,
     private http:HttpClient,
     public userdata: UserdataService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.token = localStorage.getItem('token');
     this.filteredIcons = [];
@@ -41,6 +42,7 @@ export class IconComponent implements OnInit {
 
   // Icons list
   async loadIcons() {
+    this.SpinnerService.show();
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -61,9 +63,11 @@ export class IconComponent implements OnInit {
     // HTTP Request
     this.http.get<Array<Icon>>(environment.apiUrl + environment.apiPort + "/icons?filter=" + filter, {headers})
     .subscribe(data=> {
+      this.SpinnerService.hide();
       this.allIcons = data;
       this.filteredIcons = data;
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
@@ -91,7 +95,7 @@ export class IconComponent implements OnInit {
     this.router.navigateByUrl('icon-details/' + id);
   }
 
-  
+
 
   //Exception message
   showExceptionMessage(error: HttpErrorResponse) {

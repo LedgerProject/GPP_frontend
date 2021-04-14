@@ -9,7 +9,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MessageException, MessageError, Icon } from '../../services/models';
 import { environment } from '../../../environments/environment';
-
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-icon-detail',
   templateUrl: './icon-detail.component.html',
@@ -34,7 +34,8 @@ export class IconDetailComponent implements OnInit {
     private _Activatedroute:ActivatedRoute,
     private http:HttpClient,
     public translate: TranslateService,
-    public userdata: UserdataService
+    public userdata: UserdataService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.token = localStorage.getItem('token');
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
@@ -65,10 +66,12 @@ export class IconDetailComponent implements OnInit {
 
   // Get icon details
   async getIcon() {
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.get<Icon>(environment.apiUrl + environment.apiPort + "/icons/" + this.uuid, {headers} )
     .subscribe(data=> {
+      this.SpinnerService.hide();
       this.icon = data;
 
       if (this.icon) {
@@ -77,12 +80,14 @@ export class IconDetailComponent implements OnInit {
         });
       }
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
 
   // Save icon
   saveIcon() {
+    this.SpinnerService.show();
     let name = this.uploadForm.controls.name.value;
     let image = this.uploadForm.controls.image.value;
     let marker = this.uploadForm.controls.marker.value;
@@ -92,16 +97,19 @@ export class IconDetailComponent implements OnInit {
     //Check if entered the name
     if (!name) {
       this.errorsDescriptions.push(this.translate.instant('Please, enter the icon name'));
+      this.SpinnerService.hide();
     }
 
     //Check if entered the image
     if (!image && !this.uuid) {
       this.errorsDescriptions.push(this.translate.instant('Please, select the image file'));
+      this.SpinnerService.hide();
     }
 
     //Check if entered the marker
     if (!marker && !this.uuid) {
       this.errorsDescriptions.push(this.translate.instant('Please, select the marker file'));
+      this.SpinnerService.hide();
     }
 
     //Check if there are no errors
@@ -117,8 +125,10 @@ export class IconDetailComponent implements OnInit {
 
         this.http.post(environment.apiUrl + environment.apiPort + "/icons/" + name, formData, {headers} )
         .subscribe(data => {
+          this.SpinnerService.hide();
           this.router.navigateByUrl('/icons');
         }, error => {
+          this.SpinnerService.hide();
           let code = error.status;
 
           switch (code) {
@@ -138,12 +148,15 @@ export class IconDetailComponent implements OnInit {
 
         this.http.patch(environment.apiUrl + environment.apiPort + "/icons/" + this.uuid, postParams, {headers} )
         .subscribe(data=> {
+          this.SpinnerService.hide();
           this.router.navigateByUrl('/icons');
         }, error => {
+          this.SpinnerService.hide();
           this.showExceptionMessage(error);
         });
       }
     } else {
+      this.SpinnerService.hide();
       //Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
@@ -174,6 +187,7 @@ export class IconDetailComponent implements OnInit {
 
   // Select icon image (patch phase)
   imageSelectPatch(event) {
+    this.SpinnerService.show();
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
 
@@ -188,9 +202,11 @@ export class IconDetailComponent implements OnInit {
 
       this.http.patch(environment.apiUrl + environment.apiPort + "/icons/" + this.uuid + "/image/image", formData, {headers} )
       .subscribe(data => {
+        this.SpinnerService.hide();
         this.getIcon();
         this.modalInfo.show();
       }, error => {
+        this.SpinnerService.hide();
         let code = error.status;
 
         switch (code) {
@@ -203,11 +219,14 @@ export class IconDetailComponent implements OnInit {
           break;
         }
       });
+    } else {
+      this.SpinnerService.hide();
     }
   }
 
   // Select icon marker (patch phase)
   onMarkerPatchSelect(event) {
+    this.SpinnerService.show();
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
 
@@ -222,9 +241,11 @@ export class IconDetailComponent implements OnInit {
 
       this.http.patch(environment.apiUrl + environment.apiPort + "/icons/" + this.uuid + "/image/marker", formData, {headers} )
       .subscribe(data => {
+        this.SpinnerService.hide();
         this.getIcon();
         this.modalInfo.show();
       }, error => {
+        this.SpinnerService.hide();
         let code = error.status;
 
         switch (code) {
@@ -237,17 +258,22 @@ export class IconDetailComponent implements OnInit {
           break;
         }
       });
+    } else {
+      this.SpinnerService.hide();
     }
   }
 
   // Delete icon
   deleteIcon(idIcon) {
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.delete(environment.apiUrl + environment.apiPort + "/icons/" + idIcon, {headers} )
     .subscribe(data=> {
+      this.SpinnerService.hide();
       this.router.navigateByUrl('/icons');
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }

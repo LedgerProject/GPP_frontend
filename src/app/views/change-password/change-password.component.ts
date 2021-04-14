@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MessageException, MessageError } from '../../services/models';
+import { NgxSpinnerService } from "ngx-spinner";
 interface ChangePassword {
   currentPassword: string;
   newPassword: string;
@@ -29,7 +30,8 @@ export class ChangePasswordComponent implements OnInit {
   constructor (
     private router: Router,
     private http:HttpClient,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private SpinnerService: NgxSpinnerService
     ) {
     this.formData = {
       currentPassword: '',
@@ -45,26 +47,31 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   async changePassword() {
+    this.SpinnerService.show();
     if (this.formData.currentPassword.length == 0) {
       this.showErrorMessage(
         this.translate.instant('Missing Current Password'),
         this.translate.instant('Current Password is empty')
       );
+      this.SpinnerService.hide();
     } else if (this.formData.newPassword.length == 0) {
       this.showErrorMessage(
         this.translate.instant('Missing New Password'),
         this.translate.instant('New Password is empty')
       );
+      this.SpinnerService.hide();
     } else if (this.formData.confirmNewPassword.length == 0) {
       this.showErrorMessage(
         this.translate.instant('Missing Confirm New Password'),
         this.translate.instant('Confirm New Password is empty')
       );
+      this.SpinnerService.hide();
     } else if (this.formData.confirmNewPassword != this.formData.newPassword) {
       this.showErrorMessage(
         this.translate.instant('Passwords not match'),
         this.translate.instant('New Password does not match New Password Confirm')
       );
+      this.SpinnerService.hide();
     } else {
 
       let postParams = {
@@ -76,6 +83,7 @@ export class ChangePasswordComponent implements OnInit {
       // HTTP Request
       this.http.post(environment.apiUrl + environment.apiPort + "/user/change-password",postParams, {headers})
       .subscribe(data => {
+        this.SpinnerService.hide();
         var response: any = data;
         var response_code: number = parseInt(response.changePasswordOutcome.code);
         var response_message = response.changePasswordOutcome.message;
@@ -107,6 +115,7 @@ export class ChangePasswordComponent implements OnInit {
         }
 
       }, error => {
+        this.SpinnerService.hide();
         let code = error.status;
         if (code == 401) {
           this.showErrorMessage(

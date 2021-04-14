@@ -1,3 +1,4 @@
+<ngx-spinner size="default" type="ball-spin-clockwise"><p>{{ 'Please wait...' | translate }} </p></ngx-spinner>
 <div class="animated fadeIn">
   <div class="row">
     <div class="col-md-12 col-lg-8 mx-auto">
@@ -5,18 +6,18 @@
         <div class="card-body">
           <!-- Information -->
           <h1 class="mt-4">{{ 'Create Organization' | translate }}</h1>
-          <p>{{ 'In this section you can create your own organization.' | translate }}</p> 
-          
+          <p>{{ 'In this section you can create your own organization.' | translate }}</p>
+
           <!-- Form -->
           <form  #form="ngForm" (ngSubmit)="saveOrganization()">
             <!-- Organization name -->
             <div class="form-group">
               <label>{{ 'Insert the name of your organization' | translate }}</label>
-              <div class="input-group mb-3">  
+              <div class="input-group mb-3">
                 <input type="text" name="name" [(ngModel)]="formData.name" id="name" class="form-control" required>
               </div>
-            </div>          
-          
+            </div>
+
             <!-- Save button -->
             <div class="row">
               <div class="col-12 text-right">
@@ -29,7 +30,7 @@
     </div>
   </div>
 </div>
-  
+
 <!-- Modal entering data error -->
 <div bsModal #modalError="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalErrorLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">

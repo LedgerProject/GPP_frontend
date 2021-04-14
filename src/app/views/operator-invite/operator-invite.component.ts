@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MessageException, MessageError, User } from '../../services/models';
+import { NgxSpinnerService } from "ngx-spinner";
 interface OperatorInvitation {
   email: '';
   textInvitation: '';
@@ -46,7 +47,8 @@ export class OperatorInviteComponent implements OnInit {
   constructor (
     private router: Router,
     private http:HttpClient,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.formData = {
       email: '',
@@ -77,21 +79,25 @@ export class OperatorInviteComponent implements OnInit {
 
   // Invite operator
   async inviteOperator() {
+    this.SpinnerService.show();
     if (this.formData.textInvitation.length == 0) {
       this.showErrorMessage(
         this.translate.instant('Missing Invitation text'),
         this.translate.instant('Invitation text is empty.')
       );
+      this.SpinnerService.hide();
     } else if (this.idUser == '') {
       this.showErrorMessage(
         this.translate.instant('Missing Operator'),
         this.translate.instant('Please Select an Operator')
       );
+      this.SpinnerService.hide();
     } else if (this.permissions == '') {
       this.showErrorMessage(
         this.translate.instant('Missing Permissions'),
         this.translate.instant('Please Check Permissions')
       );
+      this.SpinnerService.hide();
     } else {
       let postParams = {
         idUser: this.idUser,
@@ -103,6 +109,7 @@ export class OperatorInviteComponent implements OnInit {
       // HTTP Request
       this.http.post(environment.apiUrl + environment.apiPort + "/user/invite-organization",postParams, {headers})
       .subscribe(data => {
+        this.SpinnerService.hide();
         this.modalInfo.show();
         //reset forms
         this.formData.textInvitation = '';
@@ -117,6 +124,7 @@ export class OperatorInviteComponent implements OnInit {
         this.results = [];
 
       }, error => {
+        this.SpinnerService.hide();
         this.showExceptionMessage(error);
       });
 
@@ -126,6 +134,7 @@ export class OperatorInviteComponent implements OnInit {
 
   // Search operator
   async searchOperator(event) {
+    this.SpinnerService.show();
     //if (event.key === "Backspace") {
       this.string_match = '';
       this.idUser = '';
@@ -138,6 +147,7 @@ export class OperatorInviteComponent implements OnInit {
       // HTTP Request
       this.http.get<Array<User>>(environment.apiUrl + environment.apiPort + "/users/invite/" + findOperator + "/10", {headers})
       .subscribe(data => {
+        this.SpinnerService.hide();
         this.isSearching = false;
         let data_without_idUser: any = data;
         data_without_idUser.forEach( (element,index) => {
@@ -147,11 +157,13 @@ export class OperatorInviteComponent implements OnInit {
         });
         this.results = data_without_idUser;
       }, error => {
+        this.SpinnerService.hide();
         this.showExceptionMessage(error);
       });
 
 
     } else {
+      this.SpinnerService.hide();
       this.isSearching = false;
       this.results = [];
     }

@@ -5,7 +5,7 @@ import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MessageException, TokenCredential } from '../../services/models';
 import { environment } from '../../../environments/environment';
-
+import { NgxSpinnerService } from "ngx-spinner";
 interface FormData {
   email: string;
   password: string;
@@ -23,7 +23,8 @@ export class SigninComponent implements OnInit {
     private router: Router,
     private http:HttpClient,
     public userdata: UserdataService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.formData = {
       email: '',
@@ -37,6 +38,7 @@ export class SigninComponent implements OnInit {
 
   // Sign in
   async signIn() {
+    this.SpinnerService.show();
     let tryLogin = true;
     let email = this.formData.email;
     let password = this.formData.password;
@@ -50,6 +52,7 @@ export class SigninComponent implements OnInit {
       };
 
       tryLogin = false;
+      this.SpinnerService.hide();
     }
 
     if (password.length < 8) {
@@ -61,6 +64,7 @@ export class SigninComponent implements OnInit {
       };
 
       tryLogin = false;
+      this.SpinnerService.hide();
     }
 
     if (tryLogin) {
@@ -74,8 +78,10 @@ export class SigninComponent implements OnInit {
       this.http.post<TokenCredential>(environment.apiUrl + environment.apiPort + "/users/login", postParams, {headers})
       .subscribe(data => {
         localStorage.setItem('token', data.token);
+        this.SpinnerService.hide();
         this.router.navigateByUrl('wallet');
       }, error => {
+        this.SpinnerService.hide();
         switch (error.status) {
           case 401:
             this.messageException = {

@@ -6,7 +6,7 @@ import { UserdataService } from '../../services/userdata.service';
 import { QuickSearch, MessageException, MessageError, TokenCredential, Document } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-wallet',
   templateUrl: './wallet.component.html',
@@ -35,7 +35,8 @@ export class WalletComponent implements OnInit {
     private router: Router,
     public translate: TranslateService,
     private http:HttpClient,
-    public userdata: UserdataService
+    public userdata: UserdataService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.token = localStorage.getItem('token');
     this.userType = localStorage.getItem('userType');
@@ -62,6 +63,7 @@ export class WalletComponent implements OnInit {
 
   // Check token inserted
   async checkToken() {
+    this.SpinnerService.show();
     this.errorsDescriptions = [];
 
     //Check if entered the token
@@ -80,11 +82,13 @@ export class WalletComponent implements OnInit {
 
       this.http.get<Document>(environment.apiUrl + environment.apiPort + "/documents/operator/" + this.formData.token, {headers} )
       .subscribe(data => {
+        this.SpinnerService.hide();
         localStorage.setItem('documents', JSON.stringify(data));
         localStorage.setItem('tokenWallet', this.formData.token);
         this.router.navigateByUrl('wallet-documents');
       }, error => {
-        console.log(error);
+        this.SpinnerService.hide();
+        //console.log(error);
         let code = error.status;
 
         switch (code) {
@@ -101,6 +105,7 @@ export class WalletComponent implements OnInit {
         }
       });
     } else {
+      this.SpinnerService.hide();
       //Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
@@ -123,6 +128,7 @@ export class WalletComponent implements OnInit {
   }
 
   generateToken() {
+    this.SpinnerService.show();
     //Check if there are no errors
     this.checkedIDs = [];
     this.allDocuments.forEach((value, index) => {
@@ -135,19 +141,22 @@ export class WalletComponent implements OnInit {
         this.translate.instant('No Document Selected'),
         this.translate.instant('Please select at least one Document')
       );
+      this.SpinnerService.hide();
       return false;
     }
     //
-    console.log(this.checkedIDs);
+    //console.log(this.checkedIDs);
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
       this.http.post(environment.apiUrl + environment.apiPort + "/users-token",{}, {headers} )
       .subscribe(data => {
+        this.SpinnerService.hide();
         let token_data: any = data;
         this.generated_token = token_data.token;
         this.modalInfo.show();
       }, error => {
-        console.log(error);
+        this.SpinnerService.hide();
+        //console.log(error);
         this.showExceptionMessage(error);
       });
     }
@@ -160,11 +169,13 @@ export class WalletComponent implements OnInit {
     }
     //User Documents
     loadPersonalDocuments() {
+      this.SpinnerService.show();
       this.allDocuments = [];
 
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
       this.http.get<Document>(environment.apiUrl + environment.apiPort + "/documents", {headers} )
       .subscribe(data => {
+        this.SpinnerService.hide();
         localStorage.setItem('documents', JSON.stringify(data));
         let documents: any = data;
         this.allDocuments = documents;
@@ -185,6 +196,7 @@ export class WalletComponent implements OnInit {
         }
         this.filteredDocuments = this.allDocuments;
       }, error => {
+        this.SpinnerService.hide();
         //let code = error.status;
         this.showExceptionMessage(error);
       });
@@ -216,12 +228,15 @@ export class WalletComponent implements OnInit {
   }
 
   async getPersonalFile(uuid, type, title) {
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
     this.http.get(environment.apiUrl + environment.apiPort + "/documents/" + uuid, {headers, responseType: 'arraybuffer'} )
     .subscribe(data=> {
+      this.SpinnerService.hide();
       this.blob = data;
       this.downloadFile(data, type, title);
     }, error => {
+      this.SpinnerService.hide();
       //console.log(error);
       alert( this.translate.instant('Invalid Token') );
     });

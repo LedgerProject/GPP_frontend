@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angula
 import { MessageException } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
-
+import { NgxSpinnerService } from "ngx-spinner";
 interface ForgotPassword {
   email: string;
 }
@@ -23,7 +23,8 @@ export class ForgotpasswordComponent implements OnInit {
   constructor (
     private router: Router,
     private http:HttpClient,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.formData = {
       email: ''
@@ -45,6 +46,7 @@ export class ForgotpasswordComponent implements OnInit {
 
   // Request change password
   async requestChangePassword() {
+    this.SpinnerService.show();
     let email = this.formData.email;
 
     if (!email) {
@@ -54,6 +56,7 @@ export class ForgotpasswordComponent implements OnInit {
         statusText : this.translate.instant('Specify access data'),
         message : this.translate.instant('Enter your email')
       };
+      this.SpinnerService.hide();
     } else {
 
       // this.user_type = 'user';
@@ -67,7 +70,8 @@ export class ForgotpasswordComponent implements OnInit {
 
       this.http.post(environment.apiUrl + environment.apiPort + "/user/reset-password", postParams, {headers})
       .subscribe(data => {
-        console.log(data);
+        //console.log(data);
+        this.SpinnerService.hide();
         var response: any = data;
 
         var response_code: number = parseInt(response.resetPasswordOutcome.code);
@@ -131,9 +135,12 @@ export class ForgotpasswordComponent implements OnInit {
 
 
       }, error => {
+        this.SpinnerService.hide();
         this.messageException = error;
         this.alert_class = 'danger';
       });
+     } else {
+      this.SpinnerService.hide();
      }
     }
   }

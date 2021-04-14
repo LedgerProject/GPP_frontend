@@ -5,7 +5,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MessageException, MessageError, User } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
-
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-my-profile',
   templateUrl: './my-profile.component.html',
@@ -29,7 +29,8 @@ export class MyProfileComponent implements OnInit {
 
   constructor (
     private http:HttpClient,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private SpinnerService: NgxSpinnerService
     ) {
     this.token = localStorage.getItem('token');
     this.lang = localStorage.getItem('current_lang');
@@ -75,32 +76,37 @@ export class MyProfileComponent implements OnInit {
 
   // Get operator details
   async getOperator() {
-
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     // HTTP Request
     this.http.get<Array<User>>(environment.apiUrl + environment.apiPort + "/users/" + this.idUser, {headers})
     .subscribe(data => {
+      this.SpinnerService.hide();
       this.formData = data;
       let bday = this.formData.birthday;
       this.formData.birthday = bday.substr(0,10);
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
 
   // Save profile data
   async saveProfile() {
+    this.SpinnerService.show();
     if (this.formData.firstName.length == 0) {
       this.showErrorMessage(
         this.translate.instant('Missing First Name'),
         this.translate.instant('First Name is empty')
       );
+      this.SpinnerService.hide();
     } else if (this.formData.lastName.length == 0) {
       this.showErrorMessage(
         this.translate.instant('Missing Last Name'),
         this.translate.instant('Last Name is empty')
       );
+      this.SpinnerService.hide();
     } else {
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
       let postParams = {
@@ -121,8 +127,10 @@ export class MyProfileComponent implements OnInit {
       }
       this.http.patch(environment.apiUrl + environment.apiPort + "/users/" + this.idUser, postParams ,{headers})
       .subscribe(data => {
+        this.SpinnerService.hide();
         this.modalInfo.show();
       }, error => {
+        this.SpinnerService.hide();
         this.showExceptionMessage(error);
       });
     }
@@ -130,6 +138,7 @@ export class MyProfileComponent implements OnInit {
 
   // Remove operator from team
   async removeOperatorFromTeam() {
+    this.SpinnerService.show();
     let postParams = {
       idUser: this.idUser
     };
@@ -137,6 +146,7 @@ export class MyProfileComponent implements OnInit {
     // HTTP Request
     this.http.post(environment.apiUrl + environment.apiPort + "/user/remove-organization",postParams, {headers})
     .subscribe(data => {
+      this.SpinnerService.hide();
       var response: any = data;
 
       var response_code: number = parseInt(response.removeOrganizationUserOutcome.code);
@@ -183,13 +193,16 @@ export class MyProfileComponent implements OnInit {
           break;
       }
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
 
   // Remove All Data
   async removeAllData() {
+    this.SpinnerService.show();
     console.log('remove all data');
+    this.SpinnerService.hide();
   }
 
   //Error message

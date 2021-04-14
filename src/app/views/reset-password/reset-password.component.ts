@@ -5,7 +5,7 @@ import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MessageException } from '../../services/models';
 import { environment } from '../../../environments/environment';
-
+import { NgxSpinnerService } from "ngx-spinner";
 interface ResetPassword {
   newPassword: string;
   confirmNewPassword: string;
@@ -26,7 +26,8 @@ export class ResetPasswordComponent implements OnInit {
     private http:HttpClient,
     public userdata: UserdataService,
     public translate: TranslateService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.messageException = environment.messageExceptionInit;
     this.route.queryParams.subscribe(params => {
@@ -44,7 +45,7 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   async requestResetPassword() {
-
+    this.SpinnerService.show();
     if (this.formData.newPassword.length == 0) {
       this.messageException = {
         name : '',
@@ -53,6 +54,7 @@ export class ResetPasswordComponent implements OnInit {
         message : this.translate.instant('New Password is empty')
       };
       this.alert_class = 'warning';
+      this.SpinnerService.hide();
     } else if (this.formData.confirmNewPassword.length == 0) {
       this.messageException = {
         name : '',
@@ -61,6 +63,7 @@ export class ResetPasswordComponent implements OnInit {
         message : this.translate.instant('Confirm New Password is empty')
       };
       this.alert_class = 'warning';
+      this.SpinnerService.hide();
     } else if (this.formData.confirmNewPassword != this.formData.newPassword) {
       this.messageException = {
         name : '',
@@ -69,6 +72,7 @@ export class ResetPasswordComponent implements OnInit {
         message : this.translate.instant('New Password does not match New Password Confirm')
       };
       this.alert_class = 'warning';
+      this.SpinnerService.hide();
     } else {
 
     let postParams = {
@@ -80,6 +84,7 @@ export class ResetPasswordComponent implements OnInit {
 
     this.http.post(environment.apiUrl + environment.apiPort + "/user/confirm-reset-password", postParams, {headers})
     .subscribe(data => {
+      this.SpinnerService.hide();
       var response: any = data;
       var response_code: number = parseInt(response.confirmResetPasswordOutcome.code);
       var response_message = response.confirmResetPasswordOutcome.message;
@@ -132,6 +137,7 @@ export class ResetPasswordComponent implements OnInit {
       }
 
     }, error => {
+      this.SpinnerService.hide();
       this.alert_class = 'danger';
       this.messageException = error;
     });

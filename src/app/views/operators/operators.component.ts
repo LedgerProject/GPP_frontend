@@ -5,7 +5,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MessageException, QuickSearch, User } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
-
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-operators',
   templateUrl: './operators.component.html',
@@ -30,6 +30,7 @@ export class OperatorsComponent implements OnInit {
     private router: Router,
     private http:HttpClient,
     public translate: TranslateService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.token = localStorage.getItem('token');
     this.idOrganization = localStorage.getItem('idOrganization');
@@ -59,6 +60,7 @@ export class OperatorsComponent implements OnInit {
 
   // Operators list
   async loadOperators(lastName = null, firstName = null, email = null) {
+    this.SpinnerService.show();
     /*this.http.get<Array<User>>("assets/api/operators.json")
     .subscribe(data => {
       this.allOperators = data;
@@ -121,6 +123,7 @@ export class OperatorsComponent implements OnInit {
     // HTTP Request
     this.http.get<Array<User>>(environment.apiUrl + environment.apiPort + "/users?filter=" + filter, {headers})
     .subscribe(data => {
+      this.SpinnerService.hide();
       let data_without_idUser: any = data;
       data_without_idUser.forEach( (element,index) => {
         if (element.idUser == this.idUser) {
@@ -130,6 +133,7 @@ export class OperatorsComponent implements OnInit {
       this.allOperators = data_without_idUser;
       this.filteredOperators = this.allOperators;
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
 

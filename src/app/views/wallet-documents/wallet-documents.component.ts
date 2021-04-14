@@ -6,6 +6,7 @@ import { UserdataService } from '../../services/userdata.service';
 import { QuickSearch, MessageException, MessageError, TokenCredential, Document } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-wallet-documents',
   templateUrl: './wallet-documents.component.html',
@@ -29,7 +30,8 @@ export class WalletDocumentsComponent implements OnInit {
     private router: Router,
     public translate: TranslateService,
     private http:HttpClient,
-    public userdata: UserdataService
+    public userdata: UserdataService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.formSearch = { search: '' };
     this.filteredDocuments = [];
@@ -50,11 +52,13 @@ export class WalletDocumentsComponent implements OnInit {
 
   // Documents list
   loadPersonalDocuments() {
+    this.SpinnerService.show();
     this.allDocuments = [];
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
     this.http.get<Document>(environment.apiUrl + environment.apiPort + "/documents", {headers} )
     .subscribe(data => {
+      this.SpinnerService.hide();
       localStorage.setItem('documents', JSON.stringify(data));
       let documents: any = data;
       this.allDocuments = documents;
@@ -74,6 +78,7 @@ export class WalletDocumentsComponent implements OnInit {
       }
       this.filteredDocuments = this.allDocuments;
     }, error => {
+      this.SpinnerService.hide();
       //let code = error.status;
       this.showExceptionMessage(error);
     });
@@ -82,6 +87,7 @@ export class WalletDocumentsComponent implements OnInit {
 
   // Documents list
   loadDocuments() {
+    this.SpinnerService.show();
     this.allDocuments = JSON.parse(localStorage.getItem('documents'));
     if (!this.allDocuments) {
       this.allDocuments = [];
@@ -100,7 +106,7 @@ export class WalletDocumentsComponent implements OnInit {
       x++;
     });
     }
-
+    this.SpinnerService.hide();
     this.filteredDocuments = this.allDocuments;
   }
 
@@ -132,12 +138,15 @@ export class WalletDocumentsComponent implements OnInit {
   }
 
   async getPersonalFile(uuid, type, title) {
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
     this.http.get(environment.apiUrl + environment.apiPort + "/documents/" + uuid, {headers, responseType: 'arraybuffer'} )
     .subscribe(data=> {
+      this.SpinnerService.hide();
       this.blob = data;
       this.downloadFile(data, type, title);
     }, error => {
+      this.SpinnerService.hide();
       //console.log(error);
       alert( this.translate.instant('Invalid Token') );
     });

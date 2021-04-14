@@ -7,8 +7,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { SlugifyPipe } from '../../services/slugify.pipe';
 import { Language, MessageException, MessageError, Country, CountryTopic, CountryTopicLanguage } from '../../services/models';
 import { environment } from '../../../environments/environment';
-import { strict } from 'assert';
-
+import { NgxSpinnerService } from "ngx-spinner";
 interface FormData {
   'id': string;
   'lang': string;
@@ -46,6 +45,7 @@ export class CountryTopicsComponent implements OnInit {
     public translate: TranslateService,
     public userdata: UserdataService,
     private slugifyPipe: SlugifyPipe,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.token = localStorage.getItem('token');
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
@@ -73,6 +73,7 @@ export class CountryTopicsComponent implements OnInit {
 
   // Get country details
   async getCountry() {
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     // Get the country information
@@ -82,7 +83,9 @@ export class CountryTopicsComponent implements OnInit {
 
       // Get related topics
       this.getCountryTopics();
+      this.SpinnerService.hide();
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
@@ -117,7 +120,7 @@ export class CountryTopicsComponent implements OnInit {
           'title': [],
           'text': []
         };
-        
+
         //Get the language information for the current topic
         this.http.get<Array<CountryTopicLanguage>>(environment.apiUrl + environment.apiPort + "/countries-topics/" + currentTopic.idCountryTopic + '/countries-topics-languages', {headers} )
         .subscribe(dataTopicLangs => {
@@ -128,7 +131,7 @@ export class CountryTopicsComponent implements OnInit {
         }, error => {
           this.showExceptionMessage(error);
         });
-      
+
         this.formData.push(topic);
       });
 
@@ -144,9 +147,9 @@ export class CountryTopicsComponent implements OnInit {
   // Add empty topic
   async addEmptyTopic() {
     let emptyTopic:FormData = {
-      'id':'', 
-      'lang': this.currentLanguage, 
-      'title':[], 
+      'id':'',
+      'lang': this.currentLanguage,
+      'title':[],
       'text':[]
     };
 
@@ -161,6 +164,7 @@ export class CountryTopicsComponent implements OnInit {
 
   // Save Topic
   async saveTopic() {
+    this.SpinnerService.show();
     this.errorsDescriptions = [];
 
     if (this.formData) {
@@ -179,6 +183,7 @@ export class CountryTopicsComponent implements OnInit {
 
       if (validate == 0) {
         this.errorsDescriptions.push(this.translate.instant('Please, enter title and description in each language'));
+        this.SpinnerService.hide();
       }
 
       //Check if there are no errors
@@ -198,7 +203,9 @@ export class CountryTopicsComponent implements OnInit {
             this.http.patch(environment.apiUrl + environment.apiPort + "/countries-topics/" + element.id, postParams, {headers} )
             .subscribe(async data => {
               await this.saveTopicLanguages(element);
+              this.SpinnerService.hide();
             }, error => {
+              this.SpinnerService.hide();
               this.showExceptionMessage(error);
             });
           } else {
@@ -207,7 +214,9 @@ export class CountryTopicsComponent implements OnInit {
               element.id = data.idCountryTopic;
 
               await this.saveTopicLanguages(element);
+              this.SpinnerService.hide();
             }, error => {
+              this.SpinnerService.hide();
               this.showExceptionMessage(error);
             });
           }
@@ -215,6 +224,7 @@ export class CountryTopicsComponent implements OnInit {
 
         await this.modalInfo.show();
       } else {
+        this.SpinnerService.hide();
         //Missing data
         this.showErrorMessage(
           this.translate.instant('Missing data'),
@@ -252,15 +262,19 @@ export class CountryTopicsComponent implements OnInit {
 
   // Delete topic
   deleteTopic() {
+    this.SpinnerService.show();
     if (!this.topicIdDelete) {
       this.formData.splice(this.topicCounterDelete, 1);
+      this.SpinnerService.hide();
     } else {
       let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
 
       this.http.delete(environment.apiUrl + environment.apiPort + "/countries-topics/" + this.topicIdDelete, {headers} )
       .subscribe(data => {
+        this.SpinnerService.hide();
         this.formData.splice(this.topicCounterDelete, 1);
       }, error => {
+        this.SpinnerService.hide();
         this.showExceptionMessage(error);
       });
     }

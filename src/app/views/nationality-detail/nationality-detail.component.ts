@@ -7,7 +7,7 @@ import { SlugifyPipe } from '../../services/slugify.pipe';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Language, MessageException, MessageError, Nationality, NationalityLanguage } from '../../services/models';
 import { environment } from '../../../environments/environment';
-
+import { NgxSpinnerService } from "ngx-spinner";
 interface FormData {
   identifier: string;
   title: string[];
@@ -32,7 +32,7 @@ export class NationalityDetailComponent implements OnInit {
   errorsDescriptions: string[];
   @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
-  
+
   name_langs: any;
 
   constructor (
@@ -42,6 +42,7 @@ export class NationalityDetailComponent implements OnInit {
     public translate: TranslateService,
     public userdata: UserdataService,
     private slugifyPipe: SlugifyPipe,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.token = localStorage.getItem('token');
     this.uuid = this._Activatedroute.snapshot.paramMap.get('uuid');
@@ -54,7 +55,7 @@ export class NationalityDetailComponent implements OnInit {
       identifier: '',
       title: []
     };
-    
+
     this.name_langs = [];
   }
 
@@ -67,10 +68,12 @@ export class NationalityDetailComponent implements OnInit {
 
   // Get nationality details
   async getNationality() {
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.get<Nationality>(environment.apiUrl + environment.apiPort + "/nationalities/" + this.uuid, {headers} )
     .subscribe(dataNationality => {
+      this.SpinnerService.hide();
       this.nationality = dataNationality;
 
       if (this.nationality) {
@@ -79,6 +82,7 @@ export class NationalityDetailComponent implements OnInit {
         this.getNationalityLanguages();
       }
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }
@@ -99,11 +103,13 @@ export class NationalityDetailComponent implements OnInit {
 
   // Save nationality
   async saveNationality() {
+    this.SpinnerService.show();
     this.errorsDescriptions = [];
 
     //Check if entered the identifier
     if (!this.formData.identifier) {
       this.errorsDescriptions.push(this.translate.instant('Please, enter the nationality identifier'));
+      this.SpinnerService.hide();
     }
 
     //Check if entered all the languages
@@ -116,6 +122,7 @@ export class NationalityDetailComponent implements OnInit {
 
     if (validate === 0) {
       this.errorsDescriptions.push(this.translate.instant('Please, enter the nationality name in each language'));
+      this.SpinnerService.hide();
     }
 
     //Check if there are no errors
@@ -132,25 +139,30 @@ export class NationalityDetailComponent implements OnInit {
         //Update the nationality
         this.http.patch(environment.apiUrl + environment.apiPort + "/nationalities/" + this.uuid, postParams, {headers} )
         .subscribe(async data => {
+          this.SpinnerService.hide();
           await this.saveNationalityLanguages();
 
           this.router.navigateByUrl('/nationalities');
         }, error => {
+          this.SpinnerService.hide();
           this.showExceptionMessage(error);
         });
       } else {
         //Insert the nationality
         this.http.post<Nationality>(environment.apiUrl + environment.apiPort + "/nationalities/",postParams, {headers} )
         .subscribe(async data => {
+          this.SpinnerService.hide();
           this.uuid = data.idNationality;
           await this.saveNationalityLanguages();
 
           this.router.navigateByUrl('/nationalities');
         }, error => {
+          this.SpinnerService.hide();
           this.showExceptionMessage(error);
         });
       }
     } else {
+      this.SpinnerService.hide();
       //Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
@@ -187,12 +199,15 @@ export class NationalityDetailComponent implements OnInit {
 
   // Delete nationality
   deleteNationality(idNationality) {
+    this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.delete(environment.apiUrl + environment.apiPort + "/nationalities/" + idNationality, {headers} )
     .subscribe(data=> {
+      this.SpinnerService.hide();
       this.router.navigateByUrl('/nationalities');
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }

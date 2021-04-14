@@ -1,3 +1,4 @@
+<ngx-spinner size="default" type="ball-spin-clockwise"><p>{{ 'Please wait...' | translate }} </p></ngx-spinner>
 <div class="animated fadeIn">
   <div class="row">
     <div class="col-md-12 col-lg-8 mx-auto">
@@ -37,7 +38,7 @@
                     <label [hidden]="topic.lang != language.value">{{ 'Topic title' | translate }} {{counter + 1}} ({{language.name}})</label>
                     <div class="input-group mb-3" [hidden]="topic.lang != language.value">
                       <input type="text" name="title[{{counter}}][{{language.value}}]" [(ngModel)]="topic.title[language.value]" class="form-control" placeholder="{{'Enter topic title' | translate }}">
-                      
+
                       <!-- Delete button -->
                       <button type="button" class="btn btn-danger rounded-0" (click)="showDeleteMessage(counter, topic.id)">{{ 'Delete' | translate}}</button>
                     </div>
@@ -54,7 +55,7 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- Add topic and save buttons -->
             <div class="row">
               <div class="col-6 text-left">

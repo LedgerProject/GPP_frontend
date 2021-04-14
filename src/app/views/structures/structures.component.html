@@ -1,3 +1,4 @@
+<ngx-spinner size="default" type="ball-spin-clockwise"><p>{{ 'Please wait...' | translate }} </p></ngx-spinner>
 <div class="animated fadeIn">
   <div class="row">
     <div class="col-md-12 col-lg-8 mx-auto">
@@ -36,21 +37,28 @@
           <div class="table-responsive">
             <table class="table table-hover" *ngIf='filteredStructures.length'>
               <thead>
+                <th></th>
                 <th class="text-center">{{ 'Icon' | translate }}</th>
                 <th>{{ 'Name' | translate }}</th>
                 <th>{{ 'Address' | translate }}</th>
                 <th>{{ 'E-Mail' | translate }}</th>
               </thead>
               <tbody>
-                <tr class="pointer" *ngFor="let structure of filteredStructures" (click)="structureDetails(structure.idStructure)">
-                  <td class="text-center">
+                <tr class="pointer" *ngFor="let structure of filteredStructures">
+                  <td><label class="checkbox-container"><input type="checkbox" class="form-checkbox" [(ngModel)]="structure.isChecked" (change)="changeSelection()"></label></td>
+                  <td class="text-center" (click)="structureDetails(structure.idStructure)">
                     <img class="icon-list" [src]="'data:image/png;base64,' + structure.iconimage">
                   </td>
-                  <td>{{structure.structurename}}</td>
-                  <td>{{structure.address}} - {{structure.city}}</td>
-                  <td>{{structure.email}}</td>
+                  <td (click)="structureDetails(structure.idStructure)">{{structure.structurename}}</td>
+                  <td (click)="structureDetails(structure.idStructure)">{{structure.address}} - {{structure.city}}</td>
+                  <td (click)="structureDetails(structure.idStructure)">{{structure.email}}</td>
                 </tr>
               </tbody>
+              <tfoot *ngIf='checkedIDs.length'>
+                <tr>
+                  <td colspan="10"><button class="btn btn-danger rounded-0" type="button" (click)="deleteMultiple()" >{{ 'Delete' | translate }}</button></td>
+                </tr>
+              </tfoot>
             </table>
           </div>
 

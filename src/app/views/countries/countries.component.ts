@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MessageException, QuickSearch, Country } from '../../services/models';
 import { environment } from '../../../environments/environment';
-
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-countries',
   templateUrl: './countries.component.html',
@@ -25,7 +25,8 @@ export class CountriesComponent implements OnInit {
     private router: Router,
     private http:HttpClient,
     public userdata: UserdataService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.token = localStorage.getItem('token');
     this.filteredCountries = [];
@@ -41,6 +42,7 @@ export class CountriesComponent implements OnInit {
 
   // Countries list
   async loadCountries() {
+    this.SpinnerService.show();
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -62,9 +64,11 @@ export class CountriesComponent implements OnInit {
     // HTTP Request
     this.http.get<Array<Country>>(environment.apiUrl + environment.apiPort + "/countries?filter=" + filter, {headers})
     .subscribe(data => {
+      this.SpinnerService.hide();
       this.allCountries = data;
       this.filteredCountries = data;
     }, error => {
+      this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
   }

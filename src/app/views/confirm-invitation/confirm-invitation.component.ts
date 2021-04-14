@@ -5,7 +5,7 @@ import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MessageException } from '../../services/models';
 import { environment } from '../../../environments/environment';
-
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-dashboard',
   templateUrl: './confirm-invitation.component.html',
@@ -21,7 +21,8 @@ export class ConfirmInvitationComponent implements OnInit {
     private http:HttpClient,
     public userdata: UserdataService,
     public translate: TranslateService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.messageException = environment.messageExceptionInit;
     this.route.queryParams.subscribe(params => {
@@ -35,7 +36,7 @@ export class ConfirmInvitationComponent implements OnInit {
   }
 
   async confirmInvitation() {
-
+    this.SpinnerService.show();
       let postParams = {
         invitationToken: this.invitationToken,
       }
@@ -44,6 +45,7 @@ export class ConfirmInvitationComponent implements OnInit {
 
       this.http.post(environment.apiUrl + environment.apiPort + "/user/confirm-invitation", postParams, {headers})
       .subscribe(data => {
+        this.SpinnerService.hide();
         //console.log(data);
         var response: any = data;
         var response_code: number = parseInt(response.invitationOutcome.code);
@@ -97,6 +99,7 @@ export class ConfirmInvitationComponent implements OnInit {
         }
 
       }, error => {
+        this.SpinnerService.hide();
         this.alert_class = 'danger';
         this.messageException = error;
       });

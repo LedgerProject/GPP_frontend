@@ -24,6 +24,8 @@ import { P500Component } from './views/error/500.component';
 import { SigninComponent } from './views/signin/signin.component';
 import { RegisterComponent } from './views/register/register.component';
 
+import { NgxSpinnerModule } from "ngx-spinner";
+
 const APP_CONTAINERS = [
   DefaultLayoutComponent
 ];
@@ -79,7 +81,6 @@ import { IconComponent } from './views/icon/icon.component';
 import { ConfirmAccountComponent } from './views/confirm-account/confirm-account.component';
 import { ConfirmInvitationComponent } from './views/confirm-invitation/confirm-invitation.component';
 import { ResetPasswordComponent } from './views/reset-password/reset-password.component';
-
 //import { AuthGuardService } from './auth/auth-guard.service';
 
 @NgModule({
@@ -110,7 +111,8 @@ import { ResetPasswordComponent } from './views/reset-password/reset-password.co
       // please get your own API key here:
       // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en
       apiKey: 'AIzaSyAdydoW9uSTVMivrrd2fpYCCP-WjxwJyok'
-    })
+    }),
+    NgxSpinnerModule
   ],
   declarations: [
     AppComponent,

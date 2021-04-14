@@ -397,6 +397,8 @@
     "Answer 5": "Answer 5",
     "Enter last name": "Enter last name",
     "Enter first name": "Enter first name",
-    "Enter email address": "Enter email address"
-
+    "Enter email address": "Enter email address",
+    "No Structure Selected": "No Structure Selected",
+    "Please select at least one Structure": "Please select at least one Structure",
+    "Please wait...": "Please wait..."
 }

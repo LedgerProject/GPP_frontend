@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserdataService } from '../../services/userdata.service';
 import { MessageException, RegisteredUser } from '../../services/models';
 import { environment } from '../../../environments/environment';
-
+import { NgxSpinnerService } from "ngx-spinner";
 interface RegisterUser {
   firstName: string;
   lastName: string;
@@ -28,7 +28,8 @@ export class RegisterComponent implements OnInit {
   constructor (
     public translate: TranslateService,
     private http:HttpClient,
-    public userdata: UserdataService
+    public userdata: UserdataService,
+    private SpinnerService: NgxSpinnerService
   ) {
     this.formData = {
       firstName: '',
@@ -47,8 +48,9 @@ export class RegisterComponent implements OnInit {
 
   // Sign On
   async signOn() {
+    this.SpinnerService.show();
     this.signOnCompleted = false;
-    
+
     let trySignOn = true;
     let queryString = "";
     let userType = "operator";
@@ -74,6 +76,7 @@ export class RegisterComponent implements OnInit {
       };
 
       trySignOn = false;
+      this.SpinnerService.hide();
     }
 
     //Check if specified last name
@@ -86,6 +89,7 @@ export class RegisterComponent implements OnInit {
       };
 
       trySignOn = false;
+      this.SpinnerService.hide();
     }
 
     //Check if specified email
@@ -98,6 +102,7 @@ export class RegisterComponent implements OnInit {
       };
 
       trySignOn = false;
+      this.SpinnerService.hide();
     }
 
     //Check if specified password is at least 8 characters
@@ -110,6 +115,7 @@ export class RegisterComponent implements OnInit {
       };
 
       trySignOn = false;
+      this.SpinnerService.hide();
     }
 
     //Check if the confirm email matches with the email
@@ -122,6 +128,7 @@ export class RegisterComponent implements OnInit {
       };
 
       trySignOn = false;
+      this.SpinnerService.hide();
     }
 
     //Check if the confirm password matches with the password
@@ -134,6 +141,7 @@ export class RegisterComponent implements OnInit {
       };
 
       trySignOn = false;
+      this.SpinnerService.hide();
     }
 
     if (trySignOn) {
@@ -145,10 +153,11 @@ export class RegisterComponent implements OnInit {
         lastName: lastName
       }
 
-      let headers = new HttpHeaders().set("Content-Type", "application/json");        
+      let headers = new HttpHeaders().set("Content-Type", "application/json");
 
-      this.http.post<RegisteredUser>(environment.apiUrl + environment.apiPort + "/users/signup" + queryString, postParams, {headers}) 
+      this.http.post<RegisteredUser>(environment.apiUrl + environment.apiPort + "/users/signup" + queryString, postParams, {headers})
       .subscribe(data => {
+        this.SpinnerService.hide();
         if (data.idUser) {
           this.signOnCompleted = true;
         } else {
@@ -160,6 +169,7 @@ export class RegisterComponent implements OnInit {
           };
         }
       }, error => {
+        this.SpinnerService.hide();
         let code = error.status;
 
         if (code == 422) {
@@ -182,11 +192,11 @@ export class RegisterComponent implements OnInit {
             status : 101,
             statusText : this.translate.instant('Secret key is wrong'),
             message : this.translate.instant('The secret key is wrong')
-          };                 
+          };
         } else {
           this.messageException = error;
         }
-      });  
+      });
     }
-  }  
+  }
 }
