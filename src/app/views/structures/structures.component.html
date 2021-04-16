@@ -1,4 +1,9 @@
-<ngx-spinner size="default" type="ball-spin-clockwise"><p>{{ 'Please wait...' | translate }} </p></ngx-spinner>
+<ngx-spinner size="default" type="ball-spin-clockwise">
+  <p>{{ 'Please wait...' | translate }}
+    <span *ngIf="action_delete">
+      <br>{{ 'Deletion in progress.'}}
+      <br>{{ current_delete }} {{ 'of' | translate }} {{ total_delete }}</span><br>
+  </p></ngx-spinner>
 <div class="animated fadeIn">
   <div class="row">
     <div class="col-md-12 col-lg-8 mx-auto">
