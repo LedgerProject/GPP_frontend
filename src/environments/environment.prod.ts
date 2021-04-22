@@ -1,8 +1,8 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://www.globalpassportproject.org/gpp-backend',
+  apiUrl: 'https://www.gppadmin.org/gpp-backend',
   apiPort: '',
-  imagesUrl: 'https://www.globalpassportproject.org/gpp-backend',
+  imagesUrl: 'https://www.gppadmin.org/gpp-backend',
   languages: [
     {
       'name': 'English',

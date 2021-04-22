@@ -96,7 +96,7 @@
     "Not a member yet?": "Not a member yet?",
 
     "***FORGOT PASSWORD***": "***FORGOT PASSWORD***",
-    "Enter your e-mail address to recover your password.": "Enter your e-mail address to recover your password.",
+    "Select role and enter your e-mail address to recover your password.": "Select role and enter your e-mail address to recover your password.",
 
     "***CHANGE PASSWORD***": "***CHANGE PASSWORD***",
     "In this section you can modify the authentication password.": "In this section you can modify the authentication password.",
@@ -401,5 +401,15 @@
     "No Structure Selected": "No Structure Selected",
     "Please select at least one Structure": "Please select at least one Structure",
     "Please wait...": "Please wait...",
-    "of": "of"
+    "of": "of",
+    "Select Role": "Select Role",
+    "Operator": "Operator",
+    "User": "User",
+    "Enter the answers to the 3 questions you saved during registration": "Enter the answers to the 3 questions you saved during registration",
+    "Your Answer": "Your Answer",
+    "Please enter the answers to the 3 questions you saved during registration": "Please enter the answers to the 3 questions you saved during registration",
+    "Specify answers": "Specify answers",
+    "Wrong Answer": "Wrong Answer"
+
+
 }
