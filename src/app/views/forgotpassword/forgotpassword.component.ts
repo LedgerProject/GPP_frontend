@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { MessageException } from '../../services/models';
 import { environment } from '../../../environments/environment';
@@ -24,12 +24,14 @@ export class ForgotpasswordComponent implements OnInit {
   user_type: string;
   questions: any;
   pbkdf: string;
+  @Input() get_user_type: string;
 
   constructor (
     private router: Router,
     private http:HttpClient,
     public translate: TranslateService,
-    private SpinnerService: NgxSpinnerService
+    private SpinnerService: NgxSpinnerService,
+    private _Activatedroute: ActivatedRoute
   ) {
     this.formData = {
       email: '',
@@ -58,6 +60,13 @@ export class ForgotpasswordComponent implements OnInit {
   // Page init
   ngOnInit(): void {
     //console.log(getSafetyQuestions('en_GB'));
+    this.get_user_type = this._Activatedroute.snapshot.queryParamMap.get("user_type")
+    this._Activatedroute.queryParamMap.subscribe(queryParams => {
+      this.get_user_type = queryParams.get("user_type")
+    })
+    if (this.get_user_type) {
+      this.user_type = this.get_user_type;
+    }
   }
 
   // Request change password
@@ -76,7 +85,7 @@ export class ForgotpasswordComponent implements OnInit {
       };
       this.alert_class = 'danger';
       this.SpinnerService.hide();
-    } else if (!this.formData.user_type) {
+    /*} else if (!this.formData.user_type) {
       this.messageException = {
         name : '',
         status : 422,
@@ -84,9 +93,9 @@ export class ForgotpasswordComponent implements OnInit {
         message : this.translate.instant('Select Role')
       };
       this.alert_class = 'danger';
-      this.SpinnerService.hide();
+      this.SpinnerService.hide();*/
     } else {
-
+      this.formData.user_type = this.user_type;
 
       // this.user_type = 'user';
 
@@ -151,10 +160,11 @@ export class ForgotpasswordComponent implements OnInit {
         } else {
           let headers = new HttpHeaders().set("Content-Type", "application/json");
           postParams['email'] = this.formData.email;
-          this.http.post(environment.apiUrl + environment.apiPort + "/users/get-pbkdf", postParams, {headers})
+          this.http.post(environment.apiUrl + environment.apiPort + "/users/get-pbkdf-publickey", postParams, {headers})
           .subscribe(data => {
+            console.log(data);
             var response: any = data;
-            var code = response.pbkdfResponse.code;
+            var code = response.pbkdfPublicKeyResponse.code;
             if (code == 202) {
               this.pbkdf = 'pbkdf';
               this.user_type = this.formData.user_type;
@@ -169,6 +179,7 @@ export class ForgotpasswordComponent implements OnInit {
             }
             this.SpinnerService.hide();
           }, error => {
+          this.formData.user_type = '';
           this.messageException = error;
           this.alert_class = 'danger';
           this.SpinnerService.hide();

@@ -101,10 +101,10 @@
                   <!-- Forgot password and login links -->
                   <div class="row">
                     <div class="col-6 text-left">
-                      <button type="button" class="btn btn-link px-0" [routerLink]="['/forgot-password']">{{ 'Forgot Password?' | translate }}</button>
+                      <button type="button" class="btn btn-link px-0" [routerLink]="['/forgot-password']" [queryParams]="{user_type: 'operator'}">{{ 'Forgot Password?' | translate }}</button>
                     </div>
                     <div class="col-6 text-right">
-                      <button type="button" class="btn btn-link px-0" [routerLink]="['/sign-in']">{{ 'Yet a member?' | translate }}</button>
+                      <button type="button" class="btn btn-link px-0" [routerLink]="['/sign-in']" [queryParams]="{user_type: 'operator'}">{{ 'Yet a member?' | translate }}</button>
                     </div>
                   </div>
                 </form>

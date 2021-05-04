@@ -9,11 +9,27 @@
               <div class="card-body text-center">
                 <!-- Information -->
                 <a [routerLink]="['/']"><img src="assets/img/logo.png" /></a>
+
+                <section *ngIf="user_type == ''">
+                <h2>{{'Welcome in Global Passport Project' | translate }}</h2>
+
+                <div class="row">
+                  <div class="col-sm-6 text-left">
+                    <button type="button" class="btn mb-4 p-4 btn-primary btn-block" (click)="switch('user')">{{ 'Continue as' | translate}}<br>{{ 'User' | translate}}</button>
+                  </div>
+                  <div class="col-sm-6 text-right">
+                    <button type="button" class="btn mb-4 p-4 btn-primary btn-block" (click)="switch('operator')">{{ 'Continue as' | translate}}<br>{{ 'Operator' | translate}}</button>
+                  </div>
+                </div>
+
+                </section>
+
+                <section *ngIf="user_type != ''">
                 <h1>{{'Sign in' | translate }}</h1>
                 <p class="text-muted">{{'Sign in to your account' | translate }}</p>
 
                 <!-- Form -->
-                <form  #form="ngForm" (ngSubmit)="signIn()">
+                <form  #form="ngForm" (ngSubmit)="signIn()" *ngIf="!showAnswers">
                   <!-- E-Mail -->
                   <div class="input-group mb-3">
                     <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required>
@@ -24,28 +40,104 @@
                     <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required>
                   </div>
 
-                  <!-- Login alert -->
-                  <div *ngIf='this.messageException.status!==0' class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>{{this.messageException.message | translate }}</strong>
-                  </div>
-
                   <!-- Sign in button -->
                   <div class="row">
                     <div class="col-12">
                       <button type="submit" [disabled]="form.invalid" class="btn btn-primary rounded-0 px-4">{{'Sign in' | translate}}</button>
                     </div>
                   </div>
+              </form>
+
+              <form  #formUser="ngForm" (ngSubmit)="signInAnswers()" *ngIf="showAnswers">
+
+                  <!-- E-Mail -->
+                  <div class="input-group mb-3">
+                    <input type="email" name="email" [(ngModel)]="formDataUser.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required>
+                  </div>
+
+                  <!-- Password -->
+                  <div class="input-group mb-4">
+                    <input type="password" name="password" id="password" [(ngModel)]="formDataUser.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required>
+                  </div>
+
+
+                <div class="row">
+                  <div class="col-sm-12 mb-3">
+                    <p class="text-muted">{{ 'Enter the answers to the 3 questions you saved during registration' | translate }}</p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12 mb-3">
+                    <div class="input-group">
+                      <label>{{ questions[0].question }}</label>
+                    </div>
+                    <input type="text" class="form-control" name="answer1" [(ngModel)]="formDataUser.answer1"  placeholder="{{ 'Your Answer' | translate }}">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12 mb-3">
+                    <div class="input-group">
+                      <label>{{ questions[1].question }}</label>
+                    </div>
+                    <input type="text" class="form-control" name="answer2" [(ngModel)]="formDataUser.answer2"  placeholder="{{ 'Your Answer' | translate }}">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12 mb-3">
+                    <div class="input-group">
+                      <label>{{ questions[2].question }}</label>
+                    </div>
+                    <input type="text" class="form-control" name="answer3" [(ngModel)]="formDataUser.answer3"  placeholder="{{ 'Your Answer' | translate }}">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12 mb-3">
+                    <div class="input-group">
+                      <label>{{ questions[3].question }}</label>
+                    </div>
+                    <input type="text" class="form-control" name="answer4" [(ngModel)]="formDataUser.answer4"  placeholder="{{ 'Your Answer' | translate }}">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12 mb-3">
+                    <div class="input-group">
+                      <label>{{ questions[4].question }}</label>
+                    </div>
+                    <input type="text" class="form-control" name="answer5" [(ngModel)]="formDataUser.answer5"  placeholder="{{ 'Your Answer' | translate }}">
+                  </div>
+                </div>
+                <!-- Confirm button -->
+                <div class="row">
+                  <div class="col-12">
+                    <button type="submit" [disabled]="formUser.invalid" class="btn btn-primary rounded-0 px-4">{{ 'Confirm' | translate }}</button>
+                  </div>
+                </div>
+              </form>
+
+                  <!-- Login alert -->
+                  <div *ngIf='this.messageException.status!==0' class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>{{this.messageException.message | translate }}</strong>
+                  </div>
 
                   <!-- Forgot password and register links -->
                   <div class="row">
                     <div class="col-6 text-left">
-                      <button type="button" class="btn btn-link px-0" [routerLink]="['/forgot-password']">{{ 'Forgot Password?' | translate}}</button>
+                      <button type="button" class="btn btn-link px-0" [routerLink]="['/forgot-password']" [queryParams]="{user_type: user_type}">{{ 'Forgot Password?' | translate}}</button>
                     </div>
-                    <div class="col-6 text-right">
+                    <div class="col-6 text-right" *ngIf="user_type == 'operator'">
                       <button type="button" class="btn btn-link px-0" [routerLink]="['/sign-on']">{{ 'Not a member yet?' | translate}}</button>
                     </div>
                   </div>
-                </form>
+
+
+                  <!-- Switch link -->
+                  <div class="row">
+                    <div class="col-12 text-center">
+                      <button type="button" class="btn btn-link px-0" (click)="switch('')">{{ 'Switch User Type' | translate}}</button>
+                    </div>
+                  </div>
+
+                </section>
 
                 <!-- Language switch -->
                 <div class="row">

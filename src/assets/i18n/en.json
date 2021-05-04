@@ -96,7 +96,7 @@
     "Not a member yet?": "Not a member yet?",
 
     "***FORGOT PASSWORD***": "***FORGOT PASSWORD***",
-    "Select role and enter your e-mail address to recover your password.": "Select role and enter your e-mail address to recover your password.",
+    "Enter your e-mail address to recover your password.": "Enter your e-mail address to recover your password.",
 
     "***CHANGE PASSWORD***": "***CHANGE PASSWORD***",
     "In this section you can modify the authentication password.": "In this section you can modify the authentication password.",
@@ -409,7 +409,10 @@
     "Your Answer": "Your Answer",
     "Please enter the answers to the 3 questions you saved during registration": "Please enter the answers to the 3 questions you saved during registration",
     "Specify answers": "Specify answers",
-    "Wrong Answer": "Wrong Answer"
+    "Wrong Answer": "Wrong Answer",
+    "Welcome in Global Passport Project": "Welcome in Global Passport Project",
+    "Continue as": "Continue as",
+    "Switch User Type": "Switch User Type"
 
 
 }
