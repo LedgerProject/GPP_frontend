@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ComponentFactoryResolver } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
@@ -98,12 +98,16 @@ export class SigninComponent implements OnInit {
   }
 
   // Sign in
-  async signIn() {
+  async signIn(email = null, password = null, privateKey = null, publicKey = null) {
     this.SpinnerService.show();
     let tryLogin = true;
     let lastLogin = false;
-    let email = this.formData.email;
-    let password = this.formData.password;
+    if (!email) {
+      email = this.formData.email;
+    }
+    if (!password) {
+      password = this.formData.password;
+    }
 
     if (!email || !password) {
       this.messageException = {
@@ -115,6 +119,7 @@ export class SigninComponent implements OnInit {
 
       tryLogin = false;
       this.SpinnerService.hide();
+      return false;
     }
 
     if (password.length < 8) {
@@ -127,12 +132,16 @@ export class SigninComponent implements OnInit {
 
       tryLogin = false;
       this.SpinnerService.hide();
+      return false;
     }
 
     if (this.user_type == 'user') {
       tryLogin = false;
       // check last login
       if (this.lastLoginEmail && (this.lastLoginEmail == email)) {
+        lastLogin = true;
+      }
+      if (privateKey && publicKey) {
         lastLogin = true;
       }
       if (!lastLogin) {
@@ -145,6 +154,7 @@ export class SigninComponent implements OnInit {
         this.formDataUser.answer4 = '';
         this.formDataUser.answer5 = '';
         this.SpinnerService.hide();
+        return false;
       } else {
         tryLogin = true;
       }
@@ -161,7 +171,11 @@ export class SigninComponent implements OnInit {
 
       this.http.post<TokenCredential>(environment.apiUrl + environment.apiPort + "/users/login", postParams, {headers})
       .subscribe(data => {
-        localStorage.setItem('lastLoginEmail', email);
+        if (this.user_type == 'user' && privateKey && publicKey) {
+          localStorage.setItem('lastLoginEmail', email);
+          localStorage.setItem('privateKey', privateKey);
+          localStorage.setItem('publicKey', publicKey);
+        }
         localStorage.setItem('token', data.token);
         this.SpinnerService.hide();
         this.router.navigateByUrl('wallet');
@@ -220,6 +234,7 @@ export class SigninComponent implements OnInit {
 
       tryLogin = false;
       this.SpinnerService.hide();
+      return false;
     }
 
     if (password.length < 8) {
@@ -232,6 +247,7 @@ export class SigninComponent implements OnInit {
 
       tryLogin = false;
       this.SpinnerService.hide();
+      return false;
     }
 
     if (tryLogin) {
@@ -282,67 +298,85 @@ export class SigninComponent implements OnInit {
           message : this.translate.instant('Please enter the answers to the 3 questions you saved during registration')
         };
         this.SpinnerService.hide();
+        return false;
       } else {
-        postParams['email'] = this.formData.email;
+        postParams['email'] = email;
         //postParams['pbkdf'] = this.pbkdf;
         postParams['answer1'] = answer1;
         postParams['answer2'] = answer2;
         postParams['answer3'] = answer3;
         postParams['answer4'] = answer4;
         postParams['answer5'] = answer5;
+        postParams['returnKeys'] = true;
 
+        // verify answers and get keys
+        let headers = new HttpHeaders().set("Content-Type", "application/json");
 
-
-        this.SpinnerService.hide();
-      }
-
-      console.log(postParams);
-      /*let headers = new HttpHeaders().set("Content-Type", "application/json");
-
-      this.http.post<TokenCredential>(environment.apiUrl + environment.apiPort + "/users/login", postParams, {headers})
-      .subscribe(data => {
-        if (this.user_type == 'user') {
-          localStorage.setItem('lastLoginEmail', email);
-        }
-        localStorage.setItem('token', data.token);
-        this.SpinnerService.hide();
-        this.router.navigateByUrl('wallet');
-      }, error => {
-        this.SpinnerService.hide();
-        switch (error.status) {
-          case 401:
-            this.messageException = {
-              name : '',
-              status : 401,
-              statusText : this.translate.instant('Wrong password'),
-              message : this.translate.instant('The specified password is incorrect. Please try again, or select \'Forgot password?\' to reset the password.')
-            };
-          break;
-
-          case 403:
-            this.messageException = {
-              name : '',
-              status : 403,
-              statusText : this.translate.instant('Forbidden'),
-              message : this.translate.instant('You need to confirm registration email before Login.')
-            };
-          break;
-
-          case 422:
-            this.messageException = {
-              name : '',
-              status : 422,
-              statusText : this.translate.instant('User not found'),
-              message : this.translate.instant('User not found. Check your email, or if you are not registered, select \'Not a member yet?\' and register.')
-            };
-          break;
-
-          default:
-            this.messageException = error;
+        this.http.post(environment.apiUrl + environment.apiPort + "/user/verify-answers", postParams, {headers})
+        .subscribe(data => {
+          this.SpinnerService.hide();
+          var response: any = data;
+          var response_code: number = parseInt(response.verifyAnswersOutcome.code);
+          var response_message:string = response.verifyAnswersOutcome.message;
+          switch (response_code) {
+            case 10:
+              this.messageException = {
+                name : '',
+                status : 10,
+                statusText : this.translate.instant('Sorry'),
+                message : this.translate.instant('Email not exists')
+              };
             break;
-        }
-      });*/
+            case 11:
+              this.messageException = {
+                name : '',
+                status : 10,
+                statusText : this.translate.instant('Sorry'),
+                message : this.translate.instant('Email is empty')
+              };
+            break;
+            case 50:
+              this.messageException = {
+                name : '',
+                status : 10,
+                statusText : this.translate.instant('Sorry'),
+                message : this.translate.instant('Answers not correct')
+              };
+            break;
+            case 51:
+              this.messageException = {
+                name : '',
+                status : 10,
+                statusText : this.translate.instant('Sorry'),
+                message : this.translate.instant('Specify the answers')
+              };
+            break;
+            case 202:
+              /*this.messageException = {
+                name : '',
+                status : 10,
+                statusText : this.translate.instant('Congratulations!'),
+                message : this.translate.instant('Answers correct')
+              };*/
+              let privateKey = response.verifyAnswersOutcome.privateKey;
+              let publicKey = response.verifyAnswersOutcome.publicKey;
+              this.signIn(email,password,privateKey,publicKey);
+            break;
+            default:
+              this.messageException = {
+                name : '',
+                status : 10,
+                statusText : this.translate.instant('Error'),
+                message : response_message
+              };
+              break;
+          }
+        }, error => {
+          this.messageException = error;
+          this.SpinnerService.hide();
+        });
 
+      }
     }
   }
 }

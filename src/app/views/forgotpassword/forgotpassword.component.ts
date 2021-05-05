@@ -101,6 +101,7 @@ export class ForgotpasswordComponent implements OnInit {
 
       if (this.formData.user_type != 'user') {
         postParams['email'] = this.formData.email;
+        postParams['userType'] = this.formData.user_type;
         postParams['answer1'] = '';
         postParams['answer2'] = '';
         postParams['answer3'] = '';
@@ -154,6 +155,7 @@ export class ForgotpasswordComponent implements OnInit {
             postParams['answer3'] = answer3;
             postParams['answer4'] = answer4;
             postParams['answer5'] = answer5;
+            postParams['userType'] = this.formData.user_type;
             recovery = true;
           }
 
@@ -162,7 +164,6 @@ export class ForgotpasswordComponent implements OnInit {
           postParams['email'] = this.formData.email;
           this.http.post(environment.apiUrl + environment.apiPort + "/users/get-pbkdf-publickey", postParams, {headers})
           .subscribe(data => {
-            console.log(data);
             var response: any = data;
             var code = response.pbkdfPublicKeyResponse.code;
             if (code == 202) {
