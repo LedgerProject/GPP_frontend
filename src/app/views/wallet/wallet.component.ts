@@ -149,8 +149,11 @@ export class WalletComponent implements OnInit {
     //
     //console.log(this.checkedIDs);
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
-
-      this.http.post(environment.apiUrl + environment.apiPort + "/users-token",{}, {headers} )
+    const postParams = {
+      privateKey: this.privateKey,
+      idDocuments: this.selectedItemsList,
+    };
+      this.http.post(environment.apiUrl + environment.apiPort + "/users-token",postParams, {headers} )
       .subscribe(data => {
         this.SpinnerService.hide();
         let token_data: any = data;
