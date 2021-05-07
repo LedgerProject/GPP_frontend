@@ -30,6 +30,7 @@ export class WalletComponent implements OnInit {
   blob: any;
   selectedItemsList = [];
   checkedIDs = [];
+  privateKey: string;
 
   constructor (
     private router: Router,
@@ -52,6 +53,7 @@ export class WalletComponent implements OnInit {
     this.filteredDocuments = [];
     this.allDocuments = [];
     this.blob = null;
+    this.privateKey = localStorage.getItem('privateKey');
   }
 
   // Page init
@@ -228,18 +230,27 @@ export class WalletComponent implements OnInit {
   }
 
   async getPersonalFile(uuid, type, title) {
+    if (this.privateKey) {
     this.SpinnerService.show();
     let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
-    this.http.get(environment.apiUrl + environment.apiPort + "/documents/" + uuid, {headers, responseType: 'arraybuffer'} )
+    let postParams = {
+      idDocument: uuid,
+      privateKey: this.privateKey
+    };
+    console.log(postParams);
+    this.http.post(environment.apiUrl + environment.apiPort + "/documents/download",postParams, {headers, responseType: 'arraybuffer'} )
     .subscribe(data=> {
       this.SpinnerService.hide();
       this.blob = data;
       this.downloadFile(data, type, title);
     }, error => {
       this.SpinnerService.hide();
-      //console.log(error);
+      // console.log(error);
       alert( this.translate.instant('Invalid Token') );
     });
+    } else {
+      alert( this.translate.instant('Private key not found') );
+    }
   }
 
   downloadFile(data: any, type: string,title:string) {
