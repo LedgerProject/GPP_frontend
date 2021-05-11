@@ -69,7 +69,7 @@
                 <button *ngIf="userType != 'user'" type="button" class="btn btn-danger rounded-0" (click)="removeOperatorFromTeam()">{{ 'REMOVE FROM CURRENT TEAM' | translate}}</button>
               </div>
               <div class="col-6 text-right">
-                <button type="button" class="btn btn-danger rounded-0" (click)="removeAllData()">{{ 'DELETE ALL MY DATA' | translate}}</button>
+                <button type="button" class="btn btn-danger rounded-0" (click)="askDelete()">{{ 'DELETE ALL MY DATA' | translate}}</button>
               </div>
             </div>
           </form>
@@ -141,6 +141,27 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Delete All Data -->
+<div bsModal #modalDelete="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Delete all your data' | translate }}</h4>
+        <button type="button" class="close" (click)="modalDelete.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ 'Are you sure you want to DELETE ALL YOUR DATA?' | translate }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="removeAllData()">{{ 'Delete' | translate }}</button>
+        <button type="button" class="btn btn-secondary" (click)="modalDelete.hide()">{{ 'Cancel' | translate }}</button>
       </div>
     </div>
   </div>

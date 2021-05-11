@@ -14,11 +14,15 @@ export class LogoutComponent implements OnInit {
   ngOnInit(): void {
     // Reset all the local storage
     localStorage.setItem('token', '');
+    localStorage.setItem('idUser','');
     localStorage.setItem('name', '');
     localStorage.setItem('email', '');
-    localStorage.setItem('organizations', null);
     localStorage.setItem('permissions', '');
-
-    this.router.navigateByUrl('sign-in');
+    localStorage.setItem('wallet', '');
+    localStorage.setItem('userType', '');
+    localStorage.setItem('idOrganization', '');
+    localStorage.setItem('documents', '');
+    localStorage.setItem('organizations', null);
+    this.router.navigateByUrl('sign-in', { replaceUrl: true });
   }
 }

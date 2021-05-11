@@ -30,7 +30,8 @@ export class MyProfileComponent implements OnInit {
   constructor (
     private http:HttpClient,
     public translate: TranslateService,
-    private SpinnerService: NgxSpinnerService
+    private SpinnerService: NgxSpinnerService,
+    private router: Router,
     ) {
     this.token = localStorage.getItem('token');
     this.lang = localStorage.getItem('current_lang');
@@ -85,7 +86,11 @@ export class MyProfileComponent implements OnInit {
       this.SpinnerService.hide();
       this.formData = data;
       let bday = this.formData.birthday;
-      this.formData.birthday = bday.substr(0,10);
+      if (bday) {
+        this.formData.birthday = bday.substr(0,10);
+      } else {
+        this.formData.birthday = null;
+      }
     }, error => {
       this.SpinnerService.hide();
       this.showExceptionMessage(error);
@@ -198,11 +203,36 @@ export class MyProfileComponent implements OnInit {
     });
   }
 
+  askDelete() {
+    this.modalDelete.show();
+  }
+
   // Remove All Data
   async removeAllData() {
     this.SpinnerService.show();
-    console.log('remove all data');
-    this.SpinnerService.hide();
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+    this.http.delete(environment.apiUrl + environment.apiPort + "/users", {headers} )
+    .subscribe(data => {
+      this.SpinnerService.hide();
+      localStorage.setItem('lastLoginEmail', '');
+      localStorage.setItem('privateKey', '');
+      localStorage.setItem('publicKey', '');
+      localStorage.setItem('token', '');
+      localStorage.setItem('idUser','');
+      localStorage.setItem('name', '');
+      localStorage.setItem('email', '');
+      localStorage.setItem('permissions', '');
+      localStorage.setItem('wallet', '');
+      localStorage.setItem('userType', '');
+      localStorage.setItem('idOrganization', '');
+      localStorage.setItem('documents', '');
+      localStorage.setItem('organizations', null);
+      this.router.navigateByUrl('sign-in', { replaceUrl: true });
+    }, error => {
+      this.SpinnerService.hide();
+      this.modalDelete.hide();
+      this.showExceptionMessage(error);
+    });
   }
 
   //Error message
@@ -217,4 +247,5 @@ export class MyProfileComponent implements OnInit {
     this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
     this.modalException.show();
   }
+
 }

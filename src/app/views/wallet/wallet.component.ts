@@ -149,9 +149,13 @@ export class WalletComponent implements OnInit {
     //
     //console.log(this.checkedIDs);
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+    let idDocuments = [];
+    this.selectedItemsList.forEach( element => {
+      idDocuments.push(element.idDocument);
+    });
     const postParams = {
       privateKey: this.privateKey,
-      idDocuments: this.selectedItemsList,
+      idDocuments: idDocuments,
     };
       this.http.post(environment.apiUrl + environment.apiPort + "/users-token",postParams, {headers} )
       .subscribe(data => {
@@ -240,7 +244,6 @@ export class WalletComponent implements OnInit {
       idDocument: uuid,
       privateKey: this.privateKey
     };
-    console.log(postParams);
     this.http.post(environment.apiUrl + environment.apiPort + "/documents/download",postParams, {headers, responseType: 'arraybuffer'} )
     .subscribe(data=> {
       this.SpinnerService.hide();

@@ -26,6 +26,8 @@ export class SigninComponent implements OnInit {
   pbkdf: string;
   showAnswers: boolean;
   lastLoginEmail: string;
+  privateKey: string;
+  publicKey: string;
 
   constructor (
     private router: Router,
@@ -60,6 +62,8 @@ export class SigninComponent implements OnInit {
     ];
     this.showAnswers = false;
     this.lastLoginEmail = localStorage.getItem('lastLoginEmail');
+    this.privateKey = localStorage.getItem('privateKey');
+    this.publicKey = localStorage.getItem('publicKey');
     //this.get_user_type = this._Activatedroute.snapshot.paramMap.get('user_type');
   }
 
@@ -138,11 +142,15 @@ export class SigninComponent implements OnInit {
     if (this.user_type == 'user') {
       tryLogin = false;
       // check last login
-      if (this.lastLoginEmail && (this.lastLoginEmail == email)) {
+      if (this.lastLoginEmail && (this.lastLoginEmail == email) && this.privateKey && this.publicKey) {
         lastLogin = true;
-      }
-      if (privateKey && publicKey) {
-        lastLogin = true;
+      } else {
+        // check if private key and public key generated
+        if (privateKey && publicKey) {
+          lastLogin = true;
+        } else {
+          lastLogin = false;
+        }
       }
       if (!lastLogin) {
         this.showAnswers = true;
@@ -175,6 +183,9 @@ export class SigninComponent implements OnInit {
           localStorage.setItem('lastLoginEmail', email);
           localStorage.setItem('privateKey', privateKey);
           localStorage.setItem('publicKey', publicKey);
+        }
+        if (this.user_type == 'user') {
+          localStorage.setItem('userType', this.user_type);
         }
         localStorage.setItem('token', data.token);
         this.SpinnerService.hide();
