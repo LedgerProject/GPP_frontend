@@ -36,7 +36,8 @@ import { OrganizationAddComponent } from './views/organization-add/organization-
 import { ConfirmAccountComponent } from './views/confirm-account/confirm-account.component';
 import { ConfirmInvitationComponent } from './views/confirm-invitation/confirm-invitation.component';
 import { ResetPasswordComponent } from './views/reset-password/reset-password.component';
-
+import { ContentsComponent } from './views/contents/contents.component';
+import { ContentDetailComponent } from './views/content-detail/content-detail.component';
 //import { AuthGuardService as AuthGuard } from './auth/auth-guard.service';
 
 export const routes: Routes = [
@@ -221,7 +222,22 @@ export const routes: Routes = [
         path: 'organization-add',
         component: OrganizationAddComponent,
       },
-
+      {
+        path: 'abusealarms',
+        component: ContentsComponent,
+      },
+      {
+        path: 'news-stories',
+        component: ContentsComponent,
+      },
+      {
+        path: 'abusealarms-details/:uuid',
+        component: ContentDetailComponent,
+      },
+      {
+        path: 'news-stories-details/:uuid',
+        component: ContentDetailComponent,
+      },
       /*{
         path: 'base',
         loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule)

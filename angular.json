@@ -6,7 +6,7 @@
     "ng": {
       "root": "",
       "sourceRoot": "src",
-      "projectType": "application",   
+      "projectType": "application",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -25,6 +25,7 @@
               "node_modules/flag-icon-css/css/flag-icon.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/simple-line-icons/css/simple-line-icons.css",
+              "node_modules/ngx-lightbox/lightbox.css",
               "src/scss/style.scss"
             ],
             "stylePreprocessorOptions": {
@@ -43,7 +44,7 @@
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb"
                 }
-              ],              
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -59,7 +60,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ]
-            }           
+            }
           }
         },
         "serve": {
@@ -70,7 +71,7 @@
           "configurations": {
             "production": {
               "browserTarget": "ng:build:production"
-            }         
+            }
           }
         },
         "extract-i18n": {

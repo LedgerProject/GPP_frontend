@@ -191,4 +191,9 @@ export interface TokenCredential {
   token: string;
 }
 
+export interface ElementsSearch {
+  title: string;
+  name: string;
+}
+
 

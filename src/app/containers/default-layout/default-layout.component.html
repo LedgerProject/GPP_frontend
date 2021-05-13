@@ -48,6 +48,16 @@
       <li class="nav-item" *ngIf="userMe.permissions.includes('GeneralNationalitiesManagement')">
         <a class="nav-link" [routerLink]="['/nationalities']" (click)="toggleNavbar()">{{ 'Nationalities' | translate }}</a>
       </li>
+
+      <!-- AbuseAlarm -->
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/abusealarms']" (click)="toggleNavbar()">{{ 'AbuseAlarms' | translate }}</a>
+      </li>
+      <!-- News&Stories -->
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/news-stories']" (click)="toggleNavbar()">{{ 'News & Stories' | translate }}</a>
+      </li>
+
     </ul>
 
     <ul class="nav navbar-nav ml-auto">

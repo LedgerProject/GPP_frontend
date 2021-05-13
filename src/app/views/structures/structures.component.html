@@ -11,6 +11,10 @@
         <div class="card-body">
           <!-- Information -->
           <h1 class="mt-4">{{ 'Structures - List' | translate }}</h1>
+          <div class="pull-right">
+            <button class="btn btn-primary ml-3 rounded-0" type="button" (click)="openImport()"><i class="fa fa-upload"></i> {{ 'Import' | translate }}</button>
+            <button class="btn btn-primary ml-3 rounded-0" type="button" (click)="openExport()"><i class="fa fa-download"></i> {{ 'Export' | translate }}</button>
+          </div>
           <p>{{ 'In this section you can manage the structures to be displayed in the application.' | translate }}</p>
           <p>{{ 'Select \'Add Structure\' to add a new structure, or select one from the list to edit it.' | translate }}</p>
 
@@ -96,4 +100,54 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Modal export -->
+<div bsModal #modalExport="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExportLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Export Structures' | translate }}</h4>
+        <button type="button" class="close" (click)="modalExport.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p *ngIf="!filename">{{ 'Click on Confirm to Export structures.' | translate }}</p>
+        <p *ngIf="filename">{{ 'Click on following link to download structures export.' | translate }}<br><a [href]="filename" download>Download</a></p>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalExport.hide()">{{ 'Close' | translate }}</button>
+        <button *ngIf="!filename" type="button" class="btn btn-primary" (click)="ExportStructures()">{{ 'Confirm' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal import -->
+<div bsModal #modalImport="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalImportLabel" aria-hidden="true">
+  <form [formGroup]="uploadForm" (ngSubmit)="ImportStructures()">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Import Structures' | translate }}</h4>
+        <button type="button" class="close" (click)="modalImport.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ 'Select the file to import the structures.' | translate }}<br><small>{{ '(Only .xlsx allowed)'}}</small></p>
+        <input name="profile" id="file-upload" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" (change)="fileSelect($event)"/>
+        <div class="import-response-container">
+          <div [class]="'import-response-content text' + importResponseColor" [innerHTML]="importResponseMessage"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalImport.hide()">{{ 'Close' | translate }}</button>
+        <button type="submit" id="upload-submit" class="btn btn-primary">{{ 'Confirm' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</form>
 </div>

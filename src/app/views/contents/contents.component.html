@@ -1,0 +1,81 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-12 col-lg-8 mx-auto">
+      <div class="card mt-4">
+        <div class="card-body">
+          <!-- Information -->
+          <h1 class="mt-4">{{ SectionTitle + ' - List' | translate }}</h1>
+          <p *ngIf="current_url == '/abusealarms'">{{ 'In this section you can read the AbuseAlarms uploaded by users' | translate }}</p>
+          <p *ngIf="current_url == '/news-stories'">{{ 'In this section you can read the News & Stories uploaded by users' | translate }}</p>
+
+          <form #form="ngForm" (ngSubmit)="onSubmit(form)">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" name="title" [(ngModel)]="formSearch.title"  placeholder="{{ 'Enter the title' | translate }}">
+                <input type="text" class="form-control" name="name" [(ngModel)]="formSearch.name"  placeholder="{{ 'Enter First Name or Last Name' | translate }}">
+                <div class="input-group-append">
+                  <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
+                </div>
+            </div>
+          </form>
+          <hr>
+          <!-- Search form -->
+          <form #Filterform="ngForm">
+            <div class="input-group mb-3">
+                <input type="text" (keyup)="filterElements()" class="form-control" name="search" [(ngModel)]="formFilter.search"  placeholder="{{ 'Enter a search term' | translate }}" required>
+                <div class="input-group-append">
+                  <button class="btn btn-primary rounded-0" type="submit">{{ 'Filter' | translate }}</button>
+                </div>
+            </div>
+          </form>
+
+          <!-- Countries list -->
+          <div class="table-responsive">
+            <table class="table table-hover" *ngIf='filteredElements.length'>
+              <thead>
+                <th>{{ 'Title' | translate }}</th>
+                <th>{{ 'First Name' | translate }}</th>
+                <th>{{ 'Last Name' | translate }}</th>
+                <th>{{ 'Gps' | translate }}</th>
+                <th>{{ 'Date' | translate }}</th>
+              </thead>
+              <tbody>
+                <tr class="pointer" *ngFor="let element of filteredElements" (click)="elementDetails(element.idStructure)">
+                  <td>{{element.structurename}}</td>
+                  <td>{{element.address}}</td>
+                  <td>{{element.city}}</td>
+                  <td class="text-center">
+                    <span *ngIf="!element.Latitude" class="text-danger"><i class="fa fa-remove"></i></span>
+                    <span *ngIf="element.Latitude" class="text-success"><i class="fa fa-check"></i></span>
+                  </td>
+                  <td class="nowrap">2021-05-12</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal exception error -->
+<div bsModal #modalException="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExceptionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageException.name }}</h4>
+        <button type="button" class="close" (click)="modalException.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><b>Status: </b>{{ messageException.statusText }} ({{ messageException.status }})</p>
+        <p><b>Description: </b>{{ messageException.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>

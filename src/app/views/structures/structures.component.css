@@ -3,3 +3,4 @@
     height: 24px;
 }
 .select-max-210 { max-width: 210px; margin-right: 16px; }
+.import-response-container { max-height: 220px; overflow-y: scroll; margin-top: 15px; margin-bottom: 15px; }

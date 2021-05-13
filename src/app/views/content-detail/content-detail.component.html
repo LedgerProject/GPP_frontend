@@ -1,0 +1,137 @@
+<ngx-spinner size="default" type="ball-spin-clockwise"><p>{{ 'Please wait...' | translate }} </p></ngx-spinner>
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-12 col-lg-8 mx-auto">
+      <div class="card mt-4">
+        <div class="card-body">
+          <!-- Back link -->
+          <a [routerLink]="[current_url]"><i class="fa fa-chevron-left"></i>
+            <span *ngIf="current_url == '/abusealarms'">{{ 'Back to the AbuseAlarms list' | translate }}</span>
+            <span *ngIf="current_url == '/news-stories'">{{ 'Back to the News & Stories list' | translate }}</span>
+          </a>
+
+          <!-- Information -->
+          <h1 class="mt-4">
+            <span *ngIf="current_url == '/abusealarms'">{{ 'AbuseAlarms - View' | translate }}</span>
+            <span *ngIf="current_url == '/news-stories'">{{ 'News & Stories - View' | translate }}</span>
+          </h1>
+          <p *ngIf="current_url == '/abusealarms'">{{ 'In this section, you can view the selected AbuseAlarm.' | translate }}</p>
+          <p *ngIf="current_url == '/news-stories'">{{ 'In this section, you can view the selected New & Story.' | translate }}</p>
+
+          <!-- Form -->
+          <form #form="ngForm">
+
+            <div class="form-row">
+              <div class="col-4">
+                <div class="form-group md-3">
+                  <label>{{ 'Date' | translate }}</label>
+                  <input type="text" name="date" [(ngModel)]="formData.date" id="date" class="form-control" readonly>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group md-3">
+              <label>{{ 'Title' | translate }}</label>
+              <input type="text" name="title" [(ngModel)]="formData.title" id="title" class="form-control" readonly>
+            </div>
+
+            <div class="row">
+              <div class="col md-3">
+                <label>{{ 'First Name' | translate }}</label>
+                <input type="text" name="firstName" [(ngModel)]="formData.firstName" id="firstName" class="form-control" readonly>
+              </div>
+              <div class="col md-3">
+                <label>{{ 'Last Name' | translate }}</label>
+                <input type="text" name="lastName" [(ngModel)]="formData.lastName" id="lastName" class="form-control" readonly>
+              </div>
+            </div>
+
+            <div class="form-group mt-3">
+              <label>{{ 'Description' | translate }}</label>
+              <textarea name="description" [(ngModel)]="formData.description" class="form-control" rows="5" readonly></textarea>
+            </div>
+
+            <!-- Map -->
+            <div class="form-group md-3">
+              <label>{{ 'Map position' | translate }}</label>
+              <div *ngIf="formData.latitude && formData.longitude">
+              <agm-map [latitude]="formData?.latitude" [longitude]="formData?.longitude" [zoom]="17" [disableDefaultUI]="false">
+                <agm-marker [latitude]="formData?.latitude" [longitude]="formData?.longitude"></agm-marker>
+              </agm-map>
+              <div class="row">
+                <div class="col-sm-6"><small> {{ 'Latitude:' | translate }} {{formData.latitude}}</small></div>
+                <div class="col-sm-6"><small> {{ 'Longitude:' | translate }} {{formData.longitude}}</small></div>
+              </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gallery -->
+  <div *ngIf="uuid && elementImages.length" class="row">
+    <div class="col-md-12 col-lg-8 mx-auto">
+      <div class="card mt-4">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <h4>{{ 'Gallery' | translate}}</h4>
+              <div class="gallery-container">
+                <div *ngFor="let image of elementImages; let i=index" class="gallery-image p-1" (click)="open(i)" [ngStyle]="{'background': 'url(\'' + imagesPath + '/galleries/structures/' + image.folder + '/'+image.filename+ '\') no-repeat 0 0 / cover'}">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal entering data error -->
+<div bsModal #modalError="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalErrorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">{{ messageError.title }}</h4>
+              <button type="button" class="close" (click)="modalError.hide()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <p>{{ messageError.description }}</p>
+              <ul>
+                  <li *ngFor="let errorDescription of errorsDescriptions">{{ errorDescription }}</li>
+              </ul>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modalError.hide()">{{ 'Close' | translate }}</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal exception error -->
+<div bsModal #modalException="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExceptionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageException.name }}</h4>
+        <button type="button" class="close" (click)="modalException.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><b>Status: </b>{{ messageException.statusText }} ({{ messageException.status }})</p>
+        <p><b>Description: </b>{{ messageException.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -81,8 +81,10 @@ import { IconComponent } from './views/icon/icon.component';
 import { ConfirmAccountComponent } from './views/confirm-account/confirm-account.component';
 import { ConfirmInvitationComponent } from './views/confirm-invitation/confirm-invitation.component';
 import { ResetPasswordComponent } from './views/reset-password/reset-password.component';
+import { ContentsComponent } from './views/contents/contents.component';
+import { ContentDetailComponent } from './views/content-detail/content-detail.component';
 //import { AuthGuardService } from './auth/auth-guard.service';
-
+import { LightboxModule } from 'ngx-lightbox';
 @NgModule({
   imports: [
     BrowserModule,GoogleMapsModule,
@@ -112,7 +114,8 @@ import { ResetPasswordComponent } from './views/reset-password/reset-password.co
       // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en
       apiKey: 'AIzaSyAdydoW9uSTVMivrrd2fpYCCP-WjxwJyok'
     }),
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    LightboxModule
   ],
   declarations: [
     AppComponent,
@@ -149,7 +152,9 @@ import { ResetPasswordComponent } from './views/reset-password/reset-password.co
     IconComponent,
     ConfirmAccountComponent,
     ConfirmInvitationComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    ContentsComponent,
+    ContentDetailComponent
   ],
   providers: [{
     provide: LocationStrategy,
