@@ -20,14 +20,23 @@
 
           <form #form="ngForm" (ngSubmit)="onSubmit(form)">
             <div class="input-group mb-3">
-              <select name="phonePrefix" [(ngModel)]="formSearch.phonePrefix" id="phonePrefix" class="form-control select-max-210">
+              <input type="text" class="form-control" name="name" [(ngModel)]="formSearch.name"  placeholder="{{ 'Enter the structure name' | translate }}">
+              <input type="text" class="form-control" name="address" [(ngModel)]="formSearch.address"  placeholder="{{ 'Enter the structure address' | translate }}">
+              <input type="text" class="form-control" name="city" [(ngModel)]="formSearch.city"  placeholder="{{ 'Enter a city name' | translate }}">
+            </div>
+            <div class="input-group mb-3">
+              <select name="phonePrefix" [(ngModel)]="formSearch.phonePrefix" id="phonePrefix" class="form-control select-max">
                 <option value="">{{ 'Select a country\'s prefix' | translate }}</option>
                 <option *ngFor="let prefix of prefixes" value="{{prefix}}">{{prefix}}</option>
               </select>
-                <input type="text" class="form-control" name="city" [(ngModel)]="formSearch.city"  placeholder="{{ 'Enter a city name' | translate }}">
-                <div class="input-group-append">
-                  <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
-                </div>
+              <select name="idIcon" [(ngModel)]="formSearch.idIcon" id="idIcon" class="form-control select-max">
+                <option value="">{{ 'Select an icon' | translate }}</option>
+                <option *ngFor="let icon of icons" value="{{icon.idIcon}}">{{icon.name}}</option>
+              </select>
+              <input type="text" class="form-control" name="email" [(ngModel)]="formSearch.email"  placeholder="{{ 'Enter the structure e-mail address' | translate }}">
+              <div class="input-group-append">
+                <button class="btn btn-primary rounded-0" type="submit">{{ 'Search' | translate }}</button>
+              </div>
             </div>
           </form>
           <hr>
@@ -47,20 +56,24 @@
             <table class="table table-hover" *ngIf='filteredStructures.length'>
               <thead>
                 <th></th>
-                <th class="text-center">{{ 'Icon' | translate }}</th>
                 <th>{{ 'Name' | translate }}</th>
                 <th>{{ 'Address' | translate }}</th>
+                <th>{{ 'City' | translate }}</th>
+                <th>{{ 'Prefix' | translate }}</th>
                 <th>{{ 'E-Mail' | translate }}</th>
+                <th class="text-center">{{ 'Icon' | translate }}</th>
               </thead>
               <tbody>
                 <tr class="pointer" *ngFor="let structure of filteredStructures">
                   <td><label class="checkbox-container"><input type="checkbox" class="form-checkbox" [(ngModel)]="structure.isChecked" (change)="changeSelection()"></label></td>
+                  <td (click)="structureDetails(structure.idStructure)">{{structure.structurename}}</td>
+                  <td (click)="structureDetails(structure.idStructure)">{{structure.address}}</td>
+                  <td (click)="structureDetails(structure.idStructure)">{{structure.city}}</td>
+                  <td (click)="structureDetails(structure.idStructure)">{{structure.phoneNumberPrefix}}</td>
+                  <td (click)="structureDetails(structure.idStructure)">{{structure.email}}</td>
                   <td class="text-center" (click)="structureDetails(structure.idStructure)">
                     <img class="icon-list" [src]="'data:image/png;base64,' + structure.iconimage">
                   </td>
-                  <td (click)="structureDetails(structure.idStructure)">{{structure.structurename}}</td>
-                  <td (click)="structureDetails(structure.idStructure)">{{structure.address}} - {{structure.city}}</td>
-                  <td (click)="structureDetails(structure.idStructure)">{{structure.email}}</td>
                 </tr>
               </tbody>
               <tfoot *ngIf='checkedIDs.length'>

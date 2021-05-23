@@ -24,6 +24,10 @@ export interface QuickSearch {
 export interface FilterSearch {
   city: string;
   phonePrefix: string;
+  name: string;
+  address: string;
+  idIcon: string;
+  email: string;
 }
 
 export interface Category {

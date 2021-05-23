@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { FilterSearch, MessageException, MessageError, QuickSearch, Structure } from '../../services/models';
+import { FilterSearch, MessageException, MessageError, QuickSearch, Structure, Icon } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -42,6 +42,7 @@ export class StructuresComponent implements OnInit {
   uploadForm: FormGroup;
   importResponseColor: string;
   importResponseMessage: string;
+  icons: Array<Icon>;
 
   constructor (
     private router: Router,
@@ -59,7 +60,7 @@ export class StructuresComponent implements OnInit {
     this.allStructures = [];
     this.messageException = environment.messageExceptionInit;
     this.formFilter = { search: '' };
-    this.formSearch = { city: '', phonePrefix: '' };
+    this.formSearch = { city: '', phonePrefix: '', name: '', address: '', email: '', idIcon: '' };
     this.prefixes = ['+1', '+1 242', '+1 246', '+1 264', '+1 268', '+1 284', '+1 345', '+1 441', '+1 473', '+1 649', '+1 664', '+1 721', '+1 758', '+1 767', '+1 784', '+1 787', '+1 809', '+1 829', '+1 849', '+1 868', '+1 869', '+1 876', '+20', '+210', '+211', '+212', '+213', '+214', '+215', '+216', '+217', '+218', '+219', '+220', '+221', '+222', '+223', '+224', '+225', '+226', '+227', '+228', '+229', '+230', '+231', '+232', '+233', '+234', '+235', '+236', '+237', '+238', '+239', '+240', '+241', '+242', '+243', '+244', '+245', '+246', '+247', '+248', '+249', '+250', '+251', '+252', '+253', '+254', '+255', '+256', '+257', '+258', '+259', '+260', '+261', '+262', '+263', '+264', '+265', '+266', '+267', '+268', '+269', '+27', '+290', '+291', '+297', '+298', '+299', '+30', '+31', '+32', '+33', '+34', '+350', '+351', '+352', '+353', '+354', '+355', '+356', '+357', '+358', '+359', '+36', '+370', '+371', '+372', '+373', '+374', '+375', '+376', '+377', '+378', '+379', '+380', '+381', '+382', '+383', '+385', '+386', '+387', '+388', '+389', '+39', '+40', '+41', '+420', '+421', '+423', '+43', '+44', '+45', '+46', '+47', '+48', '+49', '+500', '+501', '+502', '+503', '+504', '+505', '+506', '+507', '+508', '+509', '+51', '+52', '+53', '+54', '+55', '+56', '+57', '+58', '+590', '+591', '+592', '+593', '+594', '+595', '+596', '+597', '+598', '+599 3', '+599 4', '+599 7', '+599 9', '+60', '+61', '+62', '+63', '+64', '+65', '+66', '+670', '+672', '+673', '+674', '+675', '+676', '+677', '+678', '+679', '+680', '+681', '+682', '+683', '+685', '+686', '+687', '+688', '+689', '+690', '+691', '+692', '+7', '+800', '+808', '+81', '+82', '+84', '+850', '+852', '+853', '+855', '+856', '+86', '+880', '+886', '+90', '+91', '+92', '+93', '+94', '+95', '+960', '+961', '+962', '+963', '+964', '+965', '+966', '+967', '+968', '+970', '+971', '+972', '+973', '+974', '+975', '+976', '+977', '+98', '+992', '+993', '+994', '+995', '+996', '+998'];
     this.messageError = environment.messageErrorInit;
     this.action_delete = false;
@@ -73,13 +74,43 @@ export class StructuresComponent implements OnInit {
         this.loadStructures();
       }
     }
+    this.loadIcons();
     this.uploadForm = this.formBuilder.group({
       profile: ['']
     });
   }
 
+  async loadIcons() {
+    this.SpinnerService.show();
+    // Headers
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
+    // Filters
+    let filter = ' \
+      { \
+        "fields" : { \
+          "idIcon": true, \
+          "name": true, \
+          "image": false, \
+          "marker": false \
+        }, \
+        "offset": 0, \
+        "skip": 0, \
+        "order": ["name"] \
+      }';
+
+    // HTTP Request
+    this.http.get<Array<Icon>>(environment.apiUrl + environment.apiPort + "/icons?filter=" + filter, {headers})
+    .subscribe(data=> {
+      this.SpinnerService.hide();
+      this.icons = data;
+    }, error => {
+
+    });
+  }
+
   // Structures list
-  async loadStructures(city = null, prefix = null) {
+  async loadStructures(city = null, prefix = null,name = null,address = null,email = null,idIcon = null) {
     this.SpinnerService.show();
     if (prefix) {
       prefix = prefix.replace('+','%2B');
@@ -88,19 +119,45 @@ export class StructuresComponent implements OnInit {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     // Filters
+    let nameQuery = '';
+    let addressQuery = '';
+    let emailQuery = '';
+    let idIconQuery = '';
     let cityQuery = '';
     let prefixQuery = '';
     let preString = '';
+
+    if (name) {
+      nameQuery = '"structurename": { "ilike" : "%25' + name + '%25" }';
+      preString = ',';
+    }
+    if (address) {
+      addressQuery = preString + '"address": { "ilike" : "%25' + address + '%25" }';
+      preString = ',';
+    }
+    if (email) {
+      emailQuery = preString + '"email": { "ilike" : "%25' + email + '%25" }';
+      preString = ',';
+    }
     if (city) {
-      prefixQuery = '"city": { "ilike" : "%25' + city + '%25" }';
+      cityQuery = preString + '"city": { "ilike" : "%25' + city + '%25" }';
       preString = ',';
     }
     if (prefix) {
-      prefixQuery = prefixQuery + preString + '"phoneNumberPrefix": "' + prefix + '" '
+      prefixQuery = preString + '"phoneNumberPrefix": "' + prefix + '" '
+      preString = ',';
     }
+    if (idIcon) {
+      idIconQuery = preString + '"idIcon": "' + idIcon + '" '
+    }
+
     let where = '"where": { \ ' +
+    nameQuery +
+    addressQuery +
+    emailQuery +
     cityQuery +
     prefixQuery +
+    idIconQuery +
     '},';
     let filter = ' \
       { \
@@ -152,7 +209,8 @@ export class StructuresComponent implements OnInit {
         let address = element.address.toLowerCase();
         let city = element.city.toLowerCase();
         let email = element.email.toLowerCase();
-        if (name.includes(search) || address.includes(search) || city.includes(search) || email.includes(search)) {
+        let prefix =  element.phoneNumberPrefix;
+        if (name.includes(search) || address.includes(search) || city.includes(search) || email.includes(search)  || prefix.includes(search)) {
           this.filteredStructures.push(element);
         }
       });
@@ -173,9 +231,14 @@ export class StructuresComponent implements OnInit {
   }
 
   onSubmit(form) {
+    const name = form.value.name;
+    const address = form.value.address;
+    const email = form.value.email;
+    const idIcon = form.value.idIcon;
     const prefix = form.value.phonePrefix;
     const city = form.value.city;
-    this.loadStructures(city,prefix);
+
+    this.loadStructures(city,prefix,name,address,email,idIcon);
   }
 
   //on checkbox change
