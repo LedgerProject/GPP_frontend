@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { GeocodeService } from '../../services/geocode.service';
-import { MessageException, MessageError, Structure, StructureImage } from '../../services/models';
+import { MessageException, MessageError, Content, ContentImage } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
 import { Lightbox } from 'ngx-lightbox';
@@ -19,6 +19,8 @@ interface FormData {
   date: string;
   latitude: number;
   longitude: number;
+  sharePosition: boolean;
+  shareName: boolean;
 }
 
 @Component({
@@ -31,8 +33,8 @@ export class ContentDetailComponent implements OnInit {
   token: string;
   @Input() uuid: string;
   formData: FormData;
-  elementImages: Array<StructureImage>;
-  element: Structure;
+  elementImages: Array<ContentImage>;
+  element: Content;
   @ViewChild('modalInfo') public modalInfo: ModalDirective;
   @ViewChild('modalDelete') public modalDelete: ModalDirective;
   @ViewChild('modalDeleteImage') public modalDeleteImage: ModalDirective;
@@ -44,6 +46,7 @@ export class ContentDetailComponent implements OnInit {
   imagesPath: string;
   current_url: string;
   _albums:any = [];
+  blob: any;
 
   constructor (
     private router: Router,
@@ -66,7 +69,9 @@ export class ContentDetailComponent implements OnInit {
       lastName: '',
       date: '',
       latitude: null,
-      longitude: null
+      longitude: null,
+      sharePosition: false,
+      shareName: false
     };
     this.elementImages = [];
     this.imagesPath = environment.imagesUrl;
@@ -77,6 +82,7 @@ export class ContentDetailComponent implements OnInit {
     } else if (this.current_url.indexOf('news-stories') > 0) {
       this.current_url = '/news-stories';
     }
+    this.blob = null;
   }
 
   // Page init
@@ -95,16 +101,42 @@ export class ContentDetailComponent implements OnInit {
 
     // Get structure data
     if (this.uuid) {
-      this.http.get<Structure>(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid, {headers} )
+      let where = '"where": { \ ' +
+      '"idContent": "' + this.uuid + '" ' +
+      '},';
+      let filter = ' \
+        { \
+          "fields" : { \
+            "idContent": true, \
+            "idUser": false, \
+            "title": true, \
+            "description": true, \
+            "sharePosition": true, \
+            "positionLatitude": true, \
+            "positionLongitude": true, \
+            "shareName": true, \
+            "contentType": true, \
+            "insertDate": true \
+          }, \ '
+          + where +
+          '"offset": 0, \
+          "skip": 0, \
+          "order": ["insertDate DESC"] \
+        }';
+
+      this.http.get<Content>(environment.apiUrl + environment.apiPort + "/contents/?filter=" + filter, {headers} )
       .subscribe(data => {
         this.SpinnerService.hide();
-        this.formData.title = data.name;
-        this.formData.firstName = data.address;
-        this.formData.lastName = data.city;
-        this.formData.date = data.email;
-        this.formData.latitude = data.latitude;
-        this.formData.longitude = data.longitude;
-        this.formData.description = data.name;
+
+        this.formData.title = data[0].title;
+        this.formData.firstName = '';
+        this.formData.lastName = '';
+        this.formData.sharePosition = data[0].sharePosition;
+        this.formData.shareName = data[0].shareName;
+        this.formData.date = data[0].insertDate.substr(0,10);
+        this.formData.latitude = data[0].positionLatitude;
+        this.formData.longitude = data[0].positionLongitude;
+        this.formData.description = data[0].description;
       }, error => {
         this.SpinnerService.hide();
         this.showExceptionMessage(error);
@@ -119,15 +151,22 @@ export class ContentDetailComponent implements OnInit {
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    this.http.get<Array<StructureImage>>(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid + "/structures-images", {headers} )
+    this.http.get<Array<ContentImage>>(environment.apiUrl + environment.apiPort + "/contents/" + this.uuid + "/media", {headers} )
     .subscribe(dataImage=> {
       this.elementImages = dataImage;
       let x = 0;
 
       this.elementImages.forEach(element => {
         this.elementImages[x].filename = encodeURIComponent(this.elementImages[x].filename);
-        //this.elementImages[x].fullimage = { path: '' + this.imagesPath + '/galleries/structures/' + this.elementImages[x].folder + '/'+ this.elementImages[x].filename+ ''};
-        this._albums.push({ src: '' + this.imagesPath + '/galleries/structures/' + this.elementImages[x].folder + '/'+ this.elementImages[x].filename+ '' });
+          if (element.mimeType == 'image/jpeg' || element.mimeType == 'image/jpg' || element.mimeType == 'image/png') {
+            this.elementImages[x].fileType = 'image';
+          } else {
+            this.elementImages[x].fileType = 'pdf';
+          }
+          let bytes: number = element.size / 1000000;
+          bytes = parseFloat(bytes.toFixed(2));
+          this.elementImages[x].size = bytes;
+        // this._albums.push({ src: '' + this.imagesPath + '/galleries/structures/' + this.elementImages[x].folder + '/'+ this.elementImages[x].filename+ '' });
         x++;
       });
       this.SpinnerService.hide();
@@ -150,14 +189,38 @@ export class ContentDetailComponent implements OnInit {
     this.modalException.show();
   }
 
-  open(index: number): void {
-    // open lightbox
-    this._lightbox.open(this._albums, index);
+  openDocument(idContent, idContentMedia, type = null, title = null): void {
+    this.getFile(idContent, idContentMedia, type, title);
   }
 
-  close(): void {
-    // close lightbox programmatically
-    this._lightbox.close();
+  async getFile(idContent, idContentMedia, type, title) {
+    this.SpinnerService.show();
+    console.log(environment.apiUrl + environment.apiPort + "/contents/" + idContent + "/download/" + idContentMedia);
+    let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
+    this.http.post(environment.apiUrl + environment.apiPort + "/contents/" + idContent + "/download/" + idContentMedia, {}, {headers, responseType: 'arraybuffer'} )
+    .subscribe(data=> {
+      this.SpinnerService.hide();
+      this.blob = data;
+      this.downloadFile(data, type, title);
+    }, error => {
+      this.SpinnerService.hide();
+      alert( this.translate.instant('Invalid Token') );
+    });
+  }
+
+  downloadFile(data: any, type: string,title:string) {
+    let blob = new Blob([data], { type: type});
+    let url = window.URL.createObjectURL(blob);
+    //let pwa = window.open(url);
+    //if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
+    //    alert( 'Please disable your Pop-up blocker and try again.');
+    //}
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.href = url;
+    a.download = title;
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 
 }

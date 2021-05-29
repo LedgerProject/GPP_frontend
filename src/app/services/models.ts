@@ -200,4 +200,25 @@ export interface ElementsSearch {
   name: string;
 }
 
+export interface Content {
+  idContent: string;
+  iduser: string;
+  title: string;
+  description: string;
+  sharePosition: boolean;
+  positionLatitude: number;
+  positionLongitude: number;
+  shareName: boolean;
+  contentType: string;
+  insertDate: string;
+}
+
+export interface ContentImage {
+  idContentMedia: string;
+  idContent: string;
+  filename: string;
+  mimeType: string;
+  fileType: string;
+  size: number;
+}
 

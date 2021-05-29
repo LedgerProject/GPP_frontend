@@ -39,15 +39,15 @@
                 <th>{{ 'Date' | translate }}</th>
               </thead>
               <tbody>
-                <tr class="pointer" *ngFor="let element of filteredElements" (click)="elementDetails(element.idStructure)">
-                  <td>{{element.structurename}}</td>
-                  <td>{{element.address}}</td>
-                  <td>{{element.city}}</td>
+                <tr class="pointer" *ngFor="let element of filteredElements" (click)="elementDetails(element.idContent)">
+                  <td>{{element.title}}</td>
+                  <td>--</td>
+                  <td>--</td>
                   <td class="text-center">
-                    <span *ngIf="!element.Latitude" class="text-danger"><i class="fa fa-remove"></i></span>
-                    <span *ngIf="element.Latitude" class="text-success"><i class="fa fa-check"></i></span>
+                    <span *ngIf="!element.positionLatitude && !element.positionLongitude" class="text-danger"><i class="fa fa-remove"></i></span>
+                    <span *ngIf="element.positionLatitude && element.positionLongitude" class="text-success"><i class="fa fa-check"></i></span>
                   </td>
-                  <td class="nowrap">2021-05-12</td>
+                  <td class="nowrap">{{element.insertDate}}</td>
                 </tr>
               </tbody>
             </table>

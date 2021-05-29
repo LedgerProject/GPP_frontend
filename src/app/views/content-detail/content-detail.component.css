@@ -10,11 +10,11 @@ label.chips {
 }
 
 label.chips input {
-  display: none; 
+  display: none;
 }
 
 label.chips i {
-  display: none; 
+  display: none;
 }
 
 label.chips.selected {
@@ -43,7 +43,7 @@ label.chips:hover {
   background-position: center center;
   border: 4px solid #FFF;
   border-bottom: 2px solid #FFF;
-  border-top: 2px solid #FFF; 
+  border-top: 2px solid #FFF;
 }
 
 .gallery-image i {
@@ -82,3 +82,8 @@ agm-map {
   margin-top: 5px;
   font-size: large;
 }
+
+.clearfix { clear: both; }
+
+.pointer strong { margin-left: 5px;}
+

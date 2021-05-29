@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { ElementsSearch, MessageException, MessageError, QuickSearch, Structure } from '../../services/models';
+import { ElementsSearch, MessageException, MessageError, QuickSearch, Content } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
 @Component({
@@ -19,8 +19,8 @@ export class ContentsComponent implements OnInit {
   permissions: string;
   formFilter: QuickSearch;
   formSearch: ElementsSearch;
-  filteredElements: Array<Structure>;
-  allElements: Array<Structure>;
+  filteredElements: Array<Content>;
+  allElements: Array<Content>;
   @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
   userType: string;
@@ -31,6 +31,7 @@ export class ContentsComponent implements OnInit {
   errorsDescriptions: string[];
   current_url: string;
   SectionTitle: string;
+  contentType: string;
 
   action_delete: boolean;
   current_delete: number;
@@ -56,8 +57,10 @@ export class ContentsComponent implements OnInit {
     this.action_delete = false;
     this.current_url = router.url;
     if (this.current_url == '/abusealarms') {
+      this.contentType = 'abuseAlarm';
       this.SectionTitle = 'AbuseAlarms';
     } else if (this.current_url == '/news-stories') {
+      this.contentType = 'newsStory';
       this.SectionTitle = 'News & Stories';
     }
   }
@@ -76,50 +79,50 @@ export class ContentsComponent implements OnInit {
     // Filters
     let titleQuery = '';
     let nameQuery = '';
-    let preString = '';
+    let preString = ',';
     if (title) {
-      titleQuery = '"city": { "ilike" : "%25' + title + '%25" }';
-      preString = ',';
+      titleQuery =  preString + '"title": { "ilike" : "%25' +title + '%25" }';
     }
     if (name) {
-      nameQuery = nameQuery + preString + '"phoneNumberPrefix": "' + name + '" '
+      //nameQuery = preString + '"phoneNumberPrefix": "' + name + '" ';
     }
     let where = '"where": { \ ' +
+    '"contentType": "' + this.contentType + '" ' +
     titleQuery +
     nameQuery +
     '},';
     let filter = ' \
       { \
         "fields" : { \
-          "idStructure": true, \
-          "idOrganization": false, \
-          "organizationname": false, \
-          "alias": true, \
-          "structurename": true, \
-          "address": true, \
-          "city": true, \
-          "latitude": false, \
-          "longitude": false, \
-          "email": true, \
-          "phoneNumberPrefix": true, \
-          "phoneNumber": true, \
-          "website": true, \
-          "idIcon": false, \
-          "iconimage":true, \
-          "iconmarker":false \
+          "idContent": true, \
+          "idUser": false, \
+          "title": true, \
+          "description": true, \
+          "sharePosition": true, \
+          "positionLatitude": true, \
+          "positionLongitude": true, \
+          "shareName": true, \
+          "contentType": true, \
+          "insertDate": true \
         }, \ '
         + where +
         '"offset": 0, \
         "skip": 0, \
-        "order": ["structurename"] \
+        "order": ["insertDate DESC"] \
       }';
-    // console.log(filter);
     // HTTP Request
-    this.http.get<Array<Structure>>(environment.apiUrl + environment.apiPort + "/structures?filter=" + filter, {headers})
+    this.http.get<Array<Content>>(environment.apiUrl + environment.apiPort + "/contents?filter=" + filter, {headers})
     .subscribe(data => {
       this.SpinnerService.hide();
       this.allElements = data;
-      this.filteredElements = data;
+      let index = 0;
+      this.allElements.forEach(element => {
+        let date = element.insertDate;
+        date = date.substr(0,10);
+        this.allElements[index].insertDate = date;
+        index++;
+      });
+      this.filteredElements = this.allElements;
     }, error => {
       this.SpinnerService.hide();
       this.showExceptionMessage(error);
@@ -134,11 +137,9 @@ export class ContentsComponent implements OnInit {
       this.filteredElements = [];
       this.allElements.forEach(element => {
         search = search.toLowerCase();
-        let name = element.structurename.toLowerCase();
-        let address = element.address.toLowerCase();
-        let city = element.city.toLowerCase();
-        let email = element.email.toLowerCase();
-        if (name.includes(search) || address.includes(search) || city.includes(search) || email.includes(search)) {
+        let name = element.title.toLowerCase();
+        let description = element.description.toLowerCase();
+        if (name.includes(search) || description.includes(search)) {
           this.filteredElements.push(element);
         }
       });
@@ -147,7 +148,7 @@ export class ContentsComponent implements OnInit {
     }
   }
 
-  // Open structure details
+  // Open content details
   async elementDetails(id) {
     this.router.navigateByUrl(this.current_url + '-details/' + id);
   }
