@@ -440,6 +440,8 @@
     "Import Structures": "Import Structures",
     "Select the file to import the structures.": "Select the file to import the structures.",
     "(Only .xlsx allowed)": "(Only .xlsx allowed)",
-    "Import completed successfully!": "Import completed successfully!"
+    "Import completed successfully!": "Import completed successfully!",
+    "Privacy Policy": "Privacy Policy",
+    "Terms and Conditions": "Terms and Conditions"
 
 }

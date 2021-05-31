@@ -85,6 +85,9 @@ import { ContentsComponent } from './views/contents/contents.component';
 import { ContentDetailComponent } from './views/content-detail/content-detail.component';
 //import { AuthGuardService } from './auth/auth-guard.service';
 import { LightboxModule } from 'ngx-lightbox';
+import { PrivacyPolicyComponent } from './views/privacy-policy/privacy-policy.component';
+import { CookiePolicyComponent } from './views/cookie-policy/cookie-policy.component';
+import { TermsConditionsComponent } from './views/terms-conditions/terms-conditions.component';
 @NgModule({
   imports: [
     BrowserModule,GoogleMapsModule,
@@ -154,7 +157,10 @@ import { LightboxModule } from 'ngx-lightbox';
     ConfirmInvitationComponent,
     ResetPasswordComponent,
     ContentsComponent,
-    ContentDetailComponent
+    ContentDetailComponent,
+    PrivacyPolicyComponent,
+    CookiePolicyComponent,
+    TermsConditionsComponent
   ],
   providers: [{
     provide: LocationStrategy,

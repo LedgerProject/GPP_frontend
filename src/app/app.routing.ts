@@ -38,6 +38,9 @@ import { ConfirmInvitationComponent } from './views/confirm-invitation/confirm-i
 import { ResetPasswordComponent } from './views/reset-password/reset-password.component';
 import { ContentsComponent } from './views/contents/contents.component';
 import { ContentDetailComponent } from './views/content-detail/content-detail.component';
+import { PrivacyPolicyComponent } from './views/privacy-policy/privacy-policy.component';
+import { TermsConditionsComponent } from './views/terms-conditions/terms-conditions.component';
+
 //import { AuthGuardService as AuthGuard } from './auth/auth-guard.service';
 
 export const routes: Routes = [
@@ -213,6 +216,14 @@ export const routes: Routes = [
       {
         path: 'about-us',
         component: AboutUsComponent,
+      },
+      {
+        path: 'privacy-policy',
+        component: PrivacyPolicyComponent,
+      },
+      {
+        path: 'terms-conditions',
+        component: TermsConditionsComponent,
       },
       {
         path: 'logout',
