@@ -1,7 +1,111 @@
+<ngx-spinner size="default" type="ball-spin-clockwise"><p>{{ 'Please wait...' | translate }} </p></ngx-spinner>
 <div class="animated fadeIn">
-    <div class="row">
-      <div class="col-sm-12">
-        <p>Under costruction!</p>
+  <div class="row">
+    <div class="col-md-12 col-lg-8 mx-auto">
+      <div class="card mt-4">
+        <div class="card-body">
+          <!-- Information -->
+          <h1 class="mt-4">{{ 'Feedback' | translate }}</h1>
+          <p>{{ 'Enter title, description and email' | translate }}</p>
+
+          <!-- Form -->
+          <form  #form="ngForm" (ngSubmit)="sendRequest()">
+            <!-- Email -->
+            <div class="form-group">
+              <label>{{ 'Email' | translate }}</label>
+              <div class="input-group mb-3">
+                <input type="email" name="email" [(ngModel)]="formData.email" id="email" placeholder="{{ 'Enter email address' | translate }}" class="form-control" required maxlength="150">
+              </div>
+            </div>
+
+            <!-- Title -->
+            <div class="form-group mt-3">
+              <label>{{ 'Title' | translate }}</label>
+              <div class="input-group mb-3">
+                <input type="text" name="title" [(ngModel)]="formData.title" id="title" class="form-control" placeholder="{{ 'Enter the title' | translate }}" required maxlength="100">
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+              <label>{{ 'Description' | translate }}</label>
+              <div class="input-group mb-3">
+                <textarea [(ngModel)]="formData.description" id="description" class="form-control" placeholder="{{ 'Enter description' | translate }}" rows="5" required></textarea>
+              </div>
+            </div>
+
+            <!-- Submit button -->
+            <div class="row">
+              <div class="col-12 text-right">
+                <button type="submit" class="btn btn-primary rounded-0">{{ 'Send Request' | translate}}</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div>
     </div>
   </div>
-</div>      
+</div>
+
+<!-- Modal info message -->
+<div bsModal #modalInfo="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInfoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Congratulations!' | translate }}</h4>
+        <button type="button" class="close" (click)="modalInfo.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ 'Your feedback has been sent successfully' | translate }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modalInfo.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal entering data error -->
+<div bsModal #modalError="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalErrorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">{{ messageError.title }}</h4>
+              <button type="button" class="close" (click)="modalError.hide()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <p>{{ messageError.description }}</p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modalError.hide()">{{ 'Close' | translate }}</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal exception error -->
+<div bsModal #modalException="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalExceptionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageException.name }}</h4>
+        <button type="button" class="close" (click)="modalException.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><b>Status: </b>{{ messageException.statusText }} ({{ messageException.status }})</p>
+        <p><b>Description: </b>{{ messageException.message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+

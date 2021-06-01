@@ -79,6 +79,7 @@ export class DefaultLayoutComponent implements OnInit {
           localStorage.setItem('email', this.userMe.email);
           localStorage.setItem('permissions', JSON.stringify(this.userMe.permissions));
           localStorage.setItem('userType',this.userMe.userType);
+
           //Get the user organizations
           if (this.userMe.userType != 'user') {
             this.getOrganizations();

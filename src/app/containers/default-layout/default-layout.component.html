@@ -50,11 +50,11 @@
       </li>
 
       <!-- AbuseAlarm -->
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="userMe.userType == 'gppOperator'">
         <a class="nav-link" [routerLink]="['/abusealarms']" (click)="toggleNavbar()">{{ 'AbuseAlarms' | translate }}</a>
       </li>
       <!-- News&Stories -->
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="userMe.userType == 'gppOperator'">
         <a class="nav-link" [routerLink]="['/news-stories']" (click)="toggleNavbar()">{{ 'News & Stories' | translate }}</a>
       </li>
 
@@ -124,7 +124,10 @@
             <a [routerLink]="['/feedback']">{{ 'Feedback' | translate }}</a>
           </li>
           <li>
-            <a [routerLink]="['/about-us']">{{ 'About us' | translate }}</a>
+            <a href="https://www.globalpassportproject.org" target="_blank">{{ 'The Project' | translate }}</a>
+          </li>
+          <li>
+            <a href="https://www.kosmopolis.me" target="_blank">Kosmopolis</a>
           </li>
           <li>
             <a [routerLink]="['/privacy-policy']">{{ 'Privacy Policy' | translate }}</a>

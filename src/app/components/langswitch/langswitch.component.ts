@@ -11,8 +11,8 @@ export class LangswitchComponent implements OnInit {
   languages: any;
   constructor(public translate: TranslateService) {
     translate.addLangs(['en', 'fr']);
-    translate.setDefaultLang('en');   
-    this.languages = [{ 'name': 'English', 'value':'en'},{ 'name':'Francais','value':'fr' }];
+    translate.setDefaultLang('en');
+    this.languages = [{ 'name': 'English', 'value':'en'}];//,{ 'name':'Francais','value':'fr' }];
   }
 
   ngOnInit(): void {
@@ -21,6 +21,6 @@ export class LangswitchComponent implements OnInit {
   switchLang(lang: string) {
     this.translate.use(lang);
     localStorage.setItem('current_lang',lang);
-  }   
+  }
 
 }
