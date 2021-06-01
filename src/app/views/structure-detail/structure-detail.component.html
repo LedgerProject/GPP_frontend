@@ -19,21 +19,21 @@
             <!-- Identifier -->
             <div class="form-group md-3">
               <label>{{ 'Name' | translate }}</label>
-              <input type="text" name="name" [(ngModel)]="formData.name" id="name" class="form-control" placeholder="{{'Enter the structure name' | translate }}" required>
+              <input type="text" name="name" [(ngModel)]="formData.name" id="name" class="form-control" placeholder="{{'Enter the structure name' | translate }}" required maxlength="100">
               <small class="form-text text-muted">{{ 'Enter the structure name.' | translate }}</small>
             </div>
 
             <!-- Address -->
             <div class="form-group md-3">
               <label>{{ 'Address' | translate }}</label>
-              <input type="text" name="address" [(ngModel)]="formData.address" id="address" class="form-control" placeholder="{{'Enter the structure address' | translate }}" required>
+              <input type="text" name="address" [(ngModel)]="formData.address" id="address" class="form-control" placeholder="{{'Enter the structure address' | translate }}" required maxlength="150">
               <small class="form-text text-muted">{{ 'Enter the address.' | translate }}</small>
             </div>
 
             <!-- City -->
             <div class="form-group md-3">
               <label>{{ 'City' | translate }}</label>
-              <input type="text" name="city" [(ngModel)]="formData.city" id="city" class="form-control" placeholder="{{'Enter the structure city' | translate }}" required>
+              <input type="text" name="city" [(ngModel)]="formData.city" id="city" class="form-control" placeholder="{{'Enter the structure city' | translate }}" required maxlength="50">
               <small class="form-text text-muted">{{ 'Enter the city.' | translate }}</small>
             </div>
 
@@ -50,7 +50,7 @@
             <!-- E-Mail -->
             <div class="form-group md-3">
               <label>{{ 'E-Mail' | translate }}</label>
-              <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Enter the structure e-mail address' | translate }}" required>
+              <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Enter the structure e-mail address' | translate }}" required maxlength="150">
               <small class="form-text text-muted">{{ 'Enter the email address.' | translate }}</small>
             </div>
 
@@ -65,7 +65,7 @@
                   </select>
                 </div>
                 <div class="col-9">
-                  <input type="tel" name="phone" [(ngModel)]="formData.phone" id="phone" class="form-control" placeholder="{{'Enter the structure phone number' | translate }}" required>
+                  <input type="tel" name="phone" [(ngModel)]="formData.phone" id="phone" class="form-control" placeholder="{{'Enter the structure phone number' | translate }}" required maxlength="50">
                 </div>
               </div>
               <small class="form-text text-muted">{{ 'Enter the phone number.' | translate }}</small>
@@ -74,7 +74,7 @@
             <!-- Website -->
             <div class="form-group md-3">
               <label>{{ 'Website' | translate }}</label>
-              <input type="text" name="website" [(ngModel)]="formData.website" id="website" class="form-control" placeholder="{{'Enter the structure website' | translate }}" required>
+              <input type="text" name="website" [(ngModel)]="formData.website" id="website" class="form-control" placeholder="{{'Enter the structure website' | translate }}" required maxlength="150">
               <small class="form-text text-muted">{{ 'Enter the website (remember to add http or https).' | translate }}</small>
             </div>
 

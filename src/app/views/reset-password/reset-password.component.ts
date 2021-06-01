@@ -21,6 +21,8 @@ export class ResetPasswordComponent implements OnInit {
   formData: ResetPassword;
   messageException: MessageException;
   alert_class: string;
+  submitted: boolean;
+
   constructor(
     private router: Router,
     private http:HttpClient,
@@ -38,6 +40,7 @@ export class ResetPasswordComponent implements OnInit {
       newPassword: '',
       confirmNewPassword: ''
     };
+    this.submitted = false;
   }
 
   ngOnInit(): void {
@@ -97,6 +100,7 @@ export class ResetPasswordComponent implements OnInit {
             message : this.translate.instant('Reset Password token not exists')
           };
           this.alert_class = 'warning';
+          this.submitted = true;
         break;
         case 11:
           this.messageException = {
@@ -106,6 +110,7 @@ export class ResetPasswordComponent implements OnInit {
             message : this.translate.instant('Reset Password token is empty')
           };
           this.alert_class = 'warning';
+          this.submitted = true;
         break;
         case 20:
           this.messageException = {
@@ -124,6 +129,7 @@ export class ResetPasswordComponent implements OnInit {
             message : this.translate.instant('Password updated successfully')
           };
           this.alert_class = 'success';
+          this.submitted = true;
         break;
         default:
           this.messageException = {

@@ -25,6 +25,7 @@ export class ForgotpasswordComponent implements OnInit {
   questions: any;
   pbkdf: string;
   @Input() get_user_type: string;
+  submitted: boolean;
 
   constructor (
     private router: Router,
@@ -54,7 +55,8 @@ export class ForgotpasswordComponent implements OnInit {
       {'question': this.translate.instant('What is your home town?') },
       {'question': this.translate.instant('What is the name of your first teacher?') },
       {'question': this.translate.instant('What is the surname of your mother before wedding?') }
-    ]
+    ];
+    this.submitted = false;
     }
 
   // Page init
@@ -95,11 +97,12 @@ export class ForgotpasswordComponent implements OnInit {
       this.alert_class = 'danger';
       this.SpinnerService.hide();*/
     } else {
-      this.formData.user_type = this.user_type;
+
 
       // this.user_type = 'user';
 
-      if (this.formData.user_type != 'user') {
+      if (this.user_type != 'user') {
+        this.formData.user_type = this.user_type;
         postParams['email'] = this.formData.email;
         postParams['userType'] = this.formData.user_type;
         postParams['answer1'] = '';
@@ -168,7 +171,8 @@ export class ForgotpasswordComponent implements OnInit {
             var code = response.pbkdfPublicKeyResponse.code;
             if (code == 202) {
               this.pbkdf = 'pbkdf';
-              this.user_type = this.formData.user_type;
+              this.formData.user_type = this.user_type;
+              // this.user_type = this.formData.user_type;
             } else if (code == 20) {
               this.messageException = {
                 name : '',
@@ -227,6 +231,7 @@ export class ForgotpasswordComponent implements OnInit {
               message : this.translate.instant('Request already done in the last 24 hours')
             };
             this.alert_class = 'warning';
+            this.submitted = true;
           break;
           case 30:
             this.messageException = {
@@ -254,6 +259,7 @@ export class ForgotpasswordComponent implements OnInit {
               message : this.translate.instant('Password recovery link sent successfully to your email address')
             };
             this.alert_class = 'success';
+            this.submitted = true;
           break;
           default:
             this.messageException = {
@@ -262,7 +268,7 @@ export class ForgotpasswordComponent implements OnInit {
               statusText : this.translate.instant('Error'),
               message : response_message
             };
-            this.alert_class = 'success';
+            this.alert_class = 'danger';
             break;
         }
 

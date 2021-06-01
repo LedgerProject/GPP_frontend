@@ -37,7 +37,7 @@
                     <!-- Topic title -->
                     <label [hidden]="topic.lang != language.value">{{ 'Topic title' | translate }} {{counter + 1}} ({{language.name}})</label>
                     <div class="input-group mb-3" [hidden]="topic.lang != language.value">
-                      <input type="text" name="title[{{counter}}][{{language.value}}]" [(ngModel)]="topic.title[language.value]" class="form-control" placeholder="{{'Enter topic title' | translate }}">
+                      <input type="text" name="title[{{counter}}][{{language.value}}]" [(ngModel)]="topic.title[language.value]" class="form-control" placeholder="{{'Enter topic title' | translate }}" maxlength="100">
 
                       <!-- Delete button -->
                       <button type="button" class="btn btn-danger rounded-0" (click)="showDeleteMessage(counter, topic.id)">{{ 'Delete' | translate}}</button>

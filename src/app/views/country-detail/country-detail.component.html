@@ -19,7 +19,7 @@
             <!-- Identifier -->
             <div class="form-group md-3">
               <label>{{ 'Identifier' | translate }}</label>
-              <input type="text" name="identifier" [(ngModel)]="formData.identifier" id="identifier" class="form-control" aria-describedby="identifierHelpBlock" placeholder="{{'Enter the country identifier' | translate }}" required>
+              <input type="text" name="identifier" [(ngModel)]="formData.identifier" id="identifier" class="form-control" aria-describedby="identifierHelpBlock" placeholder="{{'Enter the country identifier' | translate }}" required maxlength="50">
               <small class="form-text text-muted">{{ 'Specify the name of the country in the reference language.' | translate }}</small>
             </div>
 
@@ -40,7 +40,7 @@
               <div *ngFor="let language of languages; let i = index">
                 <label [hidden]="currentLanguage != language.value">{{ 'Name' | translate }} ({{ language.name }})</label>
                 <div [hidden]="currentLanguage != language.value">
-                  <input name="title[{{language.value}}]" [(ngModel)]="formData.title[language.value]" class="form-control" placeholder="{{'Enter the country name' | translate }}">
+                  <input name="title[{{language.value}}]" [(ngModel)]="formData.title[language.value]" class="form-control" placeholder="{{'Enter the country name' | translate }}" maxlength="50">
                 </div>
                 <small [hidden]="currentLanguage != language.value" class="form-text text-muted">{{ 'Enter the name of the country in the various languages (to change language select \'Change Language\').' | translate }}</small>
               </div>

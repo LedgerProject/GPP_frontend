@@ -14,7 +14,7 @@
             <div class="form-group">
               <label>{{ 'Insert the name of your organization' | translate }}</label>
               <div class="input-group mb-3">
-                <input type="text" name="name" [(ngModel)]="formData.name" id="name" class="form-control" required>
+                <input type="text" name="name" [(ngModel)]="formData.name" id="name" class="form-control" required maxlength="100">
               </div>
             </div>
 

@@ -52,9 +52,9 @@
             </div>
 
             <!-- Map -->
-            <div class="form-group md-3">
+            <div class="form-group md-3" *ngIf="formData.latitude && formData.longitude">
               <label>{{ 'Map position' | translate }}</label>
-              <div *ngIf="formData.latitude && formData.longitude">
+              <div>
               <agm-map [latitude]="formData?.latitude" [longitude]="formData?.longitude" [zoom]="17" [disableDefaultUI]="false">
                 <agm-marker [latitude]="formData?.latitude" [longitude]="formData?.longitude"></agm-marker>
               </agm-map>

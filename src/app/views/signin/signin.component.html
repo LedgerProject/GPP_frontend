@@ -32,12 +32,12 @@
                 <form  #form="ngForm" (ngSubmit)="signIn()" *ngIf="!showAnswers">
                   <!-- E-Mail -->
                   <div class="input-group mb-3">
-                    <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required>
+                    <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required maxlength="150">
                   </div>
 
                   <!-- Password -->
                   <div class="input-group mb-4">
-                    <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required>
+                    <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required maxlength="150">
                   </div>
 
                   <!-- Sign in button -->
@@ -52,12 +52,12 @@
 
                   <!-- E-Mail -->
                   <div class="input-group mb-3">
-                    <input type="email" name="email" [(ngModel)]="formDataUser.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required>
+                    <input type="email" name="email" [(ngModel)]="formDataUser.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required maxlength="150">
                   </div>
 
                   <!-- Password -->
                   <div class="input-group mb-4">
-                    <input type="password" name="password" id="password" [(ngModel)]="formDataUser.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required>
+                    <input type="password" name="password" id="password" [(ngModel)]="formDataUser.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required maxlength="150">
                   </div>
 
 
@@ -71,7 +71,7 @@
                     <div class="input-group">
                       <label>{{ questions[0].question }}</label>
                     </div>
-                    <input type="text" class="form-control" name="answer1" [(ngModel)]="formDataUser.answer1"  placeholder="{{ 'Your Answer' | translate }}">
+                    <input type="text" class="form-control" name="answer1" [(ngModel)]="formDataUser.answer1"  placeholder="{{ 'Your Answer' | translate }}" maxlength="50">
                   </div>
                 </div>
                 <div class="row">
@@ -79,7 +79,7 @@
                     <div class="input-group">
                       <label>{{ questions[1].question }}</label>
                     </div>
-                    <input type="text" class="form-control" name="answer2" [(ngModel)]="formDataUser.answer2"  placeholder="{{ 'Your Answer' | translate }}">
+                    <input type="text" class="form-control" name="answer2" [(ngModel)]="formDataUser.answer2"  placeholder="{{ 'Your Answer' | translate }} " maxlength="50">
                   </div>
                 </div>
                 <div class="row">
@@ -87,7 +87,7 @@
                     <div class="input-group">
                       <label>{{ questions[2].question }}</label>
                     </div>
-                    <input type="text" class="form-control" name="answer3" [(ngModel)]="formDataUser.answer3"  placeholder="{{ 'Your Answer' | translate }}">
+                    <input type="text" class="form-control" name="answer3" [(ngModel)]="formDataUser.answer3"  placeholder="{{ 'Your Answer' | translate }}" maxlength="50">
                   </div>
                 </div>
                 <div class="row">
@@ -95,7 +95,7 @@
                     <div class="input-group">
                       <label>{{ questions[3].question }}</label>
                     </div>
-                    <input type="text" class="form-control" name="answer4" [(ngModel)]="formDataUser.answer4"  placeholder="{{ 'Your Answer' | translate }}">
+                    <input type="text" class="form-control" name="answer4" [(ngModel)]="formDataUser.answer4"  placeholder="{{ 'Your Answer' | translate }}" maxlength="50">
                   </div>
                 </div>
                 <div class="row">
@@ -103,7 +103,7 @@
                     <div class="input-group">
                       <label>{{ questions[4].question }}</label>
                     </div>
-                    <input type="text" class="form-control" name="answer5" [(ngModel)]="formDataUser.answer5"  placeholder="{{ 'Your Answer' | translate }}">
+                    <input type="text" class="form-control" name="answer5" [(ngModel)]="formDataUser.answer5"  placeholder="{{ 'Your Answer' | translate }}" maxlength="50">
                   </div>
                 </div>
                 <!-- Confirm button -->

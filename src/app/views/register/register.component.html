@@ -16,8 +16,8 @@
                 <form  #form="ngForm" (ngSubmit)="signOn()">
                   <!-- First name -->
                   <div class="form-group mb-3 text-left">
-                    <label>{{ 'First name' | translate }}</label>
-                    <input type="text" name="firstName" [(ngModel)]="formData.firstName" id="firstName" class="form-control" placeholder="{{ 'First name' | translate }}" required [disabled]="signOnCompleted">
+                    <label>{{ 'First name' | translate }}<span class="asterisk-symbol">*</span></label>
+                    <input type="text" name="firstName" [(ngModel)]="formData.firstName" id="firstName" class="form-control" placeholder="{{ 'First name' | translate }}" required [disabled]="signOnCompleted" maxlength="50">
                   </div>
 
                   <!-- First name alert -->
@@ -27,8 +27,8 @@
 
                   <!-- Last name -->
                   <div class="form-group mb-3 text-left">
-                    <label>{{ 'Last name' | translate }}</label>
-                    <input type="text" name="lastName" [(ngModel)]="formData.lastName" id="lastName" class="form-control" placeholder="{{ 'Last name' | translate }}" required [disabled]="signOnCompleted">
+                    <label>{{ 'Last name' | translate }}<span class="asterisk-symbol">*</span></label>
+                    <input type="text" name="lastName" [(ngModel)]="formData.lastName" id="lastName" class="form-control" placeholder="{{ 'Last name' | translate }}" required [disabled]="signOnCompleted" maxlength="50">
                   </div>
 
                   <!-- Last name alert -->
@@ -38,8 +38,8 @@
 
                   <!-- E-Mail -->
                   <div class="form-group mb-3 text-left">
-                    <label>{{ 'Email' | translate }}</label>
-                    <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{ 'Email' | translate }}" autocomplete="email" required  [disabled]="signOnCompleted">
+                    <label>{{ 'Email' | translate }}<span class="asterisk-symbol">*</span></label>
+                    <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{ 'Email' | translate }}" autocomplete="email" required  [disabled]="signOnCompleted" maxlength="150">
                   </div>
 
                   <!-- E-mail alert -->
@@ -49,14 +49,14 @@
 
                   <!-- Confirm e-mail -->
                   <div class="form-group mb-3 text-left">
-                    <label>{{ 'Confirm e-mail' | translate }}</label>
-                    <input type="email" name="emailConfirm" [(ngModel)]="formData.emailConfirm" id="email_confirm" class="form-control" placeholder="{{ 'Confirm e-mail' | translate }}" required  [disabled]="signOnCompleted">
+                    <label>{{ 'Confirm e-mail' | translate }}<span class="asterisk-symbol">*</span></label>
+                    <input type="email" name="emailConfirm" [(ngModel)]="formData.emailConfirm" id="email_confirm" class="form-control" placeholder="{{ 'Confirm e-mail' | translate }}" required  [disabled]="signOnCompleted" maxlength="150">
                   </div>
 
                   <!-- Password -->
                   <div class="form-group mb-3 text-left">
-                    <label>{{ 'Password' | translate }}</label>
-                    <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{ 'Password' | translate }}" autocomplete="password" required  [disabled]="signOnCompleted">
+                    <label>{{ 'Password' | translate }}<span class="asterisk-symbol">*</span></label>
+                    <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{ 'Password' | translate }}" autocomplete="password" required  [disabled]="signOnCompleted" maxlength="150">
                   </div>
 
                   <!-- Password alert -->
@@ -66,14 +66,14 @@
 
                   <!-- Confirm password -->
                   <div class="form-group mb-3 text-left">
-                    <label>{{ 'Confirm password' | translate }}</label>
-                    <input type="password" name="passwordConfirm" id="passwordConfirm" [(ngModel)]="formData.passwordConfirm" class="form-control" placeholder="{{ 'Confirm password' | translate }}" required  [disabled]="signOnCompleted">
+                    <label>{{ 'Confirm password' | translate }}<span class="asterisk-symbol">*</span></label>
+                    <input type="password" name="passwordConfirm" id="passwordConfirm" [(ngModel)]="formData.passwordConfirm" class="form-control" placeholder="{{ 'Confirm password' | translate }}" required  [disabled]="signOnCompleted" maxlength="150">
                   </div>
 
                   <!-- Secret key -->
                   <div class="form-group mb-3 text-left">
                     <label>{{ 'Secret key' | translate }}</label>
-                    <input type="password" name="secretKey" id="secretKey" [(ngModel)]="formData.secretKey" class="form-control" placeholder="{{ 'Secret key' | translate }}" [disabled]="signOnCompleted">
+                    <input type="password" name="secretKey" id="secretKey" [(ngModel)]="formData.secretKey" class="form-control" placeholder="{{ 'Secret key' | translate }}" [disabled]="signOnCompleted" maxlength="50">
                   </div>
 
                   <!-- Secret key alert -->
