@@ -55,10 +55,10 @@ export class SigninComponent implements OnInit {
     this.pbkdf = '';
     this.questions = [
       {'question': this.translate.instant('Where my parents met?') },
-      {'question': this.translate.instant('What is the name of your first pet?') },
+      {'question': this.translate.instant('What is your favorite artist?') },
       {'question': this.translate.instant('What is your home town?') },
       {'question': this.translate.instant('What is the name of your first teacher?') },
-      {'question': this.translate.instant('What is the surname of your mother before wedding?') }
+      {'question': this.translate.instant('What is your favorite dish?') }
     ];
     this.showAnswers = false;
     this.lastLoginEmail = localStorage.getItem('lastLoginEmail');
