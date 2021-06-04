@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
@@ -9,9 +9,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { GeocodeService } from '../../services/geocode.service';
 import { Location } from '../../services/location-model';
-import { Language, MessageException, MessageError, Structure, StructureLanguage, StructureCategory, StructureImage, Icon, Category } from '../../services/models';
+import { Language, MessageException, MessageError, MessageInfo, Structure, StructureLanguage, StructureCategory, StructureImage, Icon, Category } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
+
 interface FormData {
   name: string;
   address: string;
@@ -34,17 +35,22 @@ interface FormDataStructureCategories {
   value: boolean;
 }
 
+interface FormReject {
+  description: string
+}
+
 @Component({
   selector: 'app-structure-detail',
   templateUrl: './structure-detail.component.html',
   styleUrls: ['./structure-detail.component.css']
 })
 
-export class StructureDetailComponent implements OnInit {
+export class StructureDetailComponent implements OnInit, AfterViewInit {
   token: string;
   idOrganization: string;
   @Input() uuid: string;
   formData: FormData;
+  formReject: FormReject;
   structureCategories: Array<FormDataStructureCategories>;
   structureImages: Array<StructureImage>
   uploadForm: FormGroup;
@@ -57,14 +63,23 @@ export class StructureDetailComponent implements OnInit {
   @ViewChild('modalDelete') public modalDelete: ModalDirective;
   @ViewChild('modalDeleteImage') public modalDeleteImage: ModalDirective;
   @ViewChild('modalError') public modalError: ModalDirective;
-  messageError: MessageError;
-  errorsDescriptions: string[];
+  @ViewChild('modalReject') public modalReject: ModalDirective;
   @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
+  messageInfo: MessageInfo;
+  messageError: MessageError;
+  errorsDescriptions: string[];
   idStructureImageDelete: string;
   loadingCoordinates: boolean;
   structureImageSrc: string;
   imagesPath: string;
+  action: string;
+  get_action: string;
+  publicationStatus: string;
+  rejectionMessage: string;
+  userType: string;
+  publicationStatusClass: string;
+
   constructor (
     private router: Router,
     private _Activatedroute:ActivatedRoute,
@@ -86,6 +101,7 @@ export class StructureDetailComponent implements OnInit {
     this.prefixes = ['+1', '+1 242', '+1 246', '+1 264', '+1 268', '+1 284', '+1 345', '+1 441', '+1 473', '+1 649', '+1 664', '+1 721', '+1 758', '+1 767', '+1 784', '+1 787', '+1 809', '+1 829', '+1 849', '+1 868', '+1 869', '+1 876', '+20', '+210', '+211', '+212', '+213', '+214', '+215', '+216', '+217', '+218', '+219', '+220', '+221', '+222', '+223', '+224', '+225', '+226', '+227', '+228', '+229', '+230', '+231', '+232', '+233', '+234', '+235', '+236', '+237', '+238', '+239', '+240', '+241', '+242', '+243', '+244', '+245', '+246', '+247', '+248', '+249', '+250', '+251', '+252', '+253', '+254', '+255', '+256', '+257', '+258', '+259', '+260', '+261', '+262', '+263', '+264', '+265', '+266', '+267', '+268', '+269', '+27', '+290', '+291', '+297', '+298', '+299', '+30', '+31', '+32', '+33', '+34', '+350', '+351', '+352', '+353', '+354', '+355', '+356', '+357', '+358', '+359', '+36', '+370', '+371', '+372', '+373', '+374', '+375', '+376', '+377', '+378', '+379', '+380', '+381', '+382', '+383', '+385', '+386', '+387', '+388', '+389', '+39', '+40', '+41', '+420', '+421', '+423', '+43', '+44', '+45', '+46', '+47', '+48', '+49', '+500', '+501', '+502', '+503', '+504', '+505', '+506', '+507', '+508', '+509', '+51', '+52', '+53', '+54', '+55', '+56', '+57', '+58', '+590', '+591', '+592', '+593', '+594', '+595', '+596', '+597', '+598', '+599 3', '+599 4', '+599 7', '+599 9', '+60', '+61', '+62', '+63', '+64', '+65', '+66', '+670', '+672', '+673', '+674', '+675', '+676', '+677', '+678', '+679', '+680', '+681', '+682', '+683', '+685', '+686', '+687', '+688', '+689', '+690', '+691', '+692', '+7', '+800', '+808', '+81', '+82', '+84', '+850', '+852', '+853', '+855', '+856', '+86', '+880', '+886', '+90', '+91', '+92', '+93', '+94', '+95', '+960', '+961', '+962', '+963', '+964', '+965', '+966', '+967', '+968', '+970', '+971', '+972', '+973', '+974', '+975', '+976', '+977', '+98', '+992', '+993', '+994', '+995', '+996', '+998'];
     this.messageException = environment.messageExceptionInit;
     this.messageError = environment.messageErrorInit;
+    this.messageInfo = environment.messageErrorInit;
     this.errorsDescriptions = [];
     this.formData = {
       name: '',
@@ -99,12 +115,32 @@ export class StructureDetailComponent implements OnInit {
       phone: '',
       phonePrefix: '',
       website: '',
-      text: []
+      text: [],
     };
     this.structureCategories = [];
     this.structureImages = [];
     this.idStructureImageDelete = '';
     this.imagesPath = environment.imagesUrl;
+    this.get_action = this._Activatedroute.snapshot.queryParamMap.get("action");
+    this._Activatedroute.queryParamMap.subscribe(queryParams => {
+      this.get_action = queryParams.get("action")
+    })
+    if (this.get_action) {
+      this.action = this.get_action;
+    }
+    this.publicationStatus = '';
+    this.rejectionMessage = '';
+    this.publicationStatusClass = '';
+    this.userType = localStorage.getItem('userType');
+    this.formReject = {
+      description: ''
+    }
+  }
+
+  ngAfterViewInit(): void {
+    if (this.action == 'success') {
+      this.modalInfo.show();
+    }
   }
 
   // Page init
@@ -175,8 +211,20 @@ export class StructureDetailComponent implements OnInit {
         this.formData.phonePrefix = data.phoneNumberPrefix;
         this.formData.website = data.website;
         this.formData.icon = data.idIcon;
+        this.publicationStatus = data.publicationStatus;
 
+        if (this.publicationStatus == 'requestPublication') {
+          this.publicationStatusClass = 'text-warning';
+        } else if (this.publicationStatus == 'modification')  {
+          this.publicationStatusClass = 'text-primary';
+        } else if (this.publicationStatus == 'published') {
+          this.publicationStatusClass = 'text-success';
+        } else if (this.publicationStatus == 'rejected') {
+          this.publicationStatusClass = 'text-danger';
+        }
+        this.rejectionMessage = data.rejectionDescription;
         this.getStructureLanguages();
+
       }, error => {
         this.SpinnerService.hide();
         this.showExceptionMessage(error);
@@ -352,7 +400,12 @@ export class StructureDetailComponent implements OnInit {
         .subscribe(async data => {
           await this.saveStructureLanguages();
           this.SpinnerService.hide();
-          this.modalInfo.show();
+          this.showInfoMessage(this.translate.instant('Structure saved'),this.translate.instant('The information has been saved.'));
+          if (this.userType == 'operator') {
+            this.publicationStatus = 'modification';
+            this.publicationStatusClass = 'text-primary';
+            this.rejectionMessage = '';
+          }
         }, error => {
           this.SpinnerService.hide();
           this.showExceptionMessage(error);
@@ -365,7 +418,7 @@ export class StructureDetailComponent implements OnInit {
 
           await this.saveStructureLanguages();
           this.SpinnerService.hide();
-          this.router.navigateByUrl('structure-details/' + this.uuid);
+          this.router.navigateByUrl('structure-details/' + this.uuid + '/?action=success');
         }, error => {
           this.SpinnerService.hide();
           this.showExceptionMessage(error);
@@ -584,6 +637,111 @@ export class StructureDetailComponent implements OnInit {
     this.SpinnerService.hide();
   }
 
+  //Request Publication
+  async requestPublication() {
+    this.SpinnerService.show();
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+    let postParams = { };
+      //Update the structure
+      this.http.post(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid + '/request-publication', postParams, {headers} )
+      .subscribe(async data => {
+        var response: any = data;
+        var response_code: number = parseInt(response.messageOutcome.code);
+        var response_message = response.messageOutcome.message;
+        this.SpinnerService.hide();
+        switch (response_code) {
+          case 10:
+            this.showErrorMessage(
+              this.translate.instant('Error'),
+              this.translate.instant('Structure does not exist'),
+            );
+          break;
+          case 201: case 202:
+            this.showInfoMessage(this.translate.instant('Publication request sent'),this.translate.instant('The publication request has been sent successfully.'));
+            this.publicationStatus = 'requestPublication';
+            this.publicationStatusClass = 'text-warning';
+            this.rejectionMessage = '';
+          break;
+          default:
+            this.showErrorMessage(this.translate.instant('Sorry'),this.translate.instant('The following error occurred') + ': ' + response_message);
+            break;
+        }
+      }, error => {
+        this.SpinnerService.hide();
+        this.showExceptionMessage(error);
+      });
+  }
+
+  // Publication
+  async publicationStructure(publicationStatus = null, rejectionMessage = null) {
+    this.rejectionMessage = '';
+    this.SpinnerService.show();
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+    let postParams = {
+      publicationStatus: publicationStatus,
+      rejectionMessage: rejectionMessage
+    };
+      //Update the structure
+      this.http.post(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid + '/publication', postParams, {headers} )
+      .subscribe(async data => {
+
+        var response: any = data;
+        var response_code: number = parseInt(response.messageOutcome.code);
+        var response_message = response.messageOutcome.message;
+        this.SpinnerService.hide();
+        this.modalReject.hide();
+        switch (response_code) {
+          case 10:
+            this.showErrorMessage(
+              this.translate.instant('Error'),
+              this.translate.instant('Structure does not exist'),
+            );
+          break;
+          case 201: case 202:
+            if (publicationStatus == 'published') {
+              this.showInfoMessage(this.translate.instant('Publication completed'),this.translate.instant('The structure publication has been confirmed successfully.'));
+              this.publicationStatus = 'published';
+              this.publicationStatusClass = 'text-success';
+            } else if (publicationStatus == 'rejected') {
+              this.showInfoMessage(this.translate.instant('Structure Rejected'),this.translate.instant('The structure publication has been rejected successfully.'));
+              this.publicationStatus = 'rejected';
+              this.publicationStatusClass = 'text-danger';
+              this.rejectionMessage = this.formReject.description;
+            }
+          break;
+          default:
+            this.showErrorMessage(
+              this.translate.instant('Error'),
+              response_message
+            );
+            break;
+        }
+      }, error => {
+        this.SpinnerService.hide();
+        this.showExceptionMessage(error);
+      });
+
+  }
+
+  // Publish
+  async publishStructure() {
+    this.publicationStructure('published');
+  }
+
+  // Open Reject Modal
+  async rejectStructure() {
+    this.formReject.description = '';
+    this.modalReject.show();
+  }
+
+  // Reject
+  async confirmRejectStructure() {
+    this.publicationStructure('rejected',this.formReject.description);
+  }
+
+
   //Error message
   showErrorMessage(title: string, description: string): void {
     this.messageError.title = title;
@@ -591,9 +749,17 @@ export class StructureDetailComponent implements OnInit {
     this.modalError.show();
   }
 
+  //Info message
+  showInfoMessage(title: string, description: string): void {
+    this.messageInfo.title = title;
+    this.messageInfo.description = description;
+    this.modalInfo.show();
+  }
+
   //Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
     this.modalException.show();
   }
+
 }

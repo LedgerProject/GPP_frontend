@@ -62,6 +62,7 @@
                 <th>{{ 'Prefix' | translate }}</th>
                 <th>{{ 'E-Mail' | translate }}</th>
                 <th class="text-center">{{ 'Icon' | translate }}</th>
+                <th>{{ 'Status' | translate }}</th>
               </thead>
               <tbody>
                 <tr class="pointer" *ngFor="let structure of filteredStructures">
@@ -73,6 +74,12 @@
                   <td (click)="structureDetails(structure.idStructure)">{{structure.email}}</td>
                   <td class="text-center" (click)="structureDetails(structure.idStructure)">
                     <img class="icon-list" [src]="'data:image/png;base64,' + structure.iconimage">
+                  </td>
+                  <td class="text-center">
+                    <span *ngIf="structure.publicationStatus == 'published'" class="text-success"><i class="fa fa-check-circle-o"></i></span>
+                    <span *ngIf="structure.publicationStatus == 'rejected'" class="text-danger"><i class="fa fa-check-circle-o"></i></span>
+                    <span *ngIf="structure.publicationStatus == 'requestPublication'" class="text-warning"><i class="fa fa-check-circle-o"></i></span>
+                    <span *ngIf="structure.publicationStatus == 'modification'" class="text-primary"><i class="fa fa-check-circle-o"></i></span>
                   </td>
                 </tr>
               </tbody>

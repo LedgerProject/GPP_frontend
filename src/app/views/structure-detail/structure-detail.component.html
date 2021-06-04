@@ -115,6 +115,7 @@
             </div>
 
             <!-- Delete, find address and save buttons-->
+            <div class="form-group md-3">
             <div class="row">
               <div class="col-4 text-left">
                 <button [hidden]="!uuid" type="button" class="btn btn-danger rounded-0" (click)="modalDelete.show()">{{ 'Delete' | translate}}</button>
@@ -126,6 +127,27 @@
                 <button type="submit" class="btn btn-primary rounded-0">{{ 'Save' | translate}}</button>
               </div>
             </div>
+            </div>
+
+            <!-- Publication-->
+            <div class="form-group md-3">
+            <div class="row">
+              <div class="col-4 text-left">
+                Publication Status:
+                <div [class]="publicationStatusClass" *ngIf="publicationStatus">
+                  <i class="fa fa-check-circle-o"></i> &nbsp;<strong>{{ publicationStatus | translate}}</strong>
+                  <div class="text-danger" *ngIf="publicationStatus == 'rejected'">{{ 'Rejection reason:' | translate }} <strong>{{ rejectionMessage }}</strong></div>
+                </div>
+              </div>
+              <div class="col-8 text-right">
+                <button *ngIf="userType == 'operator' && publicationStatus == 'modification'" [hidden]="!uuid" type="button" class="btn btn-primary rounded-0" (click)="requestPublication()">{{ 'Request Publication' | translate}}</button>
+
+                <button *ngIf="userType == 'gppOperator' && publicationStatus != 'rejected'" [hidden]="!uuid" type="button" class="btn btn-danger rounded-0 ml-3" (click)="rejectStructure()">{{ 'Reject' | translate}}</button>
+
+                <button *ngIf="userType == 'gppOperator' && publicationStatus != 'published'" [hidden]="!uuid" type="button" class="btn btn-primary rounded-0 ml-3" (click)="publishStructure()">{{ 'Publish' | translate}}</button>
+              </div>
+              </div>
+              </div>
           </form>
         </div>
       </div>
@@ -191,13 +213,13 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">{{ 'Structure saved' | translate }}</h4>
+        <h4 class="modal-title">{{ messageInfo.title }}</h4>
         <button type="button" class="close" (click)="modalInfo.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>{{ 'The information has been saved.' | translate }}</p>
+        <p>{{ messageInfo.description }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modalInfo.hide()">{{ 'Close' | translate }}</button>
@@ -287,6 +309,30 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="modalException.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal reject -->
+<div bsModal #modalReject="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalRejectLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Reject structure' | translate }}</h4>
+        <button type="button" class="close" (click)="modalReject.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ 'Are you sure you want to reject this structure? Please enter why.' | translate }}</p>
+        <div class="form-group">
+          <textarea name="description" [(ngModel)]="formReject.description" class="form-control" placeholder="{{'Enter the reason for the rejection' | translate }}" rows="5" required></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="confirmRejectStructure()">{{ 'Reject' | translate }}</button>
+        <button type="button" class="btn btn-secondary" (click)="modalReject.hide()">{{ 'Cancel' | translate }}</button>
       </div>
     </div>
   </div>

@@ -177,7 +177,8 @@ export class StructuresComponent implements OnInit {
           "website": true, \
           "idIcon": false, \
           "iconimage":true, \
-          "iconmarker":false \
+          "iconmarker":false, \
+          "publicationStatus": true \
         }, \ '
         + where +
         '"offset": 0, \

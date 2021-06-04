@@ -16,6 +16,10 @@ export interface MessageError {
   title: string;
   description: string;
 }
+export interface MessageInfo {
+  title: string;
+  description: string;
+}
 
 export interface QuickSearch {
   search: string;
@@ -135,6 +139,8 @@ export interface Structure {
   website: string;
   idIcon: string;
   isChecked: boolean;
+  publicationStatus: string;
+  rejectionDescription: string;
 }
 
 export interface StructureLanguage {

@@ -450,9 +450,18 @@
     "Your feedback has been sent successfully": "Your feedback has been sent successfully",
     "Send Request": "Send Request",
     "Enter title, description and email": "Enter title, description and email",
-    "Enter description": "Enter description"
-
-
-
-
+    "Enter description": "Enter description",
+    "Request Publication": "Request Publication",
+    "published": "Published",
+    "rejected": "Rejected",
+    "modification": "Modification",
+    "requestPublication": "Request Publication",
+    "Publication request sent": "Publication request sent",
+    "The publication request has been sent successfully.": "The publication request has been sent successfully.",
+    "The structure publication has been confirmed successfully.": "The structure publication has been confirmed successfully.",
+    "The structure publication has been rejected successfully.": "The structure publication has been rejected successfully.",
+    "Are you sure you want to reject this structure? Please enter why.": "Are you sure you want to reject this structure? Please enter why.",
+    "Enter the reason for the rejection": "Enter the reason for the rejection",
+    "Structure Rejected": "Structure Rejected",
+    "Structure does not exist": "Structure does not exist"
 }
