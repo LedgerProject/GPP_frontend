@@ -85,7 +85,7 @@
               </tbody>
               <tfoot *ngIf='checkedIDs.length'>
                 <tr>
-                  <td colspan="10"><button class="btn btn-danger rounded-0" type="button" (click)="deleteMultiple()" >{{ 'Delete' | translate }}</button></td>
+                  <td colspan="10"><button class="btn btn-danger rounded-0" type="button" (click)="deleteMultipleModal()" >{{ 'Delete' | translate }}</button></td>
                 </tr>
               </tfoot>
             </table>
@@ -145,6 +145,26 @@
   </div>
 </div>
 
+<!-- Modal info message -->
+<div bsModal #modalInfo="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInfoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ messageInfo.title }}</h4>
+        <button type="button" class="close" (click)="modalInfo.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ messageInfo.description }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modalInfo.hide()">{{ 'Close' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal import -->
 <div bsModal #modalImport="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalImportLabel" aria-hidden="true">
   <form [formGroup]="uploadForm" (ngSubmit)="ImportStructures()">
@@ -170,4 +190,24 @@
     </div>
   </div>
 </form>
+</div>
+
+<div bsModal #modalDelete="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ 'Delete Structures' | translate }}</h4>
+        <button type="button" class="close" (click)="modalDelete.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ 'Click on Confirm to Delete selected structures.' | translate }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalDelete.hide()">{{ 'Close' | translate }}</button>
+        <button type="button" class="btn btn-primary" (click)="deleteMultiple()">{{ 'Confirm' | translate }}</button>
+      </div>
+    </div>
+  </div>
 </div>

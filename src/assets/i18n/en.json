@@ -463,5 +463,8 @@
     "Are you sure you want to reject this structure? Please enter why.": "Are you sure you want to reject this structure? Please enter why.",
     "Enter the reason for the rejection": "Enter the reason for the rejection",
     "Structure Rejected": "Structure Rejected",
-    "Structure does not exist": "Structure does not exist"
+    "Structure does not exist": "Structure does not exist",
+    "Delete Structures": "Delete Structures",
+    "Click on Confirm to Delete selected structures.": "Click on Confirm to Delete selected structures.",
+    "Structures deleted successfully": "Structures deleted successfully"
 }

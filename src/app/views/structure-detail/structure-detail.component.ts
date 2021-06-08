@@ -139,7 +139,7 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.action == 'success') {
-      this.modalInfo.show();
+      this.showInfoMessage(this.translate.instant('Structure saved'),this.translate.instant('The information has been saved.'));
     }
   }
 
@@ -418,7 +418,7 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
 
           await this.saveStructureLanguages();
           this.SpinnerService.hide();
-          this.router.navigateByUrl('structure-details/' + this.uuid + '/?action=success');
+          this.router.navigateByUrl('structure-details/' + this.uuid + '?action=success');
         }, error => {
           this.SpinnerService.hide();
           this.showExceptionMessage(error);
