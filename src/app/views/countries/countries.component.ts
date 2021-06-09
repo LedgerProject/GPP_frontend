@@ -7,6 +7,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MessageException, QuickSearch, Country } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
+
 @Component({
   selector: 'app-countries',
   templateUrl: './countries.component.html',
@@ -18,8 +19,9 @@ export class CountriesComponent implements OnInit {
   formSearch: QuickSearch;
   filteredCountries: Array<Country>;
   allCountries: Array<Country>;
-  @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
+
+  @ViewChild('modalException') public modalException: ModalDirective;
 
   constructor (
     private router: Router,
@@ -43,6 +45,7 @@ export class CountriesComponent implements OnInit {
   // Countries list
   async loadCountries() {
     this.SpinnerService.show();
+
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -65,10 +68,12 @@ export class CountriesComponent implements OnInit {
     this.http.get<Array<Country>>(environment.apiUrl + environment.apiPort + "/countries?filter=" + filter, {headers})
     .subscribe(data => {
       this.SpinnerService.hide();
+
       this.allCountries = data;
       this.filteredCountries = data;
     }, error => {
       this.SpinnerService.hide();
+
       this.showExceptionMessage(error);
     });
   }
@@ -96,7 +101,7 @@ export class CountriesComponent implements OnInit {
     this.router.navigateByUrl('country-details/' + id);
   }
 
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
     this.modalException.show();

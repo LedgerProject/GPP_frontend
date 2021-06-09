@@ -1,8 +1,8 @@
 <ngx-spinner size="default" type="ball-spin-clockwise">
   <p>{{ 'Please wait...' | translate }}
-    <span *ngIf="action_delete">
+    <span *ngIf="actionDelete">
       <br>{{ 'Deletion in progress.'}}
-      <br>{{ current_delete }} {{ 'of' | translate }} {{ total_delete }}</span><br>
+      <br>{{ currentDelete }} {{ 'of' | translate }} {{ totalDelete }}</span><br>
   </p></ngx-spinner>
 <div class="animated fadeIn">
   <div class="row">
@@ -40,6 +40,7 @@
             </div>
           </form>
           <hr>
+
           <!-- Search form -->
           <form #Filterform="ngForm">
             <div class="input-group mb-3">

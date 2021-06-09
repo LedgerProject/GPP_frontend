@@ -7,21 +7,23 @@ import { MessageException, MessageError, Organization, TokenCredential } from '.
 import { environment } from '../../../environments/environment';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from "ngx-spinner";
+
 @Component({
   selector: 'app-organization-add',
   templateUrl: './organization-add.component.html',
   styleUrls: ['./organization-add.component.css']
 })
+
 export class OrganizationAddComponent implements OnInit {
   token: string;
   formData: Organization;
-  @ViewChild('modalError') public modalError: ModalDirective;
   messageError: MessageError;
   errorsDescriptions: string[];
-  @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
-  http_response:any;
   permissions: any;
+
+  @ViewChild('modalError') public modalError: ModalDirective;
+  @ViewChild('modalException') public modalException: ModalDirective;
 
   constructor (
     private router: Router,
@@ -44,18 +46,18 @@ export class OrganizationAddComponent implements OnInit {
 
   // Save organization
   async saveOrganization() {
-    this.SpinnerService.show();
     this.errorsDescriptions = [];
 
-    //Check if entered the name
+    // Check if entered the name
     if (!this.formData.name) {
       this.errorsDescriptions.push(this.translate.instant('Please enter the organization name'));
-      this.SpinnerService.hide();
     }
 
-    //Check if there are no errors
+    // Check if there are no errors
     if (this.errorsDescriptions.length === 0) {
-      //Data save
+      this.SpinnerService.show();
+
+      // Data save
       let postParams = {
         name: this.formData.name
       };
@@ -65,11 +67,13 @@ export class OrganizationAddComponent implements OnInit {
       this.http.post<Organization>(environment.apiUrl + environment.apiPort + "/organizations", postParams, {headers} )
       .subscribe(data => {
         this.SpinnerService.hide();
+
         if (data.idOrganization) {
           this.signInOrganization(data.idOrganization);
         }
       }, error => {
         this.SpinnerService.hide();
+
         let code = error.status;
 
         switch (code) {
@@ -87,7 +91,8 @@ export class OrganizationAddComponent implements OnInit {
       });
     } else {
       this.SpinnerService.hide();
-      //Missing data
+
+      // Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
         this.translate.instant('The data entered is incorrect or missing.')
@@ -104,22 +109,24 @@ export class OrganizationAddComponent implements OnInit {
       if (data.token) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('idOrganization', idOrganization);
+
         this.router.routeReuseStrategy.shouldReuseRoute = function () {
           return false;
         };
+
         this.router.navigateByUrl('wallet');
       }
     });
   }
 
-  //Error message
+  // Error message
   showErrorMessage(title: string, description: string): void {
     this.messageError.title = title;
     this.messageError.description = description;
     this.modalError.show();
   }
 
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
     this.modalException.show();

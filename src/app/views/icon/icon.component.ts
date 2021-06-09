@@ -7,6 +7,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MessageException, QuickSearch, Icon } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
+
 @Component({
   selector: 'app-icon',
   templateUrl: './icon.component.html',
@@ -18,8 +19,9 @@ export class IconComponent implements OnInit {
   formSearch: QuickSearch;
   filteredIcons: Array<Icon>;
   allIcons: Array<Icon>;
-  @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
+
+  @ViewChild('modalException') public modalException: ModalDirective;
 
   constructor (
     private router: Router,
@@ -43,6 +45,7 @@ export class IconComponent implements OnInit {
   // Icons list
   async loadIcons() {
     this.SpinnerService.show();
+
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -64,10 +67,12 @@ export class IconComponent implements OnInit {
     this.http.get<Array<Icon>>(environment.apiUrl + environment.apiPort + "/icons?filter=" + filter, {headers})
     .subscribe(data=> {
       this.SpinnerService.hide();
+
       this.allIcons = data;
       this.filteredIcons = data;
     }, error => {
       this.SpinnerService.hide();
+
       this.showExceptionMessage(error);
     });
   }
@@ -81,6 +86,7 @@ export class IconComponent implements OnInit {
       this.allIcons.forEach(element => {
         search = search.toLowerCase();
         let name = element.name.toLowerCase();
+
         if (name.includes(search)) {
           this.filteredIcons.push(element);
         }
@@ -95,11 +101,14 @@ export class IconComponent implements OnInit {
     this.router.navigateByUrl('icon-details/' + id);
   }
 
-
-
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
-    this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
+    this.messageException = {
+      name : error.name,
+      status : error.status,
+      statusText : error.statusText,
+      message : error.message
+    };
     this.modalException.show();
   }
 }

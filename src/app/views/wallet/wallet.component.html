@@ -10,6 +10,7 @@
             <p *ngIf="userType != 'user'">{{ 'Enter the token you obtained from the user to view the documentation.' | translate }}</p>
             <p *ngIf="userType != 'user'">{{ 'The token lasts 30 minutes. Once it expires, it is necessary to ask the user for another token.' | translate }}</p>
             <h4 class="text-uppercase" *ngIf="userType != 'user'">{{ 'Please insert the token to check the documents wallet' | translate }}</h4>
+
             <!-- Form -->
             <form #form="ngForm" (ngSubmit)="checkToken()" *ngIf="userType != 'user'">
               <!-- Token -->
@@ -22,6 +23,7 @@
                 </div>
               </div>
             </form>
+
             <!-- User -->
             <h1 class="mt-4" *ngIf="userType == 'user'">{{'Document Wallet - Generate Token' | translate }}</h1>
             <p *ngIf="userType == 'user'">{{ 'The token lasts 30 minutes. Once it expires, it is necessary to generate another token.' | translate }}</p>
@@ -39,6 +41,7 @@
             <form #form="ngForm" (ngSubmit)="generateToken()" *ngIf="userType == 'user'">
               <button class="btn btn-primary rounded-0 generate-token" type="submit">{{ 'Generate Token' | translate }}</button>
             </form>
+
             <!-- Table documents -->
             <div class="table-responsive" *ngIf="userType == 'user'">
             <table class="table table-hover" *ngIf='filteredDocuments.length'>
@@ -47,6 +50,7 @@
                 <th>{{ 'Size' | translate }}</th>
                 <th></th>
               </thead>
+
               <tbody>
                 <tr class="pointer" *ngFor="let document of filteredDocuments">
                   <td><label class="checkbox-container"><input type="checkbox" class="form-checkbox" [(ngModel)]="document.isChecked" (change)="changeSelection()"> <i class='fa fa-file-{{document.fileType}}-o'></i> {{document.title}}</label></td>
@@ -56,7 +60,6 @@
               </tbody>
             </table>
             </div>
-
           </div>
         </div>
       </div>

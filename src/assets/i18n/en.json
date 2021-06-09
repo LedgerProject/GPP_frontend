@@ -280,6 +280,8 @@
     "Check":"Check",
     "Invalid token": "Invalid token",
     "The token entered is not valid or expired.": "The token entered is not valid or expired.",
+    "Specify the token": "Specify the token",
+    "Specify a token of at least 6 numbers": "Specify a token of at least 6 numbers",
 
     "***DOCUMENTS WALLET LIST***": "***DOCUMENTS WALLET LIST***",
     "Back to insert token": "Back to insert token",

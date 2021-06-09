@@ -252,4 +252,4 @@ npm start
 
 ## How the frontend works
 
-TODO
+Please visit (https://www.globalpassportproject.org) for more information.

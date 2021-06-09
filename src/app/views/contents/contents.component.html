@@ -1,12 +1,12 @@
-<div class="animated fadeIn">
+currentUrl<div class="animated fadeIn">
   <div class="row">
     <div class="col-md-12 col-lg-8 mx-auto">
       <div class="card mt-4">
         <div class="card-body">
           <!-- Information -->
           <h1 class="mt-4">{{ SectionTitle + ' - List' | translate }}</h1>
-          <p *ngIf="current_url == '/abusealarms'">{{ 'In this section you can read the AbuseAlarms uploaded by users' | translate }}</p>
-          <p *ngIf="current_url == '/news-stories'">{{ 'In this section you can read the News & Stories uploaded by users' | translate }}</p>
+          <p *ngIf="currentUrl == '/abusealarms'">{{ 'In this section you can read the AbuseAlarms uploaded by users' | translate }}</p>
+          <p *ngIf="currentUrl == '/news-stories'">{{ 'In this section you can read the News & Stories uploaded by users' | translate }}</p>
 
           <form #form="ngForm" (ngSubmit)="onSubmit(form)">
             <div class="input-group mb-3">
@@ -18,6 +18,7 @@
             </div>
           </form>
           <hr>
+
           <!-- Search form -->
           <form #Filterform="ngForm">
             <div class="input-group mb-3">
@@ -52,7 +53,6 @@
               </tbody>
             </table>
           </div>
-
         </div>
       </div>
     </div>

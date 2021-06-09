@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { Router, NavigationEnd,ActivatedRoute } from '@angular/router';
+import { Router,ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -8,6 +8,7 @@ import { SlugifyPipe } from '../../services/slugify.pipe';
 import { Language, MessageException, MessageError, Country, CountryTopic, CountryTopicLanguage } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
+
 interface FormData {
   'id': string;
   'lang': string;
@@ -28,15 +29,16 @@ export class CountryTopicsComponent implements OnInit {
   currentLanguage: string;
   languages: Array<Language>;
   country: Country;
-  @ViewChild('modalInfo') public modalInfo: ModalDirective;
-  @ViewChild('modalDelete') public modalDelete: ModalDirective;
   topicCounterDelete: number;
   topicIdDelete: string;
-  @ViewChild('modalError') public modalError: ModalDirective;
   messageError: MessageError;
   errorsDescriptions: string[];
-  @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
+
+  @ViewChild('modalInfo') public modalInfo: ModalDirective;
+  @ViewChild('modalDelete') public modalDelete: ModalDirective;
+  @ViewChild('modalError') public modalError: ModalDirective;
+  @ViewChild('modalException') public modalException: ModalDirective;
 
   constructor (
     private router: Router,
@@ -74,6 +76,7 @@ export class CountryTopicsComponent implements OnInit {
   // Get country details
   async getCountry() {
     this.SpinnerService.show();
+
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     // Get the country information
@@ -83,9 +86,11 @@ export class CountryTopicsComponent implements OnInit {
 
       // Get related topics
       this.getCountryTopics();
+
       this.SpinnerService.hide();
     }, error => {
       this.SpinnerService.hide();
+
       this.showExceptionMessage(error);
     });
   }
@@ -112,7 +117,7 @@ export class CountryTopicsComponent implements OnInit {
 
     this.http.get<Array<CountryTopic>>(environment.apiUrl + environment.apiPort + "/countries-topics?filter=" + filter, {headers} )
     .subscribe(dataTopics=> {
-      //For each topic get the related information
+      // For each topic get the related information
       dataTopics.forEach(currentTopic => {
         let topic:FormData = {
           'id': currentTopic.idCountryTopic,
@@ -121,7 +126,7 @@ export class CountryTopicsComponent implements OnInit {
           'text': []
         };
 
-        //Get the language information for the current topic
+        // Get the language information for the current topic
         this.http.get<Array<CountryTopicLanguage>>(environment.apiUrl + environment.apiPort + "/countries-topics/" + currentTopic.idCountryTopic + '/countries-topics-languages', {headers} )
         .subscribe(dataTopicLangs => {
           dataTopicLangs.forEach(dataLang => {
@@ -135,7 +140,7 @@ export class CountryTopicsComponent implements OnInit {
         this.formData.push(topic);
       });
 
-      //Check if languages are empties
+      // Check if languages are empties
       if (dataTopics.length == 0) {
         this.addEmptyTopic();
       }
@@ -164,7 +169,6 @@ export class CountryTopicsComponent implements OnInit {
 
   // Save Topic
   async saveTopic() {
-    this.SpinnerService.show();
     this.errorsDescriptions = [];
 
     if (this.formData) {
@@ -183,12 +187,13 @@ export class CountryTopicsComponent implements OnInit {
 
       if (validate == 0) {
         this.errorsDescriptions.push(this.translate.instant('Please, enter title and description in each language'));
-        this.SpinnerService.hide();
       }
 
-      //Check if there are no errors
+      // Check if there are no errors
       if (this.errorsDescriptions.length === 0) {
-        //Data save
+        this.SpinnerService.show();
+
+        // Data save
         let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
         this.formData.forEach(element => {
@@ -197,15 +202,17 @@ export class CountryTopicsComponent implements OnInit {
             identifier: this.slugifyPipe.transform(element.title['en']),
           };
 
-          //Check if update or insert
+          // Check if update or insert
           if (element.id) {
-            //Update the topic
+            // Update the topic
             this.http.patch(environment.apiUrl + environment.apiPort + "/countries-topics/" + element.id, postParams, {headers} )
             .subscribe(async data => {
               await this.saveTopicLanguages(element);
+
               this.SpinnerService.hide();
             }, error => {
               this.SpinnerService.hide();
+
               this.showExceptionMessage(error);
             });
           } else {
@@ -214,9 +221,11 @@ export class CountryTopicsComponent implements OnInit {
               element.id = data.idCountryTopic;
 
               await this.saveTopicLanguages(element);
+
               this.SpinnerService.hide();
             }, error => {
               this.SpinnerService.hide();
+
               this.showExceptionMessage(error);
             });
           }
@@ -224,8 +233,7 @@ export class CountryTopicsComponent implements OnInit {
 
         await this.modalInfo.show();
       } else {
-        this.SpinnerService.hide();
-        //Missing data
+        // Missing data
         this.showErrorMessage(
           this.translate.instant('Missing data'),
           this.translate.instant('The data entered is incorrect or missing.')
@@ -238,7 +246,7 @@ export class CountryTopicsComponent implements OnInit {
   saveTopicLanguages(element) {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    //Update the topic language
+    // Update the topic language
     this.languages.forEach(elementLang => {
       let subpostParams = {
         idCountryTopic: element.id,
@@ -263,8 +271,10 @@ export class CountryTopicsComponent implements OnInit {
   // Delete topic
   deleteTopic() {
     this.SpinnerService.show();
+
     if (!this.topicIdDelete) {
       this.formData.splice(this.topicCounterDelete, 1);
+
       this.SpinnerService.hide();
     } else {
       let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
@@ -272,9 +282,11 @@ export class CountryTopicsComponent implements OnInit {
       this.http.delete(environment.apiUrl + environment.apiPort + "/countries-topics/" + this.topicIdDelete, {headers} )
       .subscribe(data => {
         this.SpinnerService.hide();
+
         this.formData.splice(this.topicCounterDelete, 1);
       }, error => {
         this.SpinnerService.hide();
+
         this.showExceptionMessage(error);
       });
     }
@@ -290,7 +302,7 @@ export class CountryTopicsComponent implements OnInit {
     }
   }
 
-  //Error message
+  // Error message
   showErrorMessage(title: string, description: string): void {
     this.messageError.title = title;
     this.messageError.description = description;
@@ -299,7 +311,7 @@ export class CountryTopicsComponent implements OnInit {
     }
   }
 
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = {
       name : error.name,

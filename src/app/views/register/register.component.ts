@@ -5,6 +5,7 @@ import { UserdataService } from '../../services/userdata.service';
 import { MessageException, RegisteredUser } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
+
 interface RegisterUser {
   firstName: string;
   lastName: string;
@@ -25,6 +26,7 @@ export class RegisterComponent implements OnInit {
   formData: RegisterUser;
   signOnCompleted: boolean;
   messageException: MessageException;
+
   constructor (
     public translate: TranslateService,
     private http:HttpClient,
@@ -44,13 +46,12 @@ export class RegisterComponent implements OnInit {
     this.messageException = environment.messageExceptionInit;
   }
 
+  // Page init
   ngOnInit(): void {}
 
   // Sign On
   async signOn() {
-    this.SpinnerService.show();
     this.signOnCompleted = false;
-
     let trySignOn = true;
     let queryString = "";
     let userType = "operator";
@@ -61,12 +62,13 @@ export class RegisterComponent implements OnInit {
     let password = this.formData.password;
     let passwordConfirm = this.formData.passwordConfirm;
     let secretKey = this.formData.secretKey;
+  
     if (secretKey) {
       queryString = "?secretKey=" + secretKey;
       userType = "gppOperator";
     }
 
-    //Check if specified first name
+    // Check if specified first name
     if (!firstName) {
       this.messageException = {
         name : '',
@@ -76,10 +78,9 @@ export class RegisterComponent implements OnInit {
       };
 
       trySignOn = false;
-      this.SpinnerService.hide();
     }
 
-    //Check if specified last name
+    // Check if specified last name
     if (!lastName) {
       this.messageException = {
         name : '',
@@ -89,10 +90,9 @@ export class RegisterComponent implements OnInit {
       };
 
       trySignOn = false;
-      this.SpinnerService.hide();
     }
 
-    //Check if specified email
+    // Check if specified email
     if (!email) {
       this.messageException = {
         name : '',
@@ -102,10 +102,9 @@ export class RegisterComponent implements OnInit {
       };
 
       trySignOn = false;
-      this.SpinnerService.hide();
     }
 
-    //Check if specified password is at least 8 characters
+    // Check if specified password is at least 8 characters
     if (password.length < 8) {
       this.messageException = {
         name : '',
@@ -115,10 +114,9 @@ export class RegisterComponent implements OnInit {
       };
 
       trySignOn = false;
-      this.SpinnerService.hide();
     }
 
-    //Check if the confirm email matches with the email
+    // Check if the confirm email matches with the email
     if (trySignOn && email != emailConfirm) {
       this.messageException = {
         name : '',
@@ -128,10 +126,9 @@ export class RegisterComponent implements OnInit {
       };
 
       trySignOn = false;
-      this.SpinnerService.hide();
     }
 
-    //Check if the confirm password matches with the password
+    // Check if the confirm password matches with the password
     if (trySignOn && password != passwordConfirm) {
       this.messageException = {
         name : '',
@@ -141,10 +138,11 @@ export class RegisterComponent implements OnInit {
       };
 
       trySignOn = false;
-      this.SpinnerService.hide();
     }
 
     if (trySignOn) {
+      this.SpinnerService.show();
+
       let postParams = {
         userType: userType,
         email: email,
@@ -158,6 +156,7 @@ export class RegisterComponent implements OnInit {
       this.http.post<RegisteredUser>(environment.apiUrl + environment.apiPort + "/users/signup" + queryString, postParams, {headers})
       .subscribe(data => {
         this.SpinnerService.hide();
+
         if (data.idUser) {
           this.signOnCompleted = true;
         } else {
@@ -170,6 +169,7 @@ export class RegisterComponent implements OnInit {
         }
       }, error => {
         this.SpinnerService.hide();
+
         let code = error.status;
 
         if (code == 422) {

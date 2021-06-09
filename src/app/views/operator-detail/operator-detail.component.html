@@ -26,11 +26,6 @@
                   {{ 'Administrator (can manage structures, operators and document wallet)' | translate }}
                 </label>
                 <br />
-                <!--<label>
-                  <input type="checkbox" name="check_wallet" value="wallet">
-                  {{ 'Wallet (can manage document wallet)' | translate }}
-                </label>
-                <br />-->
                 <label>
                   <input type="checkbox" name="check_operators" [(ngModel)]="permission_OrganizationUsersManagement" value="OrganizationUsersManagement" [checked]="permission_OrganizationUsersManagement" (change)="setValue('OrganizationUsersManagement')">
                   {{ 'Operators (can manage operators)' | translate }}
@@ -42,44 +37,38 @@
                 </label>
               </div>
 
-            <!-- Save and remove buttons-->
-            <div class="row">
-              <div class="col-6 text-left">
-                <button type="button" class="btn btn-primary rounded-0" (click)="saveOperatorPermissions()">{{ 'Save' | translate}}</button>
+              <!-- Save and remove buttons-->
+              <div class="row">
+                <div class="col-6 text-left">
+                  <button type="button" class="btn btn-primary rounded-0" (click)="saveOperatorPermissions()">{{ 'Save' | translate}}</button>
+                </div>
+                <div class="col-6 text-right">
+                  <button type="button" class="btn btn-danger rounded-0" (click)="removeOperatorFromTeam()">{{ 'Remove from Team' | translate}}</button>
+                </div>
               </div>
-              <div class="col-6 text-right">
-                <button type="button" class="btn btn-danger rounded-0" (click)="removeOperatorFromTeam()">{{ 'Remove from Team' | translate}}</button>
-              </div>
-            </div>
-          </form>
-          <form *ngIf="userType == 'gppOperator'">
-            <div class="form-group">
-              <!-- Permissions -->
-              <label>
-                <input type="checkbox" name="check_admin" [(ngModel)]="permission_Admin"  value="1" [checked]="permission_Admin">
-                {{ 'Add to GPP Staff' | translate }}
-              </label>
-              <br />
-            </div>
+            </form>
 
-            <!-- Save and remove buttons-->
-            <div class="row">
-              <div class="col-6 text-left">
-                <button type="button" class="btn btn-primary rounded-0" (click)="saveAdmin()">{{ 'Save' | translate}}</button>
+            <form *ngIf="userType == 'gppOperator'">
+              <div class="form-group">
+                <!-- Permissions -->
+                <label>
+                  <input type="checkbox" name="check_admin" [(ngModel)]="permission_Admin"  value="1" [checked]="permission_Admin">
+                  {{ 'Add to GPP Staff' | translate }}
+                </label>
+                <br />
               </div>
-              <div class="col-6 text-right">
-                <button type="button" class="btn btn-danger rounded-0" (click)="removeAllData()">{{ 'Remove all related data' | translate}}</button>
+
+              <!-- Save and remove buttons-->
+              <div class="row">
+                <div class="col-6 text-left">
+                  <button type="button" class="btn btn-primary rounded-0" (click)="saveAdmin()">{{ 'Save' | translate}}</button>
+                </div>
+                <div class="col-6 text-right">
+                  <button type="button" class="btn btn-danger rounded-0" (click)="removeAllData()">{{ 'Remove all related data' | translate}}</button>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
           </div>
-
-
-          <!-- Under costruction alert
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>{{ 'Attention! This section is under construction, hence is not working.' | translate }}</strong>
-          </div>
-          -->
         </div>
       </div>
     </div>

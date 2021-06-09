@@ -59,12 +59,6 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
   prefixes: string[];
   structure: Structure;
   icons: Array<Icon>;
-  @ViewChild('modalInfo') public modalInfo: ModalDirective;
-  @ViewChild('modalDelete') public modalDelete: ModalDirective;
-  @ViewChild('modalDeleteImage') public modalDeleteImage: ModalDirective;
-  @ViewChild('modalError') public modalError: ModalDirective;
-  @ViewChild('modalReject') public modalReject: ModalDirective;
-  @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
   messageInfo: MessageInfo;
   messageError: MessageError;
@@ -74,11 +68,18 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
   structureImageSrc: string;
   imagesPath: string;
   action: string;
-  get_action: string;
+  getAction: string;
   publicationStatus: string;
   rejectionMessage: string;
   userType: string;
   publicationStatusClass: string;
+
+  @ViewChild('modalInfo') public modalInfo: ModalDirective;
+  @ViewChild('modalDelete') public modalDelete: ModalDirective;
+  @ViewChild('modalDeleteImage') public modalDeleteImage: ModalDirective;
+  @ViewChild('modalError') public modalError: ModalDirective;
+  @ViewChild('modalReject') public modalReject: ModalDirective;
+  @ViewChild('modalException') public modalException: ModalDirective;
 
   constructor (
     private router: Router,
@@ -121,12 +122,12 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
     this.structureImages = [];
     this.idStructureImageDelete = '';
     this.imagesPath = environment.imagesUrl;
-    this.get_action = this._Activatedroute.snapshot.queryParamMap.get("action");
+    this.getAction = this._Activatedroute.snapshot.queryParamMap.get("action");
     this._Activatedroute.queryParamMap.subscribe(queryParams => {
-      this.get_action = queryParams.get("action")
+      this.getAction = queryParams.get("action")
     })
-    if (this.get_action) {
-      this.action = this.get_action;
+    if (this.getAction) {
+      this.action = this.getAction;
     }
     this.publicationStatus = '';
     this.rejectionMessage = '';
@@ -161,7 +162,7 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    //Icons filter
+    // Icons filter
     let filter = ' \
       { \
         "fields": { \
@@ -180,7 +181,7 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
       this.SpinnerService.hide();
       this.icons = dataIcons;
 
-      //If updating structure, load its data
+      // If updating structure, load its data
       if (this.uuid) {
         this.getStructure();
       }
@@ -193,6 +194,7 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
   // Get structure details
   async getStructure() {
     this.SpinnerService.show();
+
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -222,6 +224,7 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
         } else if (this.publicationStatus == 'rejected') {
           this.publicationStatusClass = 'text-danger';
         }
+
         this.rejectionMessage = data.rejectionDescription;
         this.getStructureLanguages();
 
@@ -280,6 +283,7 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
       .subscribe(dataStructureCategories => {
         dataCategories.forEach(elementCategory => {
           let categoriesList: FormDataStructureCategories;
+
           categoriesList = {
             idStructureCategory: '',
             idCategory: elementCategory.idCategory,
@@ -308,6 +312,7 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
   // Get structure images
   async getStructureImages() {
     this.SpinnerService.show();
+
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -320,50 +325,48 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
         this.structureImages[x].filename = encodeURIComponent(this.structureImages[x].filename);
         x++;
       });
+
       this.SpinnerService.hide();
     }, error => {
       this.SpinnerService.hide();
+
       this.showExceptionMessage(error);
     });
   }
 
   async saveStructure() {
-    this.SpinnerService.show();
     this.errorsDescriptions = [];
 
-    //Check if entered the name
+    // Check if entered the name
     if (!this.formData.name) {
       this.errorsDescriptions.push(this.translate.instant('Please enter the structure name'));
-      this.SpinnerService.hide();
     }
 
-    //Check if entered the address
+    // Check if entered the address
     if (!this.formData.address) {
       this.errorsDescriptions.push(this.translate.instant('Please enter the structure address'));
-      this.SpinnerService.hide();
     }
 
-    //Check if entered the city
+    // Check if entered the city
     if (!this.formData.address) {
       this.errorsDescriptions.push(this.translate.instant('Please enter the structure city'));
-      this.SpinnerService.hide();
     }
 
-    //Check if selected the map position
+    // Check if selected the map position
     if (!this.formData.latitude || !this.formData.longitude) {
       this.errorsDescriptions.push(this.translate.instant('Please set the structure location on the map'));
-      this.SpinnerService.hide();
     }
 
-    //Check if entered the icon
+    // Check if entered the icon
     if (!this.formData.icon) {
       this.errorsDescriptions.push(this.translate.instant('Please select the structure icon'));
-      this.SpinnerService.hide();
     }
 
-    //Check if there are no errors
+    // Check if there are no errors
     if (this.errorsDescriptions.length === 0) {
-      //Data save
+      this.SpinnerService.show();
+
+      // Data save
       if (!this.formData.latitude) {
         this.formData.latitude = 0;
       }
@@ -393,13 +396,15 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
 
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-      //Check if update or insert
+      // Check if update or insert
       if (this.uuid) {
-        //Update the structure
+        // Update the structure
         this.http.patch(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid, postParams, {headers} )
         .subscribe(async data => {
           await this.saveStructureLanguages();
+
           this.SpinnerService.hide();
+
           this.showInfoMessage(this.translate.instant('Structure saved'),this.translate.instant('The information has been saved.'));
           if (this.userType == 'operator') {
             this.publicationStatus = 'modification';
@@ -408,25 +413,28 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
           }
         }, error => {
           this.SpinnerService.hide();
+
           this.showExceptionMessage(error);
         });
       } else {
-        //Insert the structure
+        // Insert the structure
         this.http.post<Structure>(environment.apiUrl + environment.apiPort + "/structures", postParams, {headers} )
         .subscribe(async data => {
           this.uuid = data.idStructure;
 
           await this.saveStructureLanguages();
+
           this.SpinnerService.hide();
+
           this.router.navigateByUrl('structure-details/' + this.uuid + '?action=success');
         }, error => {
           this.SpinnerService.hide();
+
           this.showExceptionMessage(error);
         });
       }
     } else {
-      this.SpinnerService.hide();
-      //Missing data
+      // Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
         this.translate.instant('The data entered is incorrect or missing.')
@@ -438,7 +446,7 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
   async saveStructureLanguages() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    //Update the structure languages
+    // Update the structure languages
     this.languages.forEach(element => {
       let postParams = {
         idStructure: this.uuid,
@@ -462,14 +470,17 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
   // Delete structure
   deleteStructure(idStructure) {
     this.SpinnerService.show();
+
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.delete(environment.apiUrl + environment.apiPort + "/structures/" + idStructure, {headers} )
     .subscribe(data=> {
       this.SpinnerService.hide();
+
       this.router.navigateByUrl('/structures');
     }, error => {
       this.SpinnerService.hide();
+
       this.showExceptionMessage(error);
     });
   }
@@ -548,6 +559,7 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
   // Structure image submit
   structureImageSubmit() {
     this.SpinnerService.show();
+
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     const formData = new FormData();
@@ -556,6 +568,7 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
     this.http.post(environment.apiUrl + environment.apiPort + "/structures-images/" + this.uuid, formData, {headers})
     .subscribe(res => {
       this.SpinnerService.hide();
+
       this.structureImageSrc = '';
       this.getStructureImages();
     }, error => {
@@ -564,16 +577,22 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
 
       switch (code) {
         case 400:
-          this.showErrorMessage(this.translate.instant('Error uploading image'), this.translate.instant('Please select a JPEG file.'));
-        break;
+          this.showErrorMessage(
+            this.translate.instant('Error uploading image'),
+            this.translate.instant('Please select a JPEG file.')
+          );
+          break;
 
         case 409:
-          this.showErrorMessage(this.translate.instant('Error uploading image'), this.translate.instant('An image with this name already exists. Check if you have already uploaded it, or rename the file.'));
-        break;
+          this.showErrorMessage(
+            this.translate.instant('Error uploading image'),
+            this.translate.instant('An image with this name already exists. Check if you have already uploaded it, or rename the file.')
+          );
+          break;
 
         default:
           this.showExceptionMessage(error);
-        break;
+          break;
       }
     });
   }
@@ -587,6 +606,7 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
   // Delete the structure image
   structureImageDelete(idStructureImage) {
     this.SpinnerService.show();
+
     this.modalDeleteImage.hide();
     this.idStructureImageDelete = '';
 
@@ -595,9 +615,11 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
     this.http.delete(environment.apiUrl + environment.apiPort + "/structures-images/" + idStructureImage, {headers} )
     .subscribe(data=> {
       this.SpinnerService.hide();
+
       this.getStructureImages();
     }, error => {
       this.SpinnerService.hide();
+
       this.showExceptionMessage(error);
     });
   }
@@ -624,58 +646,69 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
   // Geocoding: convert address to coordinates
   addressToCoordinates(address) {
     this.SpinnerService.show();
+
     this.loadingCoordinates = true;
+
     this.geocodeService.geocodeAddress(address)
     .subscribe((location: Location) => {
         this.SpinnerService.hide();
+
         this.formData.latitude = location.lat;
         this.formData.longitude = location.lng;
         this.loadingCoordinates = false;
         this.ref.detectChanges();
       }
     );
+
     this.SpinnerService.hide();
   }
 
-  //Request Publication
+  // Request Publication
   async requestPublication() {
     this.SpinnerService.show();
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
     let postParams = { };
-      //Update the structure
-      this.http.post(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid + '/request-publication', postParams, {headers} )
-      .subscribe(async data => {
-        var response: any = data;
-        var response_code: number = parseInt(response.messageOutcome.code);
-        var response_message = response.messageOutcome.message;
-        this.SpinnerService.hide();
-        switch (response_code) {
-          case 10:
-            this.showErrorMessage(
-              this.translate.instant('Error'),
-              this.translate.instant('Structure does not exist'),
-            );
+
+    // Update the structure
+    this.http.post(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid + '/request-publication', postParams, {headers} )
+    .subscribe(async data => {
+      var response: any = data;
+      var response_code: number = parseInt(response.messageOutcome.code);
+      var response_message = response.messageOutcome.message;
+
+      this.SpinnerService.hide();
+
+      switch (response_code) {
+        case 10:
+          this.showErrorMessage(
+            this.translate.instant('Error'),
+            this.translate.instant('Structure does not exist'),
+          );
           break;
-          case 201: case 202:
-            this.showInfoMessage(this.translate.instant('Publication request sent'),this.translate.instant('The publication request has been sent successfully.'));
-            this.publicationStatus = 'requestPublication';
-            this.publicationStatusClass = 'text-warning';
-            this.rejectionMessage = '';
+
+        case 201: case 202:
+          this.showInfoMessage(this.translate.instant('Publication request sent'),this.translate.instant('The publication request has been sent successfully.'));
+          this.publicationStatus = 'requestPublication';
+          this.publicationStatusClass = 'text-warning';
+          this.rejectionMessage = '';
           break;
-          default:
-            this.showErrorMessage(this.translate.instant('Sorry'),this.translate.instant('The following error occurred') + ': ' + response_message);
-            break;
-        }
-      }, error => {
-        this.SpinnerService.hide();
-        this.showExceptionMessage(error);
-      });
+
+        default:
+          this.showErrorMessage(this.translate.instant('Sorry'),this.translate.instant('The following error occurred') + ': ' + response_message);
+          break;
+      }
+    }, error => {
+      this.SpinnerService.hide();
+
+      this.showExceptionMessage(error);
+    });
   }
 
   // Publication
   async publicationStructure(publicationStatus = null, rejectionMessage = null) {
     this.rejectionMessage = '';
+
     this.SpinnerService.show();
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
@@ -683,45 +716,51 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
       publicationStatus: publicationStatus,
       rejectionMessage: rejectionMessage
     };
-      //Update the structure
-      this.http.post(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid + '/publication', postParams, {headers} )
-      .subscribe(async data => {
 
-        var response: any = data;
-        var response_code: number = parseInt(response.messageOutcome.code);
-        var response_message = response.messageOutcome.message;
-        this.SpinnerService.hide();
-        this.modalReject.hide();
-        switch (response_code) {
-          case 10:
-            this.showErrorMessage(
-              this.translate.instant('Error'),
-              this.translate.instant('Structure does not exist'),
-            );
+    // Update the structure
+    this.http.post(environment.apiUrl + environment.apiPort + "/structures/" + this.uuid + '/publication', postParams, {headers} )
+    .subscribe(async data => {
+      var response: any = data;
+      var response_code: number = parseInt(response.messageOutcome.code);
+      var response_message = response.messageOutcome.message;
+
+      this.SpinnerService.hide();
+
+      this.modalReject.hide();
+
+      switch (response_code) {
+        case 10:
+          this.showErrorMessage(
+            this.translate.instant('Error'),
+            this.translate.instant('Structure does not exist'),
+          );
           break;
-          case 201: case 202:
-            if (publicationStatus == 'published') {
-              this.showInfoMessage(this.translate.instant('Publication completed'),this.translate.instant('The structure publication has been confirmed successfully.'));
-              this.publicationStatus = 'published';
-              this.publicationStatusClass = 'text-success';
-            } else if (publicationStatus == 'rejected') {
-              this.showInfoMessage(this.translate.instant('Structure Rejected'),this.translate.instant('The structure publication has been rejected successfully.'));
-              this.publicationStatus = 'rejected';
-              this.publicationStatusClass = 'text-danger';
-              this.rejectionMessage = this.formReject.description;
-            }
+
+        case 201: case 202:
+          if (publicationStatus == 'published') {
+            this.showInfoMessage(this.translate.instant('Publication completed'),this.translate.instant('The structure publication has been confirmed successfully.'));
+            this.publicationStatus = 'published';
+            this.publicationStatusClass = 'text-success';
+          } else if (publicationStatus == 'rejected') {
+            this.showInfoMessage(this.translate.instant('Structure Rejected'),this.translate.instant('The structure publication has been rejected successfully.'));
+            this.publicationStatus = 'rejected';
+            this.publicationStatusClass = 'text-danger';
+            this.rejectionMessage = this.formReject.description;
+          }
           break;
-          default:
-            this.showErrorMessage(
-              this.translate.instant('Error'),
-              response_message
-            );
-            break;
-        }
-      }, error => {
-        this.SpinnerService.hide();
-        this.showExceptionMessage(error);
-      });
+
+        default:
+          this.showErrorMessage(
+            this.translate.instant('Error'),
+            response_message
+          );
+          break;
+      }
+    }, error => {
+      this.SpinnerService.hide();
+
+      this.showExceptionMessage(error);
+    });
 
   }
 
@@ -741,25 +780,23 @@ export class StructureDetailComponent implements OnInit, AfterViewInit {
     this.publicationStructure('rejected',this.formReject.description);
   }
 
-
-  //Error message
+  // Error message
   showErrorMessage(title: string, description: string): void {
     this.messageError.title = title;
     this.messageError.description = description;
     this.modalError.show();
   }
 
-  //Info message
+  // Info message
   showInfoMessage(title: string, description: string): void {
     this.messageInfo.title = title;
     this.messageInfo.description = description;
     this.modalInfo.show();
   }
 
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
     this.modalException.show();
   }
-
 }

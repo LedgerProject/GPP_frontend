@@ -1,11 +1,9 @@
-import { Component, OnInit, Input, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { GeocodeService } from '../../services/geocode.service';
 import { MessageException, MessageError, Content, ContentImage } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
@@ -35,18 +33,19 @@ export class ContentDetailComponent implements OnInit {
   formData: FormData;
   elementImages: Array<ContentImage>;
   element: Content;
-  @ViewChild('modalInfo') public modalInfo: ModalDirective;
-  @ViewChild('modalDelete') public modalDelete: ModalDirective;
-  @ViewChild('modalDeleteImage') public modalDeleteImage: ModalDirective;
-  @ViewChild('modalError') public modalError: ModalDirective;
   messageError: MessageError;
   errorsDescriptions: string[];
-  @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
   imagesPath: string;
   current_url: string;
   _albums:any = [];
   blob: any;
+
+  @ViewChild('modalInfo') public modalInfo: ModalDirective;
+  @ViewChild('modalDelete') public modalDelete: ModalDirective;
+  @ViewChild('modalDeleteImage') public modalDeleteImage: ModalDirective;
+  @ViewChild('modalError') public modalError: ModalDirective;
+  @ViewChild('modalException') public modalException: ModalDirective;
 
   constructor (
     private router: Router,
@@ -96,6 +95,7 @@ export class ContentDetailComponent implements OnInit {
   // Get structure details
   async getElement() {
     this.SpinnerService.show();
+
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -139,11 +139,11 @@ export class ContentDetailComponent implements OnInit {
         this.formData.description = data[0].description;
       }, error => {
         this.SpinnerService.hide();
+
         this.showExceptionMessage(error);
       });
     }
   }
-
 
   // Get structure images
   async getElementImages() {
@@ -158,32 +158,35 @@ export class ContentDetailComponent implements OnInit {
 
       this.elementImages.forEach(element => {
         this.elementImages[x].filename = encodeURIComponent(this.elementImages[x].filename);
-          if (element.mimeType == 'image/jpeg' || element.mimeType == 'image/jpg' || element.mimeType == 'image/png') {
-            this.elementImages[x].fileType = 'image';
-          } else {
-            this.elementImages[x].fileType = 'pdf';
-          }
-          let bytes: number = element.size / 1000000;
-          bytes = parseFloat(bytes.toFixed(2));
-          this.elementImages[x].size = bytes;
-        // this._albums.push({ src: '' + this.imagesPath + '/galleries/structures/' + this.elementImages[x].folder + '/'+ this.elementImages[x].filename+ '' });
+
+        if (element.mimeType == 'image/jpeg' || element.mimeType == 'image/jpg' || element.mimeType == 'image/png') {
+          this.elementImages[x].fileType = 'image';
+        } else {
+          this.elementImages[x].fileType = 'pdf';
+        }
+
+        let bytes: number = element.size / 1000000;
+        bytes = parseFloat(bytes.toFixed(2));
+        this.elementImages[x].size = bytes;
         x++;
       });
+
       this.SpinnerService.hide();
     }, error => {
       this.SpinnerService.hide();
+
       this.showExceptionMessage(error);
     });
   }
 
-  //Error message
+  // Error message
   showErrorMessage(title: string, description: string): void {
     this.messageError.title = title;
     this.messageError.description = description;
     this.modalError.show();
   }
 
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
     this.modalException.show();
@@ -195,26 +198,26 @@ export class ContentDetailComponent implements OnInit {
 
   async getFile(idContent, idContentMedia, type, title) {
     this.SpinnerService.show();
-    console.log(environment.apiUrl + environment.apiPort + "/contents/" + idContent + "/download/" + idContentMedia);
-    let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
     this.http.post(environment.apiUrl + environment.apiPort + "/contents/" + idContent + "/download/" + idContentMedia, {}, {headers, responseType: 'arraybuffer'} )
     .subscribe(data=> {
       this.SpinnerService.hide();
+
       this.blob = data;
       this.downloadFile(data, type, title);
     }, error => {
       this.SpinnerService.hide();
-      alert( this.translate.instant('Invalid Token') );
+
+      alert(this.translate.instant('Invalid Token'));
     });
   }
 
   downloadFile(data: any, type: string,title:string) {
     let blob = new Blob([data], { type: type});
     let url = window.URL.createObjectURL(blob);
-    //let pwa = window.open(url);
-    //if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
-    //    alert( 'Please disable your Pop-up blocker and try again.');
-    //}
+
     var a = document.createElement("a");
     document.body.appendChild(a);
     a.href = url;
@@ -222,5 +225,4 @@ export class ContentDetailComponent implements OnInit {
     a.click();
     window.URL.revokeObjectURL(url);
   }
-
 }
