@@ -23,6 +23,7 @@ export class LogoutComponent implements OnInit {
     localStorage.setItem('idOrganization', '');
     localStorage.setItem('documents', '');
     localStorage.setItem('organizations', null);
+
     this.router.navigateByUrl('sign-in', { replaceUrl: true });
   }
 }

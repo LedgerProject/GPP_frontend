@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,6 +7,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ElementsSearch, MessageException, MessageError, QuickSearch, Content } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
+
 @Component({
   selector: 'app-contents',
   templateUrl: './contents.component.html',
@@ -21,21 +22,18 @@ export class ContentsComponent implements OnInit {
   formSearch: ElementsSearch;
   filteredElements: Array<Content>;
   allElements: Array<Content>;
-  @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
   userType: string;
   selectedItemsList = [];
   checkedIDs = [];
-  @ViewChild('modalError') public modalError: ModalDirective;
   messageError: MessageError;
   errorsDescriptions: string[];
-  current_url: string;
+  currentUrl: string;
   SectionTitle: string;
   contentType: string;
 
-  action_delete: boolean;
-  current_delete: number;
-  total_delete: number;
+  @ViewChild('modalException') public modalException: ModalDirective;
+  @ViewChild('modalError') public modalError: ModalDirective;
 
   constructor (
     private router: Router,
@@ -54,12 +52,11 @@ export class ContentsComponent implements OnInit {
     this.formFilter = { search: '' };
     this.formSearch = { title: '', name: '' };
     this.messageError = environment.messageErrorInit;
-    this.action_delete = false;
-    this.current_url = router.url;
-    if (this.current_url == '/abusealarms') {
+    this.currentUrl = router.url;
+    if (this.currentUrl == '/abusealarms') {
       this.contentType = 'abuseAlarm';
       this.SectionTitle = 'AbuseAlarms';
-    } else if (this.current_url == '/news-stories') {
+    } else if (this.currentUrl == '/news-stories') {
       this.contentType = 'newsStory';
       this.SectionTitle = 'News & Stories';
     }
@@ -73,6 +70,7 @@ export class ContentsComponent implements OnInit {
   // Structures list
   async loadElements(title = null, name = null) {
     this.SpinnerService.show();
+
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -83,14 +81,11 @@ export class ContentsComponent implements OnInit {
     if (title) {
       titleQuery =  preString + '"title": { "ilike" : "%25' +title + '%25" }';
     }
-    if (name) {
-      //nameQuery = preString + '"phoneNumberPrefix": "' + name + '" ';
-    }
     let where = '"where": { \ ' +
-    '"contentType": "' + this.contentType + '" ' +
-    titleQuery +
-    nameQuery +
-    '},';
+        '"contentType": "' + this.contentType + '" ' +
+        titleQuery +
+        nameQuery +
+      '},';
     let filter = ' \
       { \
         "fields" : { \
@@ -110,12 +105,15 @@ export class ContentsComponent implements OnInit {
         "skip": 0, \
         "order": ["insertDate DESC"] \
       }';
+  
     // HTTP Request
     this.http.get<Array<Content>>(environment.apiUrl + environment.apiPort + "/contents?filter=" + filter, {headers})
     .subscribe(data => {
       this.SpinnerService.hide();
+
       this.allElements = data;
       let index = 0;
+
       this.allElements.forEach(element => {
         let date = element.insertDate;
         date = date.substr(0,10);
@@ -125,6 +123,7 @@ export class ContentsComponent implements OnInit {
       this.filteredElements = this.allElements;
     }, error => {
       this.SpinnerService.hide();
+
       this.showExceptionMessage(error);
     });
   }
@@ -150,10 +149,10 @@ export class ContentsComponent implements OnInit {
 
   // Open content details
   async elementDetails(id) {
-    this.router.navigateByUrl(this.current_url + '-details/' + id);
+    this.router.navigateByUrl(this.currentUrl + '-details/' + id);
   }
 
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
     this.modalException.show();
@@ -165,11 +164,10 @@ export class ContentsComponent implements OnInit {
     this.loadElements(title,name);
   }
 
-  //Error message
+  // Error message
   showErrorMessage(title: string, description: string): void {
     this.messageError.title = title;
     this.messageError.description = description;
     this.modalError.show();
   }
-
 }

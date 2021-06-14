@@ -11,108 +11,113 @@
                 <a [routerLink]="['/']"><img src="assets/img/logo.png" /></a>
 
                 <section *ngIf="user_type == ''">
-                <h2>{{'Welcome in Global Passport Project' | translate }}</h2>
+                  <h2>{{'Welcome in Global Passport Project' | translate }}</h2>
 
-                <div class="row">
-                  <div class="col-sm-6 text-left">
-                    <button type="button" class="btn mb-4 p-4 btn-primary btn-block" (click)="switch('user')">{{ 'Continue as' | translate}}<br>{{ 'User' | translate}}</button>
+                  <div class="row">
+                    <div class="col-sm-6 text-left">
+                      <button type="button" class="btn mb-4 p-4 btn-primary btn-block" (click)="switch('user')">{{ 'Continue as' | translate}}<br>{{ 'User' | translate}}</button>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                      <button type="button" class="btn mb-4 p-4 btn-primary btn-block" (click)="switch('operator')">{{ 'Continue as' | translate}}<br>{{ 'Operator' | translate}}</button>
+                    </div>
                   </div>
-                  <div class="col-sm-6 text-right">
-                    <button type="button" class="btn mb-4 p-4 btn-primary btn-block" (click)="switch('operator')">{{ 'Continue as' | translate}}<br>{{ 'Operator' | translate}}</button>
-                  </div>
-                </div>
-
                 </section>
 
                 <section *ngIf="user_type != ''">
-                <h1>{{'Sign in' | translate }}</h1>
-                <p class="text-muted">{{'Sign in to your account' | translate }}</p>
+                  <h1>{{'Sign in' | translate }}</h1>
+                  <p class="text-muted">{{'Sign in to your account' | translate }}</p>
 
-                <!-- Form -->
-                <form  #form="ngForm" (ngSubmit)="signIn()" *ngIf="!showAnswers">
-                  <!-- E-Mail -->
-                  <div class="input-group mb-3">
-                    <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required maxlength="150">
-                  </div>
+                  <!-- Form -->
+                  <form  #form="ngForm" (ngSubmit)="signIn()" *ngIf="!showAnswers">
 
-                  <!-- Password -->
-                  <div class="input-group mb-4">
-                    <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required maxlength="150">
-                  </div>
-
-                  <!-- Sign in button -->
-                  <div class="row">
-                    <div class="col-12">
-                      <button type="submit" [disabled]="form.invalid" class="btn btn-primary rounded-0 px-4">{{'Sign in' | translate}}</button>
+                    <!-- E-Mail -->
+                    <div class="input-group mb-3">
+                      <input type="email" name="email" [(ngModel)]="formData.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required maxlength="150">
                     </div>
-                  </div>
-              </form>
 
-              <form  #formUser="ngForm" (ngSubmit)="signInAnswers()" *ngIf="showAnswers">
+                    <!-- Password -->
+                    <div class="input-group mb-4">
+                      <input type="password" name="password" id="password" [(ngModel)]="formData.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required maxlength="150">
+                    </div>
 
-                  <!-- E-Mail -->
-                  <div class="input-group mb-3">
-                    <input type="email" name="email" [(ngModel)]="formDataUser.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required maxlength="150">
-                  </div>
+                    <!-- Sign in button -->
+                    <div class="row">
+                      <div class="col-12">
+                        <button type="submit" [disabled]="form.invalid" class="btn btn-primary rounded-0 px-4">{{'Sign in' | translate}}</button>
+                      </div>
+                    </div>
+                  </form>
 
-                  <!-- Password -->
-                  <div class="input-group mb-4">
-                    <input type="password" name="password" id="password" [(ngModel)]="formDataUser.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required maxlength="150">
-                  </div>
+                  <form  #formUser="ngForm" (ngSubmit)="signInAnswers()" *ngIf="showAnswers">
 
+                    <!-- E-Mail -->
+                    <div class="input-group mb-3">
+                      <input type="email" name="email" [(ngModel)]="formDataUser.email" id="email" class="form-control" placeholder="{{'Email' | translate }}" autocomplete="email" required maxlength="150">
+                    </div>
 
-                <div class="row">
-                  <div class="col-sm-12 mb-3">
-                    <p class="text-muted">{{ 'Enter the answers to the 3 questions you saved during registration' | translate }}</p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-12 mb-3">
-                    <div class="input-group">
-                      <label>{{ questions[0].question }}</label>
+                    <!-- Password -->
+                    <div class="input-group mb-4">
+                      <input type="password" name="password" id="password" [(ngModel)]="formDataUser.password" class="form-control" placeholder="{{'Password' | translate }}" autocomplete="password" required maxlength="150">
                     </div>
-                    <input type="text" class="form-control" name="answer1" [(ngModel)]="formDataUser.answer1"  placeholder="{{ 'Your Answer' | translate }}" maxlength="50">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-12 mb-3">
-                    <div class="input-group">
-                      <label>{{ questions[1].question }}</label>
+
+                    <div class="row">
+                      <div class="col-sm-12 mb-3">
+                        <p class="text-muted">{{ 'Enter the answers to the 3 questions you saved during registration' | translate }}</p>
+                      </div>
                     </div>
-                    <input type="text" class="form-control" name="answer2" [(ngModel)]="formDataUser.answer2"  placeholder="{{ 'Your Answer' | translate }} " maxlength="50">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-12 mb-3">
-                    <div class="input-group">
-                      <label>{{ questions[2].question }}</label>
+
+                    <div class="row">
+                      <div class="col-sm-12 mb-3">
+                        <div class="input-group">
+                          <label>{{ questions[0].question }}</label>
+                        </div>
+                        <input type="text" class="form-control" name="answer1" [(ngModel)]="formDataUser.answer1"  placeholder="{{ 'Your Answer' | translate }}" maxlength="50">
+                      </div>
                     </div>
-                    <input type="text" class="form-control" name="answer3" [(ngModel)]="formDataUser.answer3"  placeholder="{{ 'Your Answer' | translate }}" maxlength="50">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-12 mb-3">
-                    <div class="input-group">
-                      <label>{{ questions[3].question }}</label>
+
+                    <div class="row">
+                      <div class="col-sm-12 mb-3">
+                        <div class="input-group">
+                          <label>{{ questions[1].question }}</label>
+                        </div>
+                        <input type="text" class="form-control" name="answer2" [(ngModel)]="formDataUser.answer2"  placeholder="{{ 'Your Answer' | translate }} " maxlength="50">
+                      </div>
                     </div>
-                    <input type="text" class="form-control" name="answer4" [(ngModel)]="formDataUser.answer4"  placeholder="{{ 'Your Answer' | translate }}" maxlength="50">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-12 mb-3">
-                    <div class="input-group">
-                      <label>{{ questions[4].question }}</label>
+
+                    <div class="row">
+                      <div class="col-sm-12 mb-3">
+                        <div class="input-group">
+                          <label>{{ questions[2].question }}</label>
+                        </div>
+                        <input type="text" class="form-control" name="answer3" [(ngModel)]="formDataUser.answer3"  placeholder="{{ 'Your Answer' | translate }}" maxlength="50">
+                      </div>
                     </div>
-                    <input type="text" class="form-control" name="answer5" [(ngModel)]="formDataUser.answer5"  placeholder="{{ 'Your Answer' | translate }}" maxlength="50">
-                  </div>
-                </div>
-                <!-- Confirm button -->
-                <div class="row">
-                  <div class="col-12">
-                    <button type="submit" [disabled]="formUser.invalid" class="btn btn-primary rounded-0 px-4">{{ 'Confirm' | translate }}</button>
-                  </div>
-                </div>
-              </form>
+
+                    <div class="row">
+                      <div class="col-sm-12 mb-3">
+                        <div class="input-group">
+                          <label>{{ questions[3].question }}</label>
+                        </div>
+                        <input type="text" class="form-control" name="answer4" [(ngModel)]="formDataUser.answer4"  placeholder="{{ 'Your Answer' | translate }}" maxlength="50">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-sm-12 mb-3">
+                        <div class="input-group">
+                          <label>{{ questions[4].question }}</label>
+                        </div>
+                        <input type="text" class="form-control" name="answer5" [(ngModel)]="formDataUser.answer5"  placeholder="{{ 'Your Answer' | translate }}" maxlength="50">
+                      </div>
+                    </div>
+
+                    <!-- Confirm button -->
+                    <div class="row">
+                      <div class="col-12">
+                        <button type="submit" [disabled]="formUser.invalid" class="btn btn-primary rounded-0 px-4">{{ 'Confirm' | translate }}</button>
+                      </div>
+                    </div>
+                  </form>
 
                   <!-- Login alert -->
                   <div *ngIf='this.messageException.status!==0' class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -129,14 +134,12 @@
                     </div>
                   </div>
 
-
                   <!-- Switch link -->
                   <div class="row">
                     <div class="col-12 text-center">
                       <button type="button" class="btn btn-link px-0" (click)="switch('')">{{ 'Switch User Type' | translate}}</button>
                     </div>
                   </div>
-
                 </section>
 
                 <!-- Language switch -->

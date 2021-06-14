@@ -6,6 +6,7 @@ import { MessageException, QuickSearch, User } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { NgxSpinnerService } from "ngx-spinner";
+
 @Component({
   selector: 'app-operators',
   templateUrl: './operators.component.html',
@@ -22,9 +23,10 @@ export class OperatorsComponent implements OnInit {
   filteredOperators: Array<User>;
   allOperators: Array<User>;
   idUser: string;
-  @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
   levels: {};
+
+  @ViewChild('modalException') public modalException: ModalDirective;
 
   constructor (
     private router: Router,
@@ -61,13 +63,7 @@ export class OperatorsComponent implements OnInit {
   // Operators list
   async loadOperators(lastName = null, firstName = null, email = null) {
     this.SpinnerService.show();
-    /*this.http.get<Array<User>>("assets/api/operators.json")
-    .subscribe(data => {
-      this.allOperators = data;
-      this.filteredOperators = this.allOperators;
-    }, error => {
-      this.showExceptionMessage(error);
-    });*/
+
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -76,24 +72,28 @@ export class OperatorsComponent implements OnInit {
     let lastnameQuery = '';
     let emailQuery = '';
     let preString = '';
+
     if (lastName) {
       lastnameQuery = '"lastName": "' + lastName + '" ';
       preString = ',';
     }
+
     if (firstName) {
       firstnameQuery = firstnameQuery + preString + '"firstName": "' + firstName + '" ';
       preString = ',';
     }
+
     if (email) {
       emailQuery = emailQuery + preString + '"email": "' + email + '" ';
     }
+
     let where = '';
     if (lastName || firstName || email) {
-    where = '"where": { \ ' +
-    lastnameQuery +
-    firstnameQuery +
-    emailQuery +
-    '},';
+      where = '"where": { \ ' +
+        lastnameQuery +
+        firstnameQuery +
+        emailQuery +
+      '},';
     }
 
     let filter = ' \
@@ -120,23 +120,26 @@ export class OperatorsComponent implements OnInit {
         "skip": 0, \
         "order": ["lastName"] \
       }';
+  
     // HTTP Request
     this.http.get<Array<User>>(environment.apiUrl + environment.apiPort + "/users?filter=" + filter, {headers})
     .subscribe(data => {
       this.SpinnerService.hide();
+
       let data_without_idUser: any = data;
+
       data_without_idUser.forEach( (element,index) => {
         if (element.idUser == this.idUser) {
           data_without_idUser.splice(index, 1);
         }
       });
+
       this.allOperators = data_without_idUser;
       this.filteredOperators = this.allOperators;
     }, error => {
       this.SpinnerService.hide();
       this.showExceptionMessage(error);
     });
-
   }
 
   // Operators filter
@@ -145,6 +148,7 @@ export class OperatorsComponent implements OnInit {
 
     if (search) {
       this.filteredOperators = [];
+
       this.allOperators.forEach(element => {
         search = search.toLowerCase();
         let firstName = element.firstName.toLowerCase();
@@ -166,7 +170,7 @@ export class OperatorsComponent implements OnInit {
     this.router.navigateByUrl('operator-details/' + uuid);
   }
 
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
     this.modalException.show();
@@ -176,6 +180,7 @@ export class OperatorsComponent implements OnInit {
     const lastName = this.formSearch.lastName;
     const firstName = this.formSearch.firstName;
     const email = this.formSearch.email;
+
     this.loadOperators(lastName,firstName,email);
   }
 }

@@ -3,10 +3,11 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { UserdataService } from '../../services/userdata.service';
-import { QuickSearch, MessageException, MessageError, TokenCredential, Document } from '../../services/models';
+import { QuickSearch, MessageException, MessageError, Document } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from "ngx-spinner";
+
 @Component({
   selector: 'app-wallet-documents',
   templateUrl: './wallet-documents.component.html',
@@ -19,12 +20,13 @@ export class WalletDocumentsComponent implements OnInit {
   filteredDocuments: Array<Document>;
   allDocuments: Array<Document>;
   userType: string;
-  @ViewChild('modalError') public modalError: ModalDirective;
   messageError: MessageError;
   errorsDescriptions: string[];
-  @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
   blob: any;
+
+  @ViewChild('modalError') public modalError: ModalDirective;
+  @ViewChild('modalException') public modalException: ModalDirective;
 
   constructor (
     private router: Router,
@@ -53,16 +55,20 @@ export class WalletDocumentsComponent implements OnInit {
   // Documents list
   loadPersonalDocuments() {
     this.SpinnerService.show();
-    this.allDocuments = [];
 
+    this.allDocuments = [];
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
     this.http.get<Document>(environment.apiUrl + environment.apiPort + "/documents", {headers} )
     .subscribe(data => {
       this.SpinnerService.hide();
+
       localStorage.setItem('documents', JSON.stringify(data));
+
       let documents: any = data;
       this.allDocuments = documents;
       let x = 0;
+
       if (this.allDocuments) {
         this.allDocuments.forEach(element => {
           if (element.mimeType == 'image/jpeg' || element.mimeType == 'image/jpg' || element.mimeType == 'image/png') {
@@ -70,6 +76,7 @@ export class WalletDocumentsComponent implements OnInit {
           } else {
             this.allDocuments[x].fileType = 'pdf';
           }
+
           let bytes: number = element.size / 1000000;
           bytes = parseFloat(bytes.toFixed(2));
           this.allDocuments[x].size = bytes;
@@ -79,34 +86,39 @@ export class WalletDocumentsComponent implements OnInit {
       this.filteredDocuments = this.allDocuments;
     }, error => {
       this.SpinnerService.hide();
-      //let code = error.status;
+
       this.showExceptionMessage(error);
     });
   }
 
-
   // Documents list
   loadDocuments() {
     this.SpinnerService.show();
+
     this.allDocuments = JSON.parse(localStorage.getItem('documents'));
+
     if (!this.allDocuments) {
       this.allDocuments = [];
     }
+
     let x = 0;
     if (this.allDocuments) {
-    this.allDocuments.forEach(element => {
-      if (element.mimeType == 'image/jpeg' || element.mimeType == 'image/jpg' || element.mimeType == 'image/png') {
-        this.allDocuments[x].fileType = 'image';
-      } else {
-        this.allDocuments[x].fileType = 'pdf';
-      }
-      let bytes: number = element.size / 1000000;
-      bytes = parseFloat(bytes.toFixed(2));
-      this.allDocuments[x].size = bytes;
-      x++;
-    });
+      this.allDocuments.forEach(element => {
+        if (element.mimeType == 'image/jpeg' || element.mimeType == 'image/jpg' || element.mimeType == 'image/png') {
+          this.allDocuments[x].fileType = 'image';
+        } else {
+          this.allDocuments[x].fileType = 'pdf';
+        }
+
+        let bytes: number = element.size / 1000000;
+        bytes = parseFloat(bytes.toFixed(2));
+        this.allDocuments[x].size = bytes;
+        x++;
+      });
     }
+
     this.SpinnerService.hide();
+
     this.filteredDocuments = this.allDocuments;
   }
 
@@ -116,9 +128,11 @@ export class WalletDocumentsComponent implements OnInit {
 
     if (search) {
       this.filteredDocuments = [];
+
       this.allDocuments.forEach(element => {
         search = search.toLowerCase();
         let title = element.title.toLowerCase();
+
         if (title.includes(search)) {
           this.filteredDocuments.push(element);
         }
@@ -137,9 +151,12 @@ export class WalletDocumentsComponent implements OnInit {
     }
   }
 
+  // Get personal file
   async getPersonalFile(uuid, type, title) {
     this.SpinnerService.show();
-    let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
     this.http.get(environment.apiUrl + environment.apiPort + "/documents/" + uuid, {headers, responseType: 'arraybuffer'} )
     .subscribe(data=> {
       this.SpinnerService.hide();
@@ -147,18 +164,16 @@ export class WalletDocumentsComponent implements OnInit {
       this.downloadFile(data, type, title);
     }, error => {
       this.SpinnerService.hide();
-      //console.log(error);
-      alert( this.translate.instant('Invalid Token') );
+
+      alert(this.translate.instant('Invalid Token'));
     });
   }
 
+  // Download file
   downloadFile(data: any, type: string,title:string) {
     let blob = new Blob([data], { type: type});
     let url = window.URL.createObjectURL(blob);
-    //let pwa = window.open(url);
-    //if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
-    //    alert( 'Please disable your Pop-up blocker and try again.');
-    //}
+
     var a = document.createElement("a");
     document.body.appendChild(a);
     a.href = url;
@@ -167,7 +182,7 @@ export class WalletDocumentsComponent implements OnInit {
     window.URL.revokeObjectURL(url);
   }
 
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
     this.modalException.show();

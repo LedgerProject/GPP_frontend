@@ -64,7 +64,6 @@
               </div>
               </div>
             </div>
-
           </form>
         </div>
       </div>
@@ -80,22 +79,21 @@
             <div class="col-sm-12">
               <h4>{{ 'Gallery' | translate}}</h4>
 
-            <!-- Table documents -->
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <th>{{ 'Document' | translate }}</th>
-                  <th class="text-right">{{ 'Size' | translate }}</th>
-                </thead>
-                <tbody>
-                  <tr class="pointer" *ngFor="let image of elementImages; let i=index" (click)="openDocument(image.idContent, image.idContentMedia, image.mimeType, image.filename)">
-                    <td><i class='fa fa-file-{{image.fileType}}-o'></i> <strong>FILE {{i+1}}</strong></td>
-                    <td class="text-right">{{image.size}} MB</td>
-                  </tr>
-                </tbody>
-              </table>
+              <!-- Table documents -->
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <th>{{ 'Document' | translate }}</th>
+                    <th class="text-right">{{ 'Size' | translate }}</th>
+                  </thead>
+                  <tbody>
+                    <tr class="pointer" *ngFor="let image of elementImages; let i=index" (click)="openDocument(image.idContent, image.idContentMedia, image.mimeType, image.filename)">
+                      <td><i class='fa fa-file-{{image.fileType}}-o'></i> <strong>FILE {{i+1}}</strong></td>
+                      <td class="text-right">{{image.size}} MB</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-
             </div>
           </div>
         </div>

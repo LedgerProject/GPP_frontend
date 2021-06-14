@@ -1,11 +1,12 @@
-import { Component, OnInit, Input, ComponentFactoryResolver } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MessageException, TokenCredential } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
+
 interface FormData {
   email: string;
   password: string;
@@ -41,6 +42,7 @@ export class SigninComponent implements OnInit {
       email: '',
       password: ''
     };
+
     this.formDataUser = {
       email: '',
       password: '',
@@ -50,6 +52,7 @@ export class SigninComponent implements OnInit {
       answer4: '',
       answer5: '',
     }
+
     this.messageException = environment.messageExceptionInit;
     this.user_type = '';
     this.pbkdf = '';
@@ -64,15 +67,16 @@ export class SigninComponent implements OnInit {
     this.lastLoginEmail = localStorage.getItem('lastLoginEmail');
     this.privateKey = localStorage.getItem('privateKey');
     this.publicKey = localStorage.getItem('publicKey');
-    //this.get_user_type = this._Activatedroute.snapshot.paramMap.get('user_type');
   }
 
   // Page init
   ngOnInit(): void {
-    this.get_user_type = this._Activatedroute.snapshot.queryParamMap.get("user_type")
+    this.get_user_type = this._Activatedroute.snapshot.queryParamMap.get("user_type");
+
     this._Activatedroute.queryParamMap.subscribe(queryParams => {
       this.get_user_type = queryParams.get("user_type")
     })
+
     if (this.get_user_type) {
       this.user_type = this.get_user_type;
     }
@@ -104,11 +108,14 @@ export class SigninComponent implements OnInit {
   // Sign in
   async signIn(email = null, password = null, privateKey = null, publicKey = null) {
     this.SpinnerService.show();
+
     let tryLogin = true;
     let lastLogin = false;
+
     if (!email) {
       email = this.formData.email;
     }
+
     if (!password) {
       password = this.formData.password;
     }
@@ -129,7 +136,9 @@ export class SigninComponent implements OnInit {
       };
 
       tryLogin = false;
+
       this.SpinnerService.hide();
+
       return false;
     }
 
@@ -142,23 +151,27 @@ export class SigninComponent implements OnInit {
       };
 
       tryLogin = false;
+
       this.SpinnerService.hide();
+
       return false;
     }
 
     if (this.user_type == 'user') {
       tryLogin = false;
-      // check last login
+
+      // Check last login
       if (this.lastLoginEmail && (this.lastLoginEmail == email) && this.privateKey && this.publicKey) {
         lastLogin = true;
       } else {
-        // check if private key and public key generated
+        // Check if private key and public key generated
         if (privateKey && publicKey) {
           lastLogin = true;
         } else {
           lastLogin = false;
         }
       }
+
       if (!lastLogin) {
         this.showAnswers = true;
         this.formDataUser.email = this.formData.email;
@@ -168,7 +181,9 @@ export class SigninComponent implements OnInit {
         this.formDataUser.answer3 = '';
         this.formDataUser.answer4 = '';
         this.formDataUser.answer5 = '';
+
         this.SpinnerService.hide();
+
         return false;
       } else {
         tryLogin = true;
@@ -176,8 +191,7 @@ export class SigninComponent implements OnInit {
     }
 
     if (tryLogin) {
-
-     let postParams = {
+      let postParams = {
         email: email,
         password: password
       }
@@ -195,10 +209,13 @@ export class SigninComponent implements OnInit {
           localStorage.setItem('userType', this.user_type);
         }
         localStorage.setItem('token', data.token);
+
         this.SpinnerService.hide();
+
         this.router.navigateByUrl('wallet');
       }, error => {
         this.SpinnerService.hide();
+
         switch (error.status) {
           case 401:
             this.messageException = {
@@ -207,7 +224,7 @@ export class SigninComponent implements OnInit {
               statusText : this.translate.instant('Wrong password'),
               message : this.translate.instant('The specified password is incorrect. Please try again, or select \'Forgot password?\' to reset the password.')
             };
-          break;
+            break;
 
           case 403:
             this.messageException = {
@@ -216,7 +233,7 @@ export class SigninComponent implements OnInit {
               statusText : this.translate.instant('Forbidden'),
               message : this.translate.instant('You need to confirm registration email before Login.')
             };
-          break;
+            break;
 
           case 404:
             this.messageException = {
@@ -234,19 +251,19 @@ export class SigninComponent implements OnInit {
               statusText : this.translate.instant('User not found'),
               message : this.translate.instant('User not found. Check your email, or if you are not registered, select \'Not a member yet?\' and register.')
             };
-          break;
+            break;
 
           default:
             this.messageException = error;
             break;
         }
       });
-
     }
   }
 
   async signInAnswers() {
     this.SpinnerService.show();
+
     let tryLogin = true;
     let email = this.formDataUser.email;
     let password = this.formDataUser.password;
@@ -260,7 +277,9 @@ export class SigninComponent implements OnInit {
       };
 
       tryLogin = false;
+
       this.SpinnerService.hide();
+
       return false;
     }
 
@@ -273,13 +292,14 @@ export class SigninComponent implements OnInit {
       };
 
       tryLogin = false;
+
       this.SpinnerService.hide();
+
       return false;
     }
 
     if (tryLogin) {
-
-     let postParams = {
+      let postParams = {
         email: email,
         password: password
       }
@@ -296,22 +316,27 @@ export class SigninComponent implements OnInit {
       let answer4 = 'null';
       let answer5 = 'null';
       let count = 0;
+
       if (this.formDataUser.answer1) {
         answer1 = this.formDataUser.answer1;
         count++;
       }
+
       if (this.formDataUser.answer2) {
         answer2 = this.formDataUser.answer2;
         count++;
       }
+
       if (this.formDataUser.answer3) {
         answer3 = this.formDataUser.answer3;
         count++;
       }
+
       if (this.formDataUser.answer4) {
         answer4 = this.formDataUser.answer4;
         count++;
       }
+
       if (this.formDataUser.answer5) {
         answer5 = this.formDataUser.answer5;
         count++;
@@ -324,11 +349,12 @@ export class SigninComponent implements OnInit {
           statusText : this.translate.instant('Specify answers'),
           message : this.translate.instant('Please enter the answers to the 3 questions you saved during registration')
         };
+
         this.SpinnerService.hide();
+
         return false;
       } else {
         postParams['email'] = email;
-        //postParams['pbkdf'] = this.pbkdf;
         postParams['answer1'] = answer1;
         postParams['answer2'] = answer2;
         postParams['answer3'] = answer3;
@@ -336,7 +362,7 @@ export class SigninComponent implements OnInit {
         postParams['answer5'] = answer5;
         postParams['returnKeys'] = true;
 
-        // verify answers and get keys
+        // Verify answers and get keys
         let headers = new HttpHeaders().set("Content-Type", "application/json");
 
         this.http.post(environment.apiUrl + environment.apiPort + "/user/verify-answers", postParams, {headers})
@@ -345,6 +371,7 @@ export class SigninComponent implements OnInit {
           var response: any = data;
           var response_code: number = parseInt(response.verifyAnswersOutcome.code);
           var response_message:string = response.verifyAnswersOutcome.message;
+
           switch (response_code) {
             case 10:
               this.messageException = {
@@ -353,7 +380,8 @@ export class SigninComponent implements OnInit {
                 statusText : this.translate.instant('Sorry'),
                 message : this.translate.instant('Email not exists')
               };
-            break;
+              break;
+
             case 11:
               this.messageException = {
                 name : '',
@@ -361,7 +389,8 @@ export class SigninComponent implements OnInit {
                 statusText : this.translate.instant('Sorry'),
                 message : this.translate.instant('Email is empty')
               };
-            break;
+              break;
+
             case 50:
               this.messageException = {
                 name : '',
@@ -369,7 +398,8 @@ export class SigninComponent implements OnInit {
                 statusText : this.translate.instant('Sorry'),
                 message : this.translate.instant('Answers not correct')
               };
-            break;
+              break;
+
             case 51:
               this.messageException = {
                 name : '',
@@ -377,18 +407,15 @@ export class SigninComponent implements OnInit {
                 statusText : this.translate.instant('Sorry'),
                 message : this.translate.instant('Specify the answers')
               };
-            break;
+              break;
+
             case 202:
-              /*this.messageException = {
-                name : '',
-                status : 10,
-                statusText : this.translate.instant('Congratulations!'),
-                message : this.translate.instant('Answers correct')
-              };*/
               let privateKey = response.verifyAnswersOutcome.privateKey;
               let publicKey = response.verifyAnswersOutcome.publicKey;
+
               this.signIn(email,password,privateKey,publicKey);
-            break;
+              break;
+
             default:
               this.messageException = {
                 name : '',
@@ -402,7 +429,6 @@ export class SigninComponent implements OnInit {
           this.messageException = error;
           this.SpinnerService.hide();
         });
-
       }
     }
   }

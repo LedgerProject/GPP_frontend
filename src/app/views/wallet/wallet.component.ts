@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,6 +7,7 @@ import { QuickSearch, MessageException, MessageError, TokenCredential, Document 
 import { environment } from '../../../environments/environment';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from "ngx-spinner";
+
 @Component({
   selector: 'app-wallet',
   templateUrl: './wallet.component.html',
@@ -17,11 +18,8 @@ export class WalletComponent implements OnInit {
   token: string;
   formData: TokenCredential;
   userType: string;
-  @ViewChild('modalInfo') public modalInfo: ModalDirective;
-  @ViewChild('modalError') public modalError: ModalDirective;
   messageError: MessageError;
   errorsDescriptions: string[];
-  @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
   generated_token: string;
   formSearch: QuickSearch;
@@ -31,6 +29,10 @@ export class WalletComponent implements OnInit {
   selectedItemsList = [];
   checkedIDs = [];
   privateKey: string;
+
+  @ViewChild('modalInfo') public modalInfo: ModalDirective;
+  @ViewChild('modalError') public modalError: ModalDirective;
+  @ViewChild('modalException') public modalException: ModalDirective;
 
   constructor (
     private router: Router,
@@ -66,19 +68,20 @@ export class WalletComponent implements OnInit {
   // Check token inserted
   async checkToken() {
     this.SpinnerService.show();
+
     this.errorsDescriptions = [];
 
-    //Check if entered the token
+    // Check if entered the token
     if (!this.formData.token) {
-      this.errorsDescriptions.push(this.translate.instant('Specificare il token'));
+      this.errorsDescriptions.push(this.translate.instant('Specify the token'));
     }
 
-    //Check if entered the address
+    // Check if entered the address
     if (this.formData.token && this.formData.token.length < 6) {
-      this.errorsDescriptions.push(this.translate.instant('Specificare un token di almeno 8 caratteri'));
+      this.errorsDescriptions.push(this.translate.instant('Specify a token of at least 6 numbers'));
     }
 
-    //Check if there are no errors
+    // Check if there are no errors
     if (this.errorsDescriptions.length === 0) {
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -87,10 +90,10 @@ export class WalletComponent implements OnInit {
         this.SpinnerService.hide();
         localStorage.setItem('documents', JSON.stringify(data));
         localStorage.setItem('tokenWallet', this.formData.token);
+
         this.router.navigateByUrl('wallet-documents');
       }, error => {
         this.SpinnerService.hide();
-        //console.log(error);
         let code = error.status;
 
         switch (code) {
@@ -108,7 +111,8 @@ export class WalletComponent implements OnInit {
       });
     } else {
       this.SpinnerService.hide();
-      //Missing data
+
+      // Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
         this.translate.instant('The data entered is incorrect or missing.')
@@ -116,14 +120,14 @@ export class WalletComponent implements OnInit {
     }
   }
 
-  //Error message
+  // Error message
   showErrorMessage(title: string, description: string): void {
     this.messageError.title = title;
     this.messageError.description = description;
     this.modalError.show();
   }
 
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
     this.modalException.show();
@@ -131,33 +135,40 @@ export class WalletComponent implements OnInit {
 
   generateToken() {
     this.SpinnerService.show();
-    //Check if there are no errors
+
+    // Check if there are no errors
     this.checkedIDs = [];
     this.allDocuments.forEach((value, index) => {
       if (value.isChecked) {
         this.checkedIDs.push(value.idDocument);
       }
     });
+
     if (this.checkedIDs.length == 0) {
       this.showErrorMessage(
         this.translate.instant('No Document Selected'),
         this.translate.instant('Please select at least one Document')
       );
+  
       this.SpinnerService.hide();
+
       return false;
     }
-    //
-    //console.log(this.checkedIDs);
+
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
     let idDocuments = [];
+
     this.selectedItemsList.forEach( element => {
       idDocuments.push(element.idDocument);
     });
+
     const postParams = {
       privateKey: this.privateKey,
       idDocuments: idDocuments,
     };
-      this.http.post(environment.apiUrl + environment.apiPort + "/users-token",postParams, {headers} )
+
+    this.http.post(environment.apiUrl + environment.apiPort + "/users-token", postParams, {headers} )
       .subscribe(data => {
         this.SpinnerService.hide();
         let token_data: any = data;
@@ -165,30 +176,36 @@ export class WalletComponent implements OnInit {
         this.modalInfo.show();
       }, error => {
         this.SpinnerService.hide();
-        //console.log(error);
+
         this.showExceptionMessage(error);
       });
     }
 
-    //on checkbox change
+    // Checkbox change
     changeSelection() {
       this.selectedItemsList = this.allDocuments.filter((value, index) => {
         return value.isChecked
       });
     }
-    //User Documents
+
+    // User Documents
     loadPersonalDocuments() {
       this.SpinnerService.show();
+
       this.allDocuments = [];
 
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
       this.http.get<Document>(environment.apiUrl + environment.apiPort + "/documents", {headers} )
       .subscribe(data => {
         this.SpinnerService.hide();
+
         localStorage.setItem('documents', JSON.stringify(data));
+
         let documents: any = data;
         this.allDocuments = documents;
         let x = 0;
+
         if (this.allDocuments) {
           this.allDocuments.forEach(element => {
             if (element.mimeType == 'image/jpeg' || element.mimeType == 'image/jpg' || element.mimeType == 'image/png') {
@@ -196,6 +213,7 @@ export class WalletComponent implements OnInit {
             } else {
               this.allDocuments[x].fileType = 'pdf';
             }
+
             this.allDocuments[x].isChecked = false;
             let bytes: number = element.size / 1000000;
             bytes = parseFloat(bytes.toFixed(2));
@@ -203,10 +221,11 @@ export class WalletComponent implements OnInit {
             x++;
           });
         }
+
         this.filteredDocuments = this.allDocuments;
       }, error => {
         this.SpinnerService.hide();
-        //let code = error.status;
+
         this.showExceptionMessage(error);
       });
     }
@@ -217,6 +236,7 @@ export class WalletComponent implements OnInit {
 
     if (search) {
       this.filteredDocuments = [];
+
       this.allDocuments.forEach(element => {
         search = search.toLowerCase();
         let title = element.title.toLowerCase();
@@ -236,36 +256,39 @@ export class WalletComponent implements OnInit {
     }
   }
 
+  // Get personal file
   async getPersonalFile(uuid, type, title) {
     if (this.privateKey) {
-    this.SpinnerService.show();
-    let headers = new HttpHeaders().set("Authorization", "Bearer "+this.token);
-    let postParams = {
-      idDocument: uuid,
-      privateKey: this.privateKey
-    };
-    this.http.post(environment.apiUrl + environment.apiPort + "/documents/download",postParams, {headers, responseType: 'arraybuffer'} )
-    .subscribe(data=> {
-      this.SpinnerService.hide();
-      this.blob = data;
-      this.downloadFile(data, type, title);
-    }, error => {
-      this.SpinnerService.hide();
-      // console.log(error);
-      alert( this.translate.instant('Invalid Token') );
-    });
+      this.SpinnerService.show();
+
+      let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+
+      let postParams = {
+        idDocument: uuid,
+        privateKey: this.privateKey
+      };
+
+      this.http.post(environment.apiUrl + environment.apiPort + "/documents/download",postParams, {headers, responseType: 'arraybuffer'} )
+      .subscribe(data=> {
+        this.SpinnerService.hide();
+
+        this.blob = data;
+        this.downloadFile(data, type, title);
+      }, error => {
+        this.SpinnerService.hide();
+
+        alert( this.translate.instant('Invalid Token') );
+      });
     } else {
       alert( this.translate.instant('Private key not found') );
     }
   }
 
+  // Download selected file
   downloadFile(data: any, type: string,title:string) {
     let blob = new Blob([data], { type: type});
     let url = window.URL.createObjectURL(blob);
-    //let pwa = window.open(url);
-    //if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
-    //    alert( 'Please disable your Pop-up blocker and try again.');
-    //}
+
     var a = document.createElement("a");
     document.body.appendChild(a);
     a.href = url;
@@ -273,5 +296,4 @@ export class WalletComponent implements OnInit {
     a.click();
     window.URL.revokeObjectURL(url);
   }
-
 }

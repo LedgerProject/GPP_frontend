@@ -156,7 +156,7 @@ Install the npm packages. Go to the project directory and run:
 npm install
 ```
 
-After the modules installation, configure the environment. Open /src/environments/environment.ts (remember to edit also the /src/environments/environment.prod.ts) and edit the following parameters:
+After the modules installation, configure the environment. Rename /src/environments/environment.example.ts to /src/environments/environment.ts and /src/environments/environment.prod.example.ts to /src/environments/environment.prod.ts and edit the following parameters:
 
 ```sh
 export const environment = {
@@ -252,4 +252,4 @@ npm start
 
 ## How the frontend works
 
-TODO
+Please visit (https://www.globalpassportproject.org) for more information.

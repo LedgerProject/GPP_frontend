@@ -7,6 +7,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MessageException, QuickSearch, Category } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
+
 @Component({
   selector: 'app-categories',
   templateUrl: './categories.component.html',
@@ -18,8 +19,9 @@ export class CategoriesComponent implements OnInit {
   formSearch: QuickSearch;
   filteredCategories: Array<Category>;
   allCategories: Array<Category>;
-  @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
+
+  @ViewChild('modalException') public modalException: ModalDirective;
 
   constructor (
     private router: Router,
@@ -43,6 +45,7 @@ export class CategoriesComponent implements OnInit {
   // Categories list
   async loadCategories() {
     this.SpinnerService.show();
+
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -66,10 +69,12 @@ export class CategoriesComponent implements OnInit {
     this.http.get<Array<Category>>(environment.apiUrl + environment.apiPort + "/categories?filter=" + filter, {headers} )
     .subscribe(data => {
       this.SpinnerService.hide();
+
       this.allCategories = data;
       this.filteredCategories = data;
     }, error => {
       this.SpinnerService.hide();
+
       this.showExceptionMessage(error);
     });
   }
@@ -97,7 +102,7 @@ export class CategoriesComponent implements OnInit {
     this.router.navigateByUrl('category-details/' + id);
   }
 
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = {
       name : error.name,

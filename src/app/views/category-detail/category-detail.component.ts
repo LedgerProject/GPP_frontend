@@ -8,6 +8,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Language, MessageException, MessageError, Category, CategoryLanguage } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
+
 interface FormData {
   identifier: string;
   title: string[];
@@ -26,12 +27,13 @@ export class CategoryDetailComponent implements OnInit {
   currentLanguage: string;
   languages: Array<Language>;
   category: Category;
-  @ViewChild('modalDelete') public modalDelete: ModalDirective;
-  @ViewChild('modalError') public modalError: ModalDirective;
   messageError: MessageError;
   errorsDescriptions: string[];
-  @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
+
+  @ViewChild('modalDelete') public modalDelete: ModalDirective;
+  @ViewChild('modalError') public modalError: ModalDirective;
+  @ViewChild('modalException') public modalException: ModalDirective;
 
   constructor (
     private router: Router,
@@ -65,6 +67,7 @@ export class CategoryDetailComponent implements OnInit {
   // Get category details
   async getCategory() {
     this.SpinnerService.show();
+
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.get<Category>(environment.apiUrl + environment.apiPort + "/categories/" + this.uuid, {headers} )
@@ -79,6 +82,7 @@ export class CategoryDetailComponent implements OnInit {
       }
     }, error => {
       this.SpinnerService.hide();
+
       this.showExceptionMessage(error);
     });
   }
@@ -99,16 +103,14 @@ export class CategoryDetailComponent implements OnInit {
 
   // Save category
   async saveCategory() {
-    this.SpinnerService.show();
     this.errorsDescriptions = [];
 
-    //Check if entered the identifier
+    // Check if entered the identifier
     if (!this.formData.identifier) {
       this.errorsDescriptions.push(this.translate.instant('Please, enter the category identifier'));
-      this.SpinnerService.hide();
     }
 
-    //Check if entered all the languages
+    // Check if entered all the languages
     let validate = 1;
     this.languages.forEach(element => {
       if (!this.formData.title[element.value]) {
@@ -118,12 +120,13 @@ export class CategoryDetailComponent implements OnInit {
 
     if (validate === 0) {
       this.errorsDescriptions.push(this.translate.instant('Please, enter the category name in each language'));
-      this.SpinnerService.hide();
     }
 
-    //Check if there are no errors
+    // Check if there are no errors
     if (this.errorsDescriptions.length === 0) {
-      //Data save
+      this.SpinnerService.show();
+
+      // Data save
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
       let postParams = {
@@ -131,36 +134,39 @@ export class CategoryDetailComponent implements OnInit {
         type: 'structures'
       };
 
-      //Check if update or insert
+      // Check if update or insert
       if (this.uuid) {
-        //Update the category
+        // Update the category
         this.http.patch(environment.apiUrl + environment.apiPort + "/categories/" + this.uuid,postParams, {headers} )
         .subscribe(async data => {
           this.SpinnerService.hide();
+
           await this.saveCategoryLanguages();
 
           this.router.navigateByUrl('/categories');
         }, error => {
           this.SpinnerService.hide();
+
           this.showExceptionMessage(error);
         });
       } else {
-        //Insert the category
+        // Insert the category
         this.http.post<Category>(environment.apiUrl + environment.apiPort + "/categories", postParams, {headers} )
         .subscribe(async data => {
           this.SpinnerService.hide();
+
           this.uuid = data.idCategory;
           await this.saveCategoryLanguages();
 
           this.router.navigateByUrl('/categories');
         }, error => {
           this.SpinnerService.hide();
+
           this.showExceptionMessage(error);
         });
       }
     } else {
-      this.SpinnerService.hide();
-      //Missing data
+      // Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
         this.translate.instant('The data entered is incorrect or missing.')
@@ -172,7 +178,7 @@ export class CategoryDetailComponent implements OnInit {
   async saveCategoryLanguages() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    //Update the category languages
+    // Update the category languages
     this.languages.forEach(element => {
       let postParams = {
         idCategory: this.uuid,
@@ -197,26 +203,29 @@ export class CategoryDetailComponent implements OnInit {
   // Delete category
   deleteCategory(idCategory) {
     this.SpinnerService.show();
+
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.delete(environment.apiUrl + environment.apiPort + "/categories/" + idCategory, {headers} )
     .subscribe(data => {
       this.SpinnerService.hide();
+
       this.router.navigateByUrl('/categories');
     }, error => {
       this.SpinnerService.hide();
+
       this.showExceptionMessage(error);
     });
   }
 
-  //Error message
+  // Error message
   showErrorMessage(title: string, description: string): void {
     this.messageError.title = title;
     this.messageError.description = description;
     this.modalError.show();
   }
 
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = {
       name : error.name,

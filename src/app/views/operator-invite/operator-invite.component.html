@@ -10,6 +10,7 @@
           <!-- Information -->
           <h1 class="mt-4">{{ 'Operators - Invite Operator' | translate }}</h1>
           <p>{{ 'In this section it is possible to invite an operator to join the organization. Select the operation, indicate the authorizations and write invitation message.' | translate }}</p>
+          
           <form #Searchform="ngForm">
             <!-- Select operator -->
             <div class="form-group mt-3">
@@ -23,14 +24,6 @@
                 </div>
               </div>
             </div>
-            <!--<div class="row" *ngIf="isSearching">
-              <div class="col-12 text-center">
-                <h4>Searching ... </h4>
-              </div>
-            </div>-->
-          <!--<div>Match: {{string_match}}</div>
-          <div>idUser: {{idUser}}</div>
-          <div>permissions: {{permissions}}</div>-->
           </form>
 
           <!-- Form -->
@@ -46,22 +39,17 @@
             <!-- Permissions -->
             <div class="form-group">
               <label>
-                <input type="checkbox" name="check_admin" [(ngModel)]="permission_OrganizationAdministrator" value="OrganizationAdministrator" [checked]="permission_OrganizationAdministrator" (change)="setValue('OrganizationAdministrator')">
+                <input type="checkbox" name="check_admin" [(ngModel)]="permissionOrganizationAdministrator" value="OrganizationAdministrator" [checked]="permissionOrganizationAdministrator" (change)="setValue('OrganizationAdministrator')">
                 {{ 'Administrator (can manage structures, operators and document wallet)' | translate }}
               </label>
               <br />
-              <!--<label>
-                <input type="checkbox" name="check_wallet" value="wallet">
-                {{ 'Wallet (can manage document wallet)' | translate }}
-              </label>
-              <br />-->
               <label>
-                <input type="checkbox" name="check_operators" [(ngModel)]="permission_OrganizationUsersManagement" value="OrganizationUsersManagement" [checked]="permission_OrganizationUsersManagement" (change)="setValue('OrganizationUsersManagement')">
+                <input type="checkbox" name="check_operators" [(ngModel)]="permissionOrganizationUsersManagement" value="OrganizationUsersManagement" [checked]="permissionOrganizationUsersManagement" (change)="setValue('OrganizationUsersManagement')">
                 {{ 'Operators (can manage operators)' | translate }}
               </label>
               <br />
               <label>
-                <input type="checkbox" name="check_structures" [(ngModel)]="permission_OrganizationStructuresManagement"  value="OrganizationStructuresManagement" [checked]="permission_OrganizationStructuresManagement" (change)="setValue('OrganizationStructuresManagement')">
+                <input type="checkbox" name="check_structures" [(ngModel)]="permissionOrganizationStructuresManagement"  value="OrganizationStructuresManagement" [checked]="permissionOrganizationStructuresManagement" (change)="setValue('OrganizationStructuresManagement')">
                 {{ 'Structures (can manage structures)' | translate }}
               </label>
             </div>
@@ -74,11 +62,6 @@
             </div>
           </form>
         </div>
-
-        <!-- Under costruction alert -->
-        <!--<div class="alert alert-warning alert-dismissible fade show" role="alert">
-          <strong>{{ 'Attention! This section is under construction, hence is not working.' | translate }}</strong>
-        </div>-->
       </div>
     </div>
   </div>

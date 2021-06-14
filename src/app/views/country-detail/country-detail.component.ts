@@ -8,6 +8,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Language, MessageException, MessageError, Country, CountryLanguage } from '../../services/models';
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
+
 interface FormData {
   identifier: string;
   title: string[];
@@ -27,12 +28,13 @@ export class CountryDetailComponent implements OnInit {
   currentLanguage: string;
   languages: Array<Language>;
   country: Country;
-  @ViewChild('modalDelete') public modalDelete: ModalDirective;
-  @ViewChild('modalError') public modalError: ModalDirective;
   messageError: MessageError;
   errorsDescriptions: string[];
-  @ViewChild('modalException') public modalException: ModalDirective;
   messageException: MessageException;
+
+  @ViewChild('modalDelete') public modalDelete: ModalDirective;
+  @ViewChild('modalError') public modalError: ModalDirective;
+  @ViewChild('modalException') public modalException: ModalDirective;
 
   constructor (
     private router: Router,
@@ -67,6 +69,7 @@ export class CountryDetailComponent implements OnInit {
   // Get country details
   async getCountry() {
     this.SpinnerService.show();
+
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.get<Country>(environment.apiUrl + environment.apiPort + "/countries/" + this.uuid, {headers} )
@@ -84,9 +87,11 @@ export class CountryDetailComponent implements OnInit {
       }
 
       this.getCountryLanguages();
+
       this.SpinnerService.hide();
     }, error => {
       this.SpinnerService.hide();
+
       this.showExceptionMessage(error);
     });
   }
@@ -107,22 +112,19 @@ export class CountryDetailComponent implements OnInit {
 
   // Save country
   async saveCountry() {
-    this.SpinnerService.show();
     this.errorsDescriptions = [];
 
-    //Check if entered the identifier
+    // Check if entered the identifier
     if (!this.formData.identifier) {
       this.errorsDescriptions.push(this.translate.instant('Please, enter the country identifier'));
-      this.SpinnerService.hide();
     }
 
-    //Check if entered the status
+    // Check if entered the status
     if (!this.formData.completed) {
       this.errorsDescriptions.push(this.translate.instant('Please, select the status (completed or not completed)'));
-      this.SpinnerService.hide();
     }
 
-    //Check if entered all the languages
+    // Check if entered all the languages
     let validate = 1;
     this.languages.forEach(element => {
       if (!this.formData.title[element.value]) {
@@ -132,12 +134,13 @@ export class CountryDetailComponent implements OnInit {
 
     if (validate === 0) {
       this.errorsDescriptions.push(this.translate.instant('Please, enter the country name in each language'));
-      this.SpinnerService.hide();
     }
 
-    //Check if there are no errors
+    // Check if there are no errors
     if (this.errorsDescriptions.length === 0) {
-      //Data save
+      this.SpinnerService.show();
+
+      // Data save
       let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
       let completed: Boolean;
 
@@ -152,34 +155,40 @@ export class CountryDetailComponent implements OnInit {
         completed: completed
       };
 
-      //Check if update or insert
+      // Check if update or insert
       if (this.uuid) {
-        //Update the country
+        // Update the country
         this.http.patch(environment.apiUrl + environment.apiPort + "/countries/" + this.uuid, postParams, {headers} )
         .subscribe(async data => {
           await this.saveCountryLanguages();
+
           this.SpinnerService.hide();
+
           this.router.navigateByUrl('/countries');
         }, error => {
           this.SpinnerService.hide();
+
           this.showExceptionMessage(error);
         });
       } else {
-        //Insert the country
+        // Insert the country
         this.http.post<Country>(environment.apiUrl + environment.apiPort + "/countries/", postParams, {headers} )
         .subscribe(async data => {
           this.uuid = data.idCountry;
+
           await this.saveCountryLanguages();
+
           this.SpinnerService.hide();
+
           this.router.navigateByUrl('/countries');
         }, error => {
           this.SpinnerService.hide();
+
           this.showExceptionMessage(error);
         });
       }
     } else {
-      this.SpinnerService.hide();
-      //Missing data
+      // Missing data
       this.showErrorMessage(
         this.translate.instant('Missing data'),
         this.translate.instant('The data entered is incorrect or missing.')
@@ -191,7 +200,7 @@ export class CountryDetailComponent implements OnInit {
   async saveCountryLanguages() {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
-    //Update the country languages
+    // Update the country languages
     this.languages.forEach(element => {
       let postParams = {
         idCountry: this.uuid,
@@ -216,26 +225,29 @@ export class CountryDetailComponent implements OnInit {
   // Delete country
   deleteCountry(idCountry) {
     this.SpinnerService.show();
+
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.delete(environment.apiUrl + environment.apiPort + "/countries/" + idCountry, {headers} )
     .subscribe(data => {
       this.SpinnerService.hide();
+
       this.router.navigateByUrl('/countries');
     }, error => {
       this.SpinnerService.hide();
+
       this.showExceptionMessage(error);
     });
   }
 
-  //Error message
+  // Error message
   showErrorMessage(title: string, description: string): void {
     this.messageError.title = title;
     this.messageError.description = description;
     this.modalError.show();
   }
 
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = {
       name : error.name,

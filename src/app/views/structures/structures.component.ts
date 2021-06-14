@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { UserdataService } from '../../services/userdata.service';
@@ -8,6 +8,7 @@ import { FilterSearch, MessageException, MessageError, QuickSearch, Structure, I
 import { environment } from '../../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
 import { FormBuilder, FormGroup } from '@angular/forms';
+
 @Component({
   selector: 'app-structures',
   templateUrl: './structures.component.html',
@@ -22,23 +23,16 @@ export class StructuresComponent implements OnInit {
   formSearch: FilterSearch;
   filteredStructures: Array<Structure>;
   allStructures: Array<Structure>;
-  @ViewChild('modalException') public modalException: ModalDirective;
-  messageException: MessageException;
   prefixes: string[];
   userType: string;
   selectedItemsList = [];
   checkedIDs = [];
-  @ViewChild('modalError') public modalError: ModalDirective;
   messageError: MessageError;
   errorsDescriptions: string[];
-  @ViewChild('modalExport') public modalExport: ModalDirective;
-  @ViewChild('modalImport') public modalImport: ModalDirective;
-  @ViewChild('modalDelete') public modalDelete: ModalDirective;
-  @ViewChild('modalInfo') public modalInfo: ModalDirective;
-
-  action_delete: boolean;
-  current_delete: number;
-  total_delete: number;
+  messageException: MessageException;
+  actionDelete: boolean;
+  currentDelete: number;
+  totalDelete: number;
   filename: string;
   fileSrc: string;
   uploadForm: FormGroup;
@@ -46,6 +40,13 @@ export class StructuresComponent implements OnInit {
   importResponseMessage: string;
   icons: Array<Icon>;
   messageInfo: MessageInfo;
+
+  @ViewChild('modalExport') public modalExport: ModalDirective;
+  @ViewChild('modalImport') public modalImport: ModalDirective;
+  @ViewChild('modalDelete') public modalDelete: ModalDirective;
+  @ViewChild('modalInfo') public modalInfo: ModalDirective;
+  @ViewChild('modalException') public modalException: ModalDirective;
+  @ViewChild('modalError') public modalError: ModalDirective;
 
   constructor (
     private router: Router,
@@ -67,7 +68,7 @@ export class StructuresComponent implements OnInit {
     this.prefixes = ['+1', '+1 242', '+1 246', '+1 264', '+1 268', '+1 284', '+1 345', '+1 441', '+1 473', '+1 649', '+1 664', '+1 721', '+1 758', '+1 767', '+1 784', '+1 787', '+1 809', '+1 829', '+1 849', '+1 868', '+1 869', '+1 876', '+20', '+210', '+211', '+212', '+213', '+214', '+215', '+216', '+217', '+218', '+219', '+220', '+221', '+222', '+223', '+224', '+225', '+226', '+227', '+228', '+229', '+230', '+231', '+232', '+233', '+234', '+235', '+236', '+237', '+238', '+239', '+240', '+241', '+242', '+243', '+244', '+245', '+246', '+247', '+248', '+249', '+250', '+251', '+252', '+253', '+254', '+255', '+256', '+257', '+258', '+259', '+260', '+261', '+262', '+263', '+264', '+265', '+266', '+267', '+268', '+269', '+27', '+290', '+291', '+297', '+298', '+299', '+30', '+31', '+32', '+33', '+34', '+350', '+351', '+352', '+353', '+354', '+355', '+356', '+357', '+358', '+359', '+36', '+370', '+371', '+372', '+373', '+374', '+375', '+376', '+377', '+378', '+379', '+380', '+381', '+382', '+383', '+385', '+386', '+387', '+388', '+389', '+39', '+40', '+41', '+420', '+421', '+423', '+43', '+44', '+45', '+46', '+47', '+48', '+49', '+500', '+501', '+502', '+503', '+504', '+505', '+506', '+507', '+508', '+509', '+51', '+52', '+53', '+54', '+55', '+56', '+57', '+58', '+590', '+591', '+592', '+593', '+594', '+595', '+596', '+597', '+598', '+599 3', '+599 4', '+599 7', '+599 9', '+60', '+61', '+62', '+63', '+64', '+65', '+66', '+670', '+672', '+673', '+674', '+675', '+676', '+677', '+678', '+679', '+680', '+681', '+682', '+683', '+685', '+686', '+687', '+688', '+689', '+690', '+691', '+692', '+7', '+800', '+808', '+81', '+82', '+84', '+850', '+852', '+853', '+855', '+856', '+86', '+880', '+886', '+90', '+91', '+92', '+93', '+94', '+95', '+960', '+961', '+962', '+963', '+964', '+965', '+966', '+967', '+968', '+970', '+971', '+972', '+973', '+974', '+975', '+976', '+977', '+98', '+992', '+993', '+994', '+995', '+996', '+998'];
     this.messageError = environment.messageErrorInit;
     this.messageInfo = environment.messageErrorInit;
-    this.action_delete = false;
+    this.actionDelete = false;
     this.filename = '';
   }
 
@@ -78,7 +79,9 @@ export class StructuresComponent implements OnInit {
         this.loadStructures();
       }
     }
+
     this.loadIcons();
+
     this.uploadForm = this.formBuilder.group({
       profile: ['']
     });
@@ -86,6 +89,7 @@ export class StructuresComponent implements OnInit {
 
   async loadIcons() {
     this.SpinnerService.show();
+  
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -116,9 +120,11 @@ export class StructuresComponent implements OnInit {
   // Structures list
   async loadStructures(city = null, prefix = null,name = null,address = null,email = null,idIcon = null) {
     this.SpinnerService.show();
+
     if (prefix) {
       prefix = prefix.replace('+','%2B');
     }
+
     // Headers
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
@@ -135,34 +141,40 @@ export class StructuresComponent implements OnInit {
       nameQuery = '"structurename": { "ilike" : "%25' + name + '%25" }';
       preString = ',';
     }
+
     if (address) {
       addressQuery = preString + '"address": { "ilike" : "%25' + address + '%25" }';
       preString = ',';
     }
+
     if (email) {
       emailQuery = preString + '"email": { "ilike" : "%25' + email + '%25" }';
       preString = ',';
     }
+
     if (city) {
       cityQuery = preString + '"city": { "ilike" : "%25' + city + '%25" }';
       preString = ',';
     }
+
     if (prefix) {
       prefixQuery = preString + '"phoneNumberPrefix": "' + prefix + '" '
       preString = ',';
     }
+
     if (idIcon) {
       idIconQuery = preString + '"idIcon": "' + idIcon + '" '
     }
 
     let where = '"where": { \ ' +
-    nameQuery +
-    addressQuery +
-    emailQuery +
-    cityQuery +
-    prefixQuery +
-    idIconQuery +
-    '},';
+      nameQuery +
+      addressQuery +
+      emailQuery +
+      cityQuery +
+      prefixQuery +
+      idIconQuery +
+      '},';
+
     let filter = ' \
       { \
         "fields" : { \
@@ -189,7 +201,7 @@ export class StructuresComponent implements OnInit {
         "skip": 0, \
         "order": ["structurename"] \
       }';
-    // console.log(filter);
+
     // HTTP Request
     this.http.get<Array<Structure>>(environment.apiUrl + environment.apiPort + "/structures?filter=" + filter, {headers})
     .subscribe(data => {
@@ -210,11 +222,13 @@ export class StructuresComponent implements OnInit {
       this.filteredStructures = [];
       this.allStructures.forEach(element => {
         search = search.toLowerCase();
+
         let name = element.structurename.toLowerCase();
         let address = element.address.toLowerCase();
         let city = element.city.toLowerCase();
         let email = element.email.toLowerCase();
         let prefix =  element.phoneNumberPrefix;
+
         if (name.includes(search) || address.includes(search) || city.includes(search) || email.includes(search)  || prefix.includes(search)) {
           this.filteredStructures.push(element);
         }
@@ -229,7 +243,7 @@ export class StructuresComponent implements OnInit {
     this.router.navigateByUrl('structure-details/' + id);
   }
 
-  //Exception message
+  // Exception message
   showExceptionMessage(error: HttpErrorResponse) {
     this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
     this.modalException.show();
@@ -246,21 +260,20 @@ export class StructuresComponent implements OnInit {
     this.loadStructures(city,prefix,name,address,email,idIcon);
   }
 
-  //on checkbox change
+  // Checkbox change
   changeSelection() {
-   this.selectedItemsList = this.allStructures.filter((value, index) => {
-    //return value.isChecked
-   });
-   this.checkedIDs = [];
-   this.allStructures.forEach((value, index) => {
-     if (value.isChecked) {
-       this.checkedIDs.push(value.idStructure);
-     }
-   });
+    this.selectedItemsList = this.allStructures.filter((value, index) => {
+    });
+
+    this.checkedIDs = [];
+    this.allStructures.forEach((value, index) => {
+      if (value.isChecked) {
+        this.checkedIDs.push(value.idStructure);
+      }
+    });
   }
 
-
-  //Error message
+  // Error message
   showErrorMessage(title: string, description: string): void {
     this.messageError.title = title;
     this.messageError.description = description;
@@ -270,25 +283,32 @@ export class StructuresComponent implements OnInit {
   deleteMultiple() {
     this.SpinnerService.show();
 
-      let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
-      let length = this.checkedIDs.length;
-      this.action_delete = true;
-      this.total_delete = length;
-      let x = 0;
-      this.checkedIDs.forEach( element => {
-        this.http.delete(environment.apiUrl + environment.apiPort + "/structures/" + element, {headers} )
-        .subscribe(data=> {
-          x++;
-          this.current_delete = x;
-          this.allStructures.splice(x,1);
-        });
-      });
-      this.filteredStructures = this.allStructures;
-      this.checkedIDs = [];
-      this.SpinnerService.hide();
-      this.modalDelete.hide();
-      this.showInfoMessage(this.translate.instant('Structure saved'),this.translate.instant('Structures deleted successfully'));
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
+    let length = this.checkedIDs.length;
+    this.actionDelete = true;
+    this.totalDelete = length;
+    let x = 0;
 
+    this.checkedIDs.forEach( element => {
+      this.http.delete(environment.apiUrl + environment.apiPort + "/structures/" + element, {headers} )
+      .subscribe(data=> {
+        x++;
+        this.currentDelete = x;
+        this.allStructures.splice(x,1);
+      });
+    });
+
+    this.filteredStructures = this.allStructures;
+    this.checkedIDs = [];
+
+    this.SpinnerService.hide();
+
+    this.modalDelete.hide();
+
+    this.showInfoMessage(
+      this.translate.instant('Structure saved'),
+      this.translate.instant('Structures deleted successfully')
+    );
   }
 
   deleteMultipleModal() {
@@ -297,6 +317,7 @@ export class StructuresComponent implements OnInit {
         this.translate.instant('No Structure Selected'),
         this.translate.instant('Please select at least one Structure')
       );
+
       this.SpinnerService.hide();
       return false;
     } else {
@@ -320,19 +341,23 @@ export class StructuresComponent implements OnInit {
   // Export Structures
   async ExportStructures() {
     this.SpinnerService.show();
+
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.post(environment.apiUrl + environment.apiPort + "/structures/export-excel", {}, {headers} )
     .subscribe(data => {
       this.SpinnerService.hide();
+
       var response: any = data;
       var response_code: number = parseInt(response.excelExportOutcome.code);
       var response_message = response.excelExportOutcome.message;
+
       switch (response_code) {
         case 202:
           this.filename = response.excelExportOutcome.filename;
           this.filename = this.filename.replace('public',environment.imagesUrl);
-        break;
+          break;
+
         default:
           this.messageException = { name : '', status : 1, statusText : this.translate.instant('Error'), message : response_message };
           this.modalExport.hide();
@@ -342,7 +367,14 @@ export class StructuresComponent implements OnInit {
 
     }, error => {
       this.SpinnerService.hide();
-      this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
+
+      this.messageException = {
+        name : error.name,
+        status : error.status,
+        statusText : error.statusText,
+        message : error.message
+      };
+
       this.modalExport.hide();
       this.modalException.show();
     });
@@ -357,14 +389,13 @@ export class StructuresComponent implements OnInit {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.uploadForm.get('profile').setValue(file);
-      //let element:HTMLElement = document.getElementById('upload-submit') as HTMLElement;
-      //element.click();
     }
   }
 
   // Import xlsx File
   async ImportStructures() {
     this.SpinnerService.show();
+
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     const formData = new FormData();
@@ -373,7 +404,9 @@ export class StructuresComponent implements OnInit {
     this.http.post(environment.apiUrl + environment.apiPort + "/structures/import-excel", formData, {headers} )
     .subscribe(data => {
       this.SpinnerService.hide();
+
       var response: any = data;
+
       if (response.code == 202) {
         this.importResponseColor = '-success';
         this.importResponseMessage = this.translate.instant('Import completed successfully!');
@@ -383,18 +416,23 @@ export class StructuresComponent implements OnInit {
       }
      }, error => {
       this.SpinnerService.hide();
-      this.messageException = { name : error.name, status : error.status, statusText : error.statusText, message : error.message};
+
+      this.messageException = {
+        name : error.name,
+        status : error.status,
+        statusText : error.statusText,
+        message : error.message
+      };
+
       this.modalImport.hide();
       this.modalException.show();
     });
-
   }
 
-  //Info message
+  // Info message
   showInfoMessage(title: string, description: string): void {
     this.messageInfo.title = title;
     this.messageInfo.description = description;
     this.modalInfo.show();
   }
-
 }
