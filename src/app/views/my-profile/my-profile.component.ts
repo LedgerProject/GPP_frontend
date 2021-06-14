@@ -64,6 +64,7 @@ export class MyProfileComponent implements OnInit {
     let headers = new HttpHeaders().set("Authorization", "Bearer " + this.token);
 
     this.http.get(environment.apiUrl + environment.apiPort + `/nationalities?filter={`
+    + `"order": ["identifier"],`
     + `"include":[`
      + `{"relation": "nationalityLanguage", "scope": {"where": {"language": "` + this.lang + `"}}}`
     + `]`

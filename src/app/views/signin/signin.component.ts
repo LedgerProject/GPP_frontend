@@ -113,6 +113,13 @@ export class SigninComponent implements OnInit {
       password = this.formData.password;
     }
 
+    this.messageException = {
+      name : '',
+      status : 0,
+      statusText : '',
+      message : ''
+    };
+
     if (!email || !password) {
       this.messageException = {
         name : '',
@@ -208,6 +215,15 @@ export class SigninComponent implements OnInit {
               status : 403,
               statusText : this.translate.instant('Forbidden'),
               message : this.translate.instant('You need to confirm registration email before Login.')
+            };
+          break;
+
+          case 404:
+            this.messageException = {
+              name : '',
+              status : 404,
+              statusText : this.translate.instant('User not found'),
+              message : this.translate.instant('User not found. Check your email, or if you are not registered, select \'Not a member yet?\' and register.')
             };
           break;
 

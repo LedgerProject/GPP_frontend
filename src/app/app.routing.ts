@@ -39,6 +39,7 @@ import { ResetPasswordComponent } from './views/reset-password/reset-password.co
 import { ContentsComponent } from './views/contents/contents.component';
 import { ContentDetailComponent } from './views/content-detail/content-detail.component';
 import { PrivacyPolicyComponent } from './views/privacy-policy/privacy-policy.component';
+import { CookiePolicyComponent } from './views/cookie-policy/cookie-policy.component';
 import { TermsConditionsComponent } from './views/terms-conditions/terms-conditions.component';
 
 //import { AuthGuardService as AuthGuard } from './auth/auth-guard.service';
@@ -104,6 +105,18 @@ export const routes: Routes = [
     data: {
       title: 'Reset Password'
     }
+  },
+  {
+    path: 'privacy-policy',
+    component: PrivacyPolicyComponent,
+  },
+  {
+    path: 'terms-conditions',
+    component: TermsConditionsComponent,
+  },
+  {
+    path: 'cookie-policy',
+    component: CookiePolicyComponent,
   },
   {
     path: '',
@@ -216,14 +229,6 @@ export const routes: Routes = [
       {
         path: 'about-us',
         component: AboutUsComponent,
-      },
-      {
-        path: 'privacy-policy',
-        component: PrivacyPolicyComponent,
-      },
-      {
-        path: 'terms-conditions',
-        component: TermsConditionsComponent,
       },
       {
         path: 'logout',

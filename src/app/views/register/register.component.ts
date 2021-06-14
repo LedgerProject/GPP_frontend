@@ -66,6 +66,13 @@ export class RegisterComponent implements OnInit {
       userType = "gppOperator";
     }
 
+    this.messageException = {
+      name : '',
+      status : 0,
+      statusText : '',
+      message : ''
+    };
+
     //Check if specified first name
     if (!firstName) {
       this.messageException = {

@@ -21,6 +21,27 @@ export class AppComponent implements OnInit {
    }
 
   ngOnInit() {
+
+    let cc = window as any;
+    cc.cookieconsent.initialise({
+      palette: {
+        popup: {
+          background: "#446477"
+        },
+        button: {
+          background: "#bf222d",
+          text: "#FFF"
+        }
+      },
+      theme: "classic",
+      content: {
+        message: "This website uses cookies to improve your experience. We'll assume you're ok with this, but you can opt-out if you wish.",
+        dismiss: 'Accept',
+        link: 'Read more',
+        href: "https://www.gppadmin.org/#/cookie-policy"
+      }
+    });
+
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
         return;
