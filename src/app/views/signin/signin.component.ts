@@ -195,6 +195,9 @@ export class SigninComponent implements OnInit {
         email: email,
         password: password
       }
+      if (this.user_type == 'user') {
+        postParams['user_type'] = 'user';
+      }
 
       let headers = new HttpHeaders().set("Content-Type", "application/json");
 
